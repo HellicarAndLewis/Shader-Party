@@ -1,0 +1,4 @@
+ofxGui
+ofxOpenCv
+ofxAVFVideoPlayer
+ofxSmile

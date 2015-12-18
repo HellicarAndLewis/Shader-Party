@@ -1,0 +1,18 @@
+<group>
+	<Amount>0.5</Amount>
+	<Effect>0</Effect>
+<BadTv>
+		<Speed>0.0</Speed>
+		<Roll_Speed>0.755102</Roll_Speed>
+		<Distortion_1>6.47959</Distortion_1>
+		<Distortion_2>0.346939</Distortion_2>
+</BadTv>
+<Main>
+		<group>
+			<Amount>0.857143</Amount>
+			<Effect>5</Effect>
+		<Motion_Amplification>13.1633</Motion_Amplification>
+			<Motion_Learn_Rate>0.612244</Motion_Learn_Rate>
+		</group>
+	</Main>
+</group>
