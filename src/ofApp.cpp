@@ -23,6 +23,9 @@ void ofApp::setup(){
     //Set last time in the past
     lastTime = ofGetElapsedTimef() - 10.0;
     
+    //Setup the image tiler
+    mosaic = new videoTiler(1280, 720, 120);
+    
     //setup each effect
     
     //Motion Amplifier
@@ -131,7 +134,7 @@ void ofApp::setup(){
     main.add(amount.set("Amount", 0.5, 0.0, 1.0));
     main.add(activeEffect.set("Effect", 0, 0, effects.size() - 1));
     main.add(strength.set("Motion Amplification", 0, -30, 30));
-    main.add(learningRate.set("Motion Learn Rate", 0, -2, 2));
+    main.add(learningRate.set("Motion Learn Rate", 0, -0.2, 1.8));
     main.add(fadeAmnt.set("Fade", 0.0, 0.0, 1.0));
     
     string xmlSettingsPath = "settings/Settings.xml";
@@ -176,12 +179,6 @@ void ofApp::setup(){
         movies.push_back(path);
     }
     
-    videoLoader.setup("Video Loader");
-    for(int i = 0; i < movies.size(); i++) {
-        ofParameter<bool> movie;
-        videoLoader.add(movie.set(movies[i], false));
-    }
-    
     for(int i=0; i<2; i++) {
         players[i] = new ofxAVFVideoPlayer();
         players[i]->setLoopState(OF_LOOP_NORMAL);
@@ -193,6 +190,7 @@ void ofApp::setup(){
     initialDraw.allocate(VID_WIDTH, VID_HEIGHT);
     motionWarp.allocate(VID_WIDTH, VID_HEIGHT);
     shaderPass.allocate(VID_WIDTH, VID_HEIGHT);
+    mosaicDraw.allocate(VID_WIDTH, VID_HEIGHT);
     
     swapIn = new ofFbo();
     swapOut = new ofFbo();
@@ -237,10 +235,9 @@ void ofApp::update(){
     amplifier.setBlurAmount(0);
     amplifier.setWindowSize(8);
     
-    initialDraw.readToPixels(currImg);
-    currImg.update();
-    
-    amplifier.update(currImg);
+    if(motionAmpOn) {
+        amplifier.update(mosaic->img);
+    }
 }
 
 //--------------------------------------------------------------
@@ -254,13 +251,22 @@ void ofApp::draw(){
     currImg.draw(0, 0, VID_WIDTH, VID_HEIGHT);
     fade.end();
     initialDraw.end();
-        
+    
+    initialDraw.readToPixels(currImg);
+    currImg.update();
+    
+    mosaic->addImage(currImg);
+    
+    mosaicDraw.begin();
+    mosaic->draw(0, 0, VID_WIDTH, VID_HEIGHT);
+    mosaicDraw.end();
+    
     if(motionAmpOn) {
         motionWarp.begin();
         ofClear(0);
         ofSetupScreenOrtho(ofGetWidth(), ofGetHeight(), -100, +100);
         ofEnableDepthTest();
-        amplifier.draw(currImg);
+        amplifier.draw(mosaic->img);
         ofDisableDepthTest();
         motionWarp.end();
     }
@@ -268,7 +274,7 @@ void ofApp::draw(){
     swapIn->begin();
     ofClear(0);
     if(motionAmpOn) motionWarp.draw(0, 0, ofGetWidth() * VID_WIDTH / currImg.getWidth(), ofGetHeight() * VID_HEIGHT / currImg.getHeight());
-    else currImg.draw(0, 0, VID_WIDTH, VID_HEIGHT);
+    else mosaicDraw.draw(0, 0, VID_WIDTH, VID_HEIGHT);
     swapIn->end();
 
     for(int i = 0; i < activeEffects.size(); i++) {
@@ -277,14 +283,12 @@ void ofApp::draw(){
             swapFbos();
         }
     }
-    
+    initialDraw.draw(0, 0, WIDTH, HEIGHT);
+    mosaicDraw.draw(0, 0, WIDTH, HEIGHT);
     swapIn->draw(0, 0, WIDTH, HEIGHT);
     
     gui.draw();
     int x = gui.getWidth() + 20;
-    videoLoader.setPosition(x, 10);
-    videoLoader.draw();
-    x += videoLoader.getWidth() + 10;
     for(int i = 0; i < activeEffects.size(); i++) {
         if(activeEffects[i]->get()) {
             effects[i]->setGuiPosition(x, 10);
@@ -292,6 +296,8 @@ void ofApp::draw(){
             x += effects[i]->getGuiWidth() + 10;
         }
     }
+    mosaic->gui.setPosition(10, 10+ gui.getHeight());
+    mosaic->drawGui();
     
     ttfSmall.drawString(ofToString(ofGetFrameRate()), ofGetWidth() - 100, ofGetHeight() - 20);
 }

@@ -40,6 +40,8 @@ public:
         //shader.setUniform2f( "mouse", (float)(ofGetMouseX()/WIDTH), (float)(ofGetMouseY()/HEIGHT));
     }
     map<string, ofParameter<float>* > floatUniforms;
+    map<string, ofParameter<bool>* > fftConnected;
+    map<string, ofParameter<int>* > fftChannels;
     void setUniformFlowField(ofTexture* texture);
     void setUniformImage(string name, ofImage* img);
     void setUniformCircularTex(string name, CircularTexture* tex);

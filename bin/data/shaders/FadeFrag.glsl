@@ -9,7 +9,7 @@ uniform float fadeAmnt;
 void main()
 {
     vec2 pos = gl_TexCoord[0].xy;
-    vec4 color = vec4(0.0, 0.0, 0.0, 0.0);
+    vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
 
     color += (1 - fadeAmnt) * texture2DRect(texOut, pos);
     color += fadeAmnt * texture2DRect(texIn, pos);

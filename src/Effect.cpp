@@ -12,7 +12,6 @@ Effect::Effect() {
     uniformImageSet = false;
     uniformCircularTexSet = false;
     uniformVectorArraySet = false;
-
 }
 
 void Effect::setUniformImage(string name, ofImage *img) {
@@ -51,7 +50,13 @@ bool Effect::loadShader(string ShaderPath) {
 void Effect::addUniformFloat(string name, string parameterName, float initialValue, float minValue, float maxValue){
     floatUniforms[name] = new ofParameter<float>();
     floatUniforms[name]->set(parameterName, initialValue, minValue, maxValue);
+    fftConnected[name] = new ofParameter<bool>();
+    fftConnected[name]->set("fftConnected", false);
+    fftChannels[name] = new ofParameter<int>();
+    fftChannels[name]->set("Channel", 0, 0, 100);
     gui.add(*floatUniforms[name]);
+    gui.add(*fftConnected[name]);
+    gui.add(*fftChannels[name]);
 }
 
 void Effect::addUniformBool(string name, string parameterName, bool initialValue) {
@@ -66,7 +71,6 @@ void Effect::addUniformVectorArray(string name, float* _vectorArray, int _size) 
     uniformVectorArraySize = _size;
     uniformVectorArraySet = true;
 }
-
 
 void Effect::beginShader() {
     shader.begin();

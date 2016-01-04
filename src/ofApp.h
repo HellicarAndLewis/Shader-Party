@@ -7,6 +7,7 @@
 #include "Effect.h"
 #include "MotionAmplifier.h"
 #include "ofxAVFVideoPlayer.h"
+#include "videoTiler.h"
 
 class ofApp : public ofBaseApp{
     
@@ -22,6 +23,7 @@ class ofApp : public ofBaseApp{
         float lastTime;
         int currentPlayer;
         ofxAVFVideoPlayer* players[2];
+        videoTiler* mosaic;
         vector<string> movies;
         int currentMovie;
     
@@ -38,9 +40,7 @@ class ofApp : public ofBaseApp{
     
         ofParameter<bool> motionAmpOn;
         ofParameter<bool> voronoiOn;
-    
-        ofxPanel videoLoader;
-    
+        
         ofParameterGroup EffectsList;
         vector< ofParameter<bool>* > activeEffects;
         ofParameter<bool> endarkenOn;
@@ -68,7 +68,7 @@ class ofApp : public ofBaseApp{
         ofTrueTypeFont ttf;
         ofTrueTypeFont ttfSmall;
     
-        ofImage currImg;
+        ofImage currImg, finalOutput;
             
-        ofFbo initialDraw, motionWarp, shaderPass;
+        ofFbo initialDraw, motionWarp, mosaicDraw, shaderPass;
 };

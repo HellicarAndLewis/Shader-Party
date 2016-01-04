@@ -22,7 +22,9 @@
 			<RGB_Shift>0</RGB_Shift>
 			<Scan_Lines>0</Scan_Lines>
 			<Sharpen>0</Sharpen>
-		<Motion_Amp>1</Motion_Amp>
+		<Motion_Amp>0</Motion_Amp>
+		<Endarken>0</Endarken>
+			<Voronoi>0</Voronoi>
 		</Active_Effects>
 	</Main>
 </group>

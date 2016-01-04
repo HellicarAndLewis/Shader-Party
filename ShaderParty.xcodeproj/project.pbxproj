@@ -15,6 +15,8 @@
 		1A91BBAC1C22F7420056C790 /* CircularTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A91BBAA1C22F7420056C790 /* CircularTexture.cpp */; };
 		1AC274BB1C39BFDC00E19F19 /* ofxAVFVideoPlayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1AC274B81C39BFDC00E19F19 /* ofxAVFVideoPlayer.mm */; };
 		1AC274BC1C39BFDC00E19F19 /* ofxAVFVideoRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AC274BA1C39BFDC00E19F19 /* ofxAVFVideoRenderer.m */; };
+		1AC274C21C3AC7A600E19F19 /* videoTiler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AC274C01C3AC7A600E19F19 /* videoTiler.cpp */; };
+		1AC274C71C3ACE8A00E19F19 /* ofxSlitScan.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AC274C51C3ACE8A00E19F19 /* ofxSlitScan.cpp */; };
 		1ADE77D61C21E898001036F4 /* ETF.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1ADE77B91C21E898001036F4 /* ETF.cpp */; };
 		1ADE77D71C21E898001036F4 /* fdog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1ADE77BA1C21E898001036F4 /* fdog.cpp */; };
 		1ADE77D81C21E898001036F4 /* Calibration.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1ADE77CA1C21E898001036F4 /* Calibration.cpp */; };
@@ -118,6 +120,10 @@
 		1AC274B81C39BFDC00E19F19 /* ofxAVFVideoPlayer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ofxAVFVideoPlayer.mm; sourceTree = "<group>"; };
 		1AC274B91C39BFDC00E19F19 /* ofxAVFVideoRenderer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxAVFVideoRenderer.h; sourceTree = "<group>"; };
 		1AC274BA1C39BFDC00E19F19 /* ofxAVFVideoRenderer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ofxAVFVideoRenderer.m; sourceTree = "<group>"; };
+		1AC274C01C3AC7A600E19F19 /* videoTiler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = videoTiler.cpp; sourceTree = "<group>"; };
+		1AC274C11C3AC7A600E19F19 /* videoTiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = videoTiler.h; sourceTree = "<group>"; };
+		1AC274C51C3ACE8A00E19F19 /* ofxSlitScan.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxSlitScan.cpp; sourceTree = "<group>"; };
+		1AC274C61C3ACE8A00E19F19 /* ofxSlitScan.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxSlitScan.h; sourceTree = "<group>"; };
 		1ADE77AE1C21E898001036F4 /* ofxCv.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxCv.h; sourceTree = "<group>"; };
 		1ADE77B01C21E898001036F4 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		1ADE77B41C21E898001036F4 /* ETF.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETF.h; sourceTree = "<group>"; };
@@ -375,6 +381,24 @@
 			);
 			name = src;
 			path = ../../../addons/ofxAVFVideoPlayer/src;
+			sourceTree = "<group>";
+		};
+		1AC274C31C3ACE8A00E19F19 /* ofxSlitScan */ = {
+			isa = PBXGroup;
+			children = (
+				1AC274C41C3ACE8A00E19F19 /* src */,
+			);
+			name = ofxSlitScan;
+			sourceTree = "<group>";
+		};
+		1AC274C41C3ACE8A00E19F19 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				1AC274C51C3ACE8A00E19F19 /* ofxSlitScan.cpp */,
+				1AC274C61C3ACE8A00E19F19 /* ofxSlitScan.h */,
+			);
+			name = src;
+			path = ../../../addons/ofxSlitScan/src;
 			sourceTree = "<group>";
 		};
 		1ADE77AC1C21E898001036F4 /* ofxCv */ = {
@@ -688,6 +712,7 @@
 				A0B90D3B0ADB9C1716816714 /* ofxOpenCv */,
 				1ADE77AC1C21E898001036F4 /* ofxCv */,
 				1AC274B51C39BFDC00E19F19 /* ofxAVFVideoPlayer */,
+				1AC274C31C3ACE8A00E19F19 /* ofxSlitScan */,
 			);
 			name = addons;
 			sourceTree = "<group>";
@@ -815,6 +840,8 @@
 				1A91BBA71C22C3F80056C790 /* Effect.h */,
 				1A91BBAA1C22F7420056C790 /* CircularTexture.cpp */,
 				1A91BBAB1C22F7420056C790 /* CircularTexture.h */,
+				1AC274C01C3AC7A600E19F19 /* videoTiler.cpp */,
+				1AC274C11C3AC7A600E19F19 /* videoTiler.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -944,6 +971,7 @@
 				FB09C6B2A1DA0EA217240CB8 /* ofxCvGrayscaleImage.cpp in Sources */,
 				E212C821D1064B92DD953A42 /* ofxCvHaarFinder.cpp in Sources */,
 				1ADE77DB1C21E898001036F4 /* Flow.cpp in Sources */,
+				1AC274C21C3AC7A600E19F19 /* videoTiler.cpp in Sources */,
 				63020F16C7E8DED980111241 /* ofxCvImage.cpp in Sources */,
 				D3301F6A0B43BB293ED97C1D /* ofxCvShortImage.cpp in Sources */,
 				1ADE77E01C21E898001036F4 /* Tracker.cpp in Sources */,
@@ -953,6 +981,7 @@
 				1ADE77DE1C21E898001036F4 /* ObjectFinder.cpp in Sources */,
 				1ADE77DF1C21E898001036F4 /* RunningBackground.cpp in Sources */,
 				1ADE77DD1C21E898001036F4 /* Kalman.cpp in Sources */,
+				1AC274C71C3ACE8A00E19F19 /* ofxSlitScan.cpp in Sources */,
 				1ADE77DC1C21E898001036F4 /* Helpers.cpp in Sources */,
 				1ADE77D71C21E898001036F4 /* fdog.cpp in Sources */,
 				1AC274BB1C39BFDC00E19F19 /* ofxAVFVideoPlayer.mm in Sources */,
