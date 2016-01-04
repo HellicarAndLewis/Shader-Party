@@ -15,14 +15,16 @@
 class Effect {
     
     ofShader shader;
-    map<string, ofParameter<float>* > floatUniforms;
     map<string, ofParameter<bool>* > boolUniforms;
     string uniformImageName;
     ofImage* uniformImage;
     ofTexture* vectorField;
     string uniformCircularTexName;
     CircularTexture* uniformCircularTex;
-    bool uniformImageSet, uniformCircularTexSet;
+    string uniformVectorArrayName;
+    float* uniformVectorArray;
+    int uniformVectorArraySize;
+    bool uniformImageSet, uniformCircularTexSet, uniformVectorArraySet;
     ofxPanel gui;
     ofParameterGroup uniformsGroup;
     
@@ -37,6 +39,7 @@ public:
         shader.setUniform2f( "resolution", (float)screenWidth, (float)screenHeight);
         //shader.setUniform2f( "mouse", (float)(ofGetMouseX()/WIDTH), (float)(ofGetMouseY()/HEIGHT));
     }
+    map<string, ofParameter<float>* > floatUniforms;
     void setUniformFlowField(ofTexture* texture);
     void setUniformImage(string name, ofImage* img);
     void setUniformCircularTex(string name, CircularTexture* tex);
@@ -47,6 +50,7 @@ public:
     bool loadShader(string ShaderPath);
     void addUniformFloat(string name, string parameterName, float initialValue, float minValue, float maxValue);
     void addUniformBool(string name, string parameterName, bool initialValue);
+    void addUniformVectorArray(string name, float* _vectorArray, int _size);
     void apply(ofFbo* fboIn, ofFbo* fboOut);
     void beginShader();
     void setUniqueUniforms();

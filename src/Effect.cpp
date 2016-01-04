@@ -11,6 +11,7 @@
 Effect::Effect() {
     uniformImageSet = false;
     uniformCircularTexSet = false;
+    uniformVectorArraySet = false;
 
 }
 
@@ -59,6 +60,14 @@ void Effect::addUniformBool(string name, string parameterName, bool initialValue
     gui.add(*boolUniforms[name]);
 }
 
+void Effect::addUniformVectorArray(string name, float* _vectorArray, int _size) {
+    uniformVectorArrayName = name;
+    uniformVectorArray = _vectorArray;
+    uniformVectorArraySize = _size;
+    uniformVectorArraySet = true;
+}
+
+
 void Effect::beginShader() {
     shader.begin();
 }
@@ -79,6 +88,9 @@ void Effect::setUniqueUniforms() {
         shader.setUniformTexture(uniformCircularTexName, uniformCircularTex->texData.textureTarget,uniformCircularTex->texData.textureID,  1);
         shader.setUniform2f(uniformCircularTexName + "Size", uniformCircularTex->width, uniformCircularTex->height);
         shader.setUniform1f("depthOffset", uniformCircularTex->depth);
+    }
+    if(uniformVectorArraySet) {
+        shader.setUniform2fv(uniformVectorArrayName, uniformVectorArray, uniformVectorArraySize);
     }
 }
 

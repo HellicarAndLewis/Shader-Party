@@ -4,6 +4,7 @@
 #define HEIGHT ofGetHeight()
 #define VID_WIDTH 1280
 #define VID_HEIGHT 720
+#define NUM_SEEDS 200
 
 void stopAndLoadNewVid(ofxAVFVideoPlayer* vidPlayer, string vidToLoad) {
     vidPlayer->stop();
@@ -29,6 +30,36 @@ void ofApp::setup(){
     
     //Fade effect for mixing videos
     fade.load("shaders/DummyVert.glsl", "shaders/FadeFrag.glsl");
+    
+    //setup seed locs for voronoi
+    voronoiSeedLocs.resize(NUM_SEEDS);
+    voronoiSeedVels.resize(NUM_SEEDS);
+    voronoiInitVels.resize(NUM_SEEDS);
+    for(int i=0; i < NUM_SEEDS; i++) {
+        ofVec2f loc = ofVec2f(ofRandom(WIDTH), ofRandom(HEIGHT));
+        ofVec3f col = ofVec3f(ofRandom(255), ofRandom(255), ofRandom(255));
+        ofVec2f vel = ofVec2f(ofRandom(-1.0, 1.0), ofRandom(-1.0, 1.0));
+        voronoiSeedLocs[i] = loc;
+        voronoiSeedVels[i] = vel;
+        voronoiInitVels[i] = vel;
+    }
+    //enDarken
+    Effect* endarken = new Effect();
+    endarken->setupGui("Endarken");
+    endarken->setUniformFlowField(&amplifier.flowTexture);
+    endarken->addUniformFloat("darkness", "Darkness", 0.0, 0.0, 1.0);
+    endarken->loadShader("shaders/endarkenFrag.glsl");
+    effects.push_back(endarken);
+    
+    //Voronoi
+    Effect* voronoi = new Effect();
+    voronoi->setupGui("Voronoi");
+    voronoi->setUniformFlowField(&amplifier.flowTexture);
+    voronoi->addUniformFloat("numActiveSeeds", "Active Seeds", 200.0, 0.0, 200.0);
+    voronoi->addUniformVectorArray("locs", (float *)&voronoiSeedLocs[0], voronoiSeedLocs.size());
+    voronoi->addUniformFloat("seedVelsMultiplier", "Speed Factor", 0.0, 0.0, 20.0);
+    voronoi->loadShader("shaders/VoronoiFrag.glsl");
+    effects.push_back(voronoi);
     
     //BadTv
     Effect* badTv = new Effect();
@@ -107,7 +138,9 @@ void ofApp::setup(){
     gui.setup("Main", xmlSettingsPath);
     gui.add(main);
     EffectsList.setName("Active Effects");
-    EffectsList.add(motionAmp.set("Motion Amp", false));
+    EffectsList.add(endarkenOn.set("Endarken", false));
+    EffectsList.add(voronoiOn.set("Voronoi", false));
+    EffectsList.add(motionAmpOn.set("Motion Amp", false));
     EffectsList.add(badTvOn.set("Bad TV", false));
     EffectsList.add(colorMapOn.set("Color Map", false));
     EffectsList.add(embossOn.set("Emboss", false));
@@ -115,6 +148,8 @@ void ofApp::setup(){
     EffectsList.add(scanLinesOn.set("Scan Lines", false));
     EffectsList.add(sharpenOn.set("Sharpen", false));
     
+    activeEffects.push_back(&endarkenOn);
+    activeEffects.push_back(&voronoiOn);
     activeEffects.push_back(&badTvOn);
     activeEffects.push_back(&colorMapOn);
     activeEffects.push_back(&embossOn);
@@ -177,6 +212,25 @@ void ofApp::update(){
             players[i]->play();
         }
     }
+    
+    //if(animating) {
+        for(int i=0; i < voronoiSeedLocs.size(); i++) {
+            voronoiSeedLocs[i] += voronoiSeedVels[i] * effects[1]->floatUniforms["seedVelsMultiplier"]->get();
+            float projX = ofMap(voronoiSeedLocs[i].x, 0, VID_WIDTH, 1, VID_HEIGHT-1, true);
+            float projY = ofMap(voronoiSeedLocs[i].y, 0, VID_WIDTH, 1, VID_WIDTH-1, true);
+            
+            if(voronoiSeedLocs[i].x < 0 || voronoiSeedLocs[i].x > VID_WIDTH) {
+                voronoiSeedVels[i].x *= -1;
+                voronoiInitVels[i].x *= -1;
+                voronoiSeedLocs[i].x = (voronoiSeedLocs[i].x < 0) ? 0 : VID_WIDTH;
+            }
+            if(voronoiSeedLocs[i].y < 0 || voronoiSeedLocs[i].y > VID_HEIGHT) {
+                voronoiSeedVels[i].y *= -1;
+                voronoiInitVels[i].y *= -1;
+                voronoiSeedLocs[i].y = (voronoiSeedLocs[i].y < 0) ? 0 : VID_HEIGHT;
+            }
+        }
+    //}
 
     amplifier.setStrength(strength);
     amplifier.setLearningRate(learningRate);
@@ -200,10 +254,8 @@ void ofApp::draw(){
     currImg.draw(0, 0, VID_WIDTH, VID_HEIGHT);
     fade.end();
     initialDraw.end();
-    
-    initialDraw.draw(0, 0);
-    
-        if(motionAmp) {
+        
+    if(motionAmpOn) {
         motionWarp.begin();
         ofClear(0);
         ofSetupScreenOrtho(ofGetWidth(), ofGetHeight(), -100, +100);
@@ -215,7 +267,7 @@ void ofApp::draw(){
     
     swapIn->begin();
     ofClear(0);
-    if(motionAmp) motionWarp.draw(0, 0, ofGetWidth() * VID_WIDTH / currImg.getWidth(), ofGetHeight() * VID_HEIGHT / currImg.getHeight());
+    if(motionAmpOn) motionWarp.draw(0, 0, ofGetWidth() * VID_WIDTH / currImg.getWidth(), ofGetHeight() * VID_HEIGHT / currImg.getHeight());
     else currImg.draw(0, 0, VID_WIDTH, VID_HEIGHT);
     swapIn->end();
 

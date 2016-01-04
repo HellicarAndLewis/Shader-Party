@@ -35,12 +35,15 @@ class ofApp : public ofBaseApp{
         ofParameter<int> activeEffect;
         ofParameter<float> strength;
         ofParameter<float> learningRate;
-        ofParameter<bool> motionAmp;
+    
+        ofParameter<bool> motionAmpOn;
+        ofParameter<bool> voronoiOn;
     
         ofxPanel videoLoader;
     
         ofParameterGroup EffectsList;
         vector< ofParameter<bool>* > activeEffects;
+        ofParameter<bool> endarkenOn;
         ofParameter<bool> badTvOn;
         ofParameter<bool> colorMapOn;
         ofParameter<bool> embossOn;
@@ -50,6 +53,11 @@ class ofApp : public ofBaseApp{
         ofParameter<float> fadeAmnt;
     
         MotionAmplifier amplifier;
+    
+        vector<ofVec2f> voronoiSeedLocs;
+        vector<ofVec2f> voronoiSeedVels;
+        vector<ofVec2f> voronoiInitVels;
+
     
         ofxCv::FlowFarneback flow;
         //ofFloatImage vf;
