@@ -5,8 +5,8 @@
 #include "ofxCv.h"
 #include "ofxGui.h"
 #include "Effect.h"
-#include "CircularTexture.h"
 #include "MotionAmplifier.h"
+#include "ofxAVFVideoPlayer.h"
 
 class ofApp : public ofBaseApp{
     
@@ -21,9 +21,11 @@ class ofApp : public ofBaseApp{
         
         float lastTime;
         int currentPlayer;
-        ofVideoPlayer* players[2];
+        ofxAVFVideoPlayer* players[2];
         vector<string> movies;
         int currentMovie;
+    
+        ofShader fade;
     
         vector<Effect*> effects;
     
@@ -33,6 +35,9 @@ class ofApp : public ofBaseApp{
         ofParameter<int> activeEffect;
         ofParameter<float> strength;
         ofParameter<float> learningRate;
+        ofParameter<bool> motionAmp;
+    
+        ofxPanel videoLoader;
     
         ofParameterGroup EffectsList;
         vector< ofParameter<bool>* > activeEffects;
@@ -42,13 +47,12 @@ class ofApp : public ofBaseApp{
         ofParameter<bool> rgbShiftOn;
         ofParameter<bool> scanLinesOn;
         ofParameter<bool> sharpenOn;
+        ofParameter<float> fadeAmnt;
     
         MotionAmplifier amplifier;
     
         ofxCv::FlowFarneback flow;
         //ofFloatImage vf;
-    
-        CircularTexture circleTex;
     
         ofFbo* swapIn;
         ofFbo* swapOut;

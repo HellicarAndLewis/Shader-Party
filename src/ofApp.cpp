@@ -2,16 +2,10 @@
 
 #define WIDTH ofGetWidth()
 #define HEIGHT ofGetHeight()
-#define VID_WIDTH 426
-#define VID_HEIGHT 426
+#define VID_WIDTH 1280
+#define VID_HEIGHT 720
 
-
-void ofApp::swapPlayer() {
-    currentPlayer ++;
-    currentPlayer %= 2;
-}
-
-void stopAndLoadNewVid(ofVideoPlayer* vidPlayer, string vidToLoad) {
+void stopAndLoadNewVid(ofxAVFVideoPlayer* vidPlayer, string vidToLoad) {
     vidPlayer->stop();
     vidPlayer->close();
     vidPlayer->loadMovie(vidToLoad);
@@ -32,6 +26,9 @@ void ofApp::setup(){
     
     //Motion Amplifier
     amplifier.setup(WIDTH, HEIGHT, 2, .25);
+    
+    //Fade effect for mixing videos
+    fade.load("shaders/DummyVert.glsl", "shaders/FadeFrag.glsl");
     
     //BadTv
     Effect* badTv = new Effect();
@@ -103,12 +100,14 @@ void ofApp::setup(){
     main.add(amount.set("Amount", 0.5, 0.0, 1.0));
     main.add(activeEffect.set("Effect", 0, 0, effects.size() - 1));
     main.add(strength.set("Motion Amplification", 0, -30, 30));
-    main.add(learningRate.set("Motion Learn Rate", 0, -30, 30));
+    main.add(learningRate.set("Motion Learn Rate", 0, -2, 2));
+    main.add(fadeAmnt.set("Fade", 0.0, 0.0, 1.0));
     
     string xmlSettingsPath = "settings/Settings.xml";
     gui.setup("Main", xmlSettingsPath);
     gui.add(main);
     EffectsList.setName("Active Effects");
+    EffectsList.add(motionAmp.set("Motion Amp", false));
     EffectsList.add(badTvOn.set("Bad TV", false));
     EffectsList.add(colorMapOn.set("Color Map", false));
     EffectsList.add(embossOn.set("Emboss", false));
@@ -124,7 +123,7 @@ void ofApp::setup(){
     activeEffects.push_back(&sharpenOn);
 
     gui.add(EffectsList);
-
+    
     gui.loadFromFile(xmlSettingsPath);
     
     for(int i = 0; i < effects.size(); i++) {
@@ -134,7 +133,7 @@ void ofApp::setup(){
     
     //Load all the movies
     ofDirectory moviesDir("movies");
-    moviesDir.allowExt("mp4");
+    //moviesDir.allowExt("mp4");
     moviesDir.allowExt("mov");
     moviesDir.listDir();
     for(int i=0; i < moviesDir.numFiles(); i++) {
@@ -142,48 +141,50 @@ void ofApp::setup(){
         movies.push_back(path);
     }
     
-    for(int i=0; i<1; i++) {
-        players[i] = new ofVideoPlayer();
+    videoLoader.setup("Video Loader");
+    for(int i = 0; i < movies.size(); i++) {
+        ofParameter<bool> movie;
+        videoLoader.add(movie.set(movies[i], false));
+    }
+    
+    for(int i=0; i<2; i++) {
+        players[i] = new ofxAVFVideoPlayer();
         players[i]->setLoopState(OF_LOOP_NORMAL);
         players[i]->setPixelFormat(OF_PIXELS_RGB);
         players[i]->loadMovie(movies[i]);
     }
     
-    currentMovie = 0;
-    players[currentPlayer]->setPaused(false);
-    players[currentPlayer]->play();
-    
     //allocate drawing fbo
-    initialDraw.allocate(WIDTH, HEIGHT);
-    motionWarp.allocate(WIDTH, HEIGHT);
-    shaderPass.allocate(WIDTH, HEIGHT);
+    initialDraw.allocate(VID_WIDTH, VID_HEIGHT);
+    motionWarp.allocate(VID_WIDTH, VID_HEIGHT);
+    shaderPass.allocate(VID_WIDTH, VID_HEIGHT);
     
     swapIn = new ofFbo();
     swapOut = new ofFbo();
     
-    swapIn->allocate(WIDTH, HEIGHT);
-    swapOut->allocate(WIDTH, HEIGHT);
+    swapIn->allocate(VID_WIDTH, VID_HEIGHT);
+    swapOut->allocate(VID_WIDTH, VID_HEIGHT);
+    
+    currImg.allocate(VID_WIDTH, VID_HEIGHT, OF_IMAGE_COLOR);
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-//    if(ofGetElapsedTimef() - lastTime > players[currentPlayer]->getDuration()) {
-//        ++currentMovie;
-//        currentMovie %= movies.size();
-//        stopAndLoadNewVid(players[currentPlayer], movies[currentMovie]);
-//        swapPlayer();
-//        players[currentPlayer]->play();
-//        players[currentPlayer]->setPaused(false);
-//        lastTime = ofGetElapsedTimef();
-//    }
-    players[currentPlayer]->update();
-    
-    currImg.setFromPixels(players[currentPlayer]->getPixels(), players[currentPlayer]->getWidth(), players[currentPlayer]->getHeight(), OF_IMAGE_COLOR);
-    
+    for(int i = 0; i < 2; i++) {
+        players[i]->update();
+        if(players[i]->isLoaded()) {
+            players[i]->setPaused(false);
+            players[i]->play();
+        }
+    }
+
     amplifier.setStrength(strength);
     amplifier.setLearningRate(learningRate);
     amplifier.setBlurAmount(0);
     amplifier.setWindowSize(8);
+    
+    initialDraw.readToPixels(currImg);
+    currImg.update();
     
     amplifier.update(currImg);
 }
@@ -191,23 +192,32 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     
-    motionWarp.begin();
-    ofClear(0);
-    ofSetupScreenOrtho(ofGetWidth(), ofGetHeight(), -100, +100);
-    ofEnableDepthTest();
-    amplifier.draw(currImg);
-    ofDisableDepthTest();
-    motionWarp.end();
+    initialDraw.begin();
+    fade.begin();
+    fade.setUniformTexture("texOut", players[0]->getTextureReference(), 1);
+    fade.setUniformTexture("texIn", players[1]->getTextureReference(), 2);
+    fade.setUniform1f("fadeAmnt", fadeAmnt);
+    currImg.draw(0, 0, VID_WIDTH, VID_HEIGHT);
+    fade.end();
+    initialDraw.end();
+    
+    initialDraw.draw(0, 0);
+    
+        if(motionAmp) {
+        motionWarp.begin();
+        ofClear(0);
+        ofSetupScreenOrtho(ofGetWidth(), ofGetHeight(), -100, +100);
+        ofEnableDepthTest();
+        amplifier.draw(currImg);
+        ofDisableDepthTest();
+        motionWarp.end();
+    }
     
     swapIn->begin();
     ofClear(0);
-    motionWarp.draw(0, 0, ofGetWidth() * WIDTH / currImg.getWidth(), ofGetHeight() * HEIGHT / currImg.getHeight());
+    if(motionAmp) motionWarp.draw(0, 0, ofGetWidth() * VID_WIDTH / currImg.getWidth(), ofGetHeight() * VID_HEIGHT / currImg.getHeight());
+    else currImg.draw(0, 0, VID_WIDTH, VID_HEIGHT);
     swapIn->end();
-    
-//    swapOut->begin();
-//    ofClear(0);
-//    swapIn->draw(0, 0);
-//    swapOut->end();
 
     for(int i = 0; i < activeEffects.size(); i++) {
         if(activeEffects[i]->get()) {
@@ -216,10 +226,13 @@ void ofApp::draw(){
         }
     }
     
-    swapIn->draw(0, 0);
+    swapIn->draw(0, 0, WIDTH, HEIGHT);
     
     gui.draw();
     int x = gui.getWidth() + 20;
+    videoLoader.setPosition(x, 10);
+    videoLoader.draw();
+    x += videoLoader.getWidth() + 10;
     for(int i = 0; i < activeEffects.size(); i++) {
         if(activeEffects[i]->get()) {
             effects[i]->setGuiPosition(x, 10);
@@ -233,13 +246,9 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-//    ++currentMovie;
-//    currentMovie %= movies.size();
-//    stopAndLoadNewVid(players[currentPlayer], movies[currentMovie]);
-//    swapPlayer();
-//    players[currentPlayer]->play();
-//    players[currentPlayer]->setPaused(false);
-//    lastTime = ofGetElapsedTimef();
+    players[currentPlayer]->stop();
+    players[currentPlayer]->close();
+    players[currentPlayer]->loadMovie("movies/Xballs2.mov");
 }
 
 //--------------------------------------------------------------

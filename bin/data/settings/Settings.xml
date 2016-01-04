@@ -12,7 +12,17 @@
 			<Amount>0.857143</Amount>
 			<Effect>5</Effect>
 		<Motion_Amplification>13.1633</Motion_Amplification>
-			<Motion_Learn_Rate>0.612244</Motion_Learn_Rate>
+			<Motion_Learn_Rate>0</Motion_Learn_Rate>
+		<Fade>0</Fade>
 		</group>
+	<Active_Effects>
+			<Bad_TV>0</Bad_TV>
+			<Color_Map>0</Color_Map>
+			<Emboss>0</Emboss>
+			<RGB_Shift>0</RGB_Shift>
+			<Scan_Lines>0</Scan_Lines>
+			<Sharpen>0</Sharpen>
+		<Motion_Amp>1</Motion_Amp>
+		</Active_Effects>
 	</Main>
 </group>
