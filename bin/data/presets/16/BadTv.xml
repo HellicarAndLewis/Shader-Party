@@ -1,0 +1,20 @@
+<BadTv>
+	<Speed>0.805</Speed>
+	<Roll_Speed>0.735</Roll_Speed>
+	<Distortion_1>2.35</Distortion_1>
+	<Distortion_2>0.645</Distortion_2>
+<BadTv/>
+	<Amount>0.5</Amount>
+	<fftConnected>0</fftConnected>
+	<Channel>0</Channel>
+<Amount_connected>0</Amount_connected>
+	<Amount_channel>0</Amount_channel>
+	<Speed_connected>0</Speed_connected>
+	<Speed_channel>0</Speed_channel>
+	<Roll_Speed_connected>0</Roll_Speed_connected>
+	<Roll_Speed_channel>0</Roll_Speed_channel>
+	<Distortion_1_connected>0</Distortion_1_connected>
+	<Distortion_1_channel>0</Distortion_1_channel>
+	<Distortion_2_connected>0</Distortion_2_connected>
+	<Distortion_2_channel>0</Distortion_2_channel>
+</BadTv>

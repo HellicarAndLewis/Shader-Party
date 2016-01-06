@@ -6,8 +6,9 @@
 #include "ofxGui.h"
 #include "Effect.h"
 #include "MotionAmplifier.h"
-#include "ofxAVFVideoPlayer.h"
 #include "videoTiler.h"
+#include "ofxFFTLive.h"
+#include "ContentManager.h"
 
 class ofApp : public ofBaseApp{
     
@@ -16,59 +17,57 @@ class ofApp : public ofBaseApp{
 		void update();
 		void draw();
         void swapPlayer();
-        void swapFbos();
+        void swapFbos(int i);
 
 		void keyPressed(int key);
-        
-        float lastTime;
-        int currentPlayer;
-        ofxAVFVideoPlayer* players[2];
+    
+        ContentManager* contentManager;
         videoTiler* mosaic;
-        vector<string> movies;
+        vector<string> pressContent;
+        vector<ofImage> pressImages;
+        vector<string> partyContent;
+        vector<ofImage> partyImages;
         int currentMovie;
     
         ofShader fade;
     
-        vector<Effect*> effects;
+        vector<Effect*> effects[2];
     
         ofxPanel gui;
         ofParameterGroup main;
-        ofParameter<float> amount;
         ofParameter<int> activeEffect;
         ofParameter<float> strength;
         ofParameter<float> learningRate;
     
-        ofParameter<bool> motionAmpOn;
-        ofParameter<bool> voronoiOn;
+        ofxPanel presets[2];
+        ofParameter<int> presetNum[2];
         
         ofParameterGroup EffectsList;
-        vector< ofParameter<bool>* > activeEffects;
-        ofParameter<bool> endarkenOn;
-        ofParameter<bool> badTvOn;
-        ofParameter<bool> colorMapOn;
-        ofParameter<bool> embossOn;
-        ofParameter<bool> rgbShiftOn;
-        ofParameter<bool> scanLinesOn;
-        ofParameter<bool> sharpenOn;
+
         ofParameter<float> fadeAmnt;
+        ofParameter<float> fftDamping;
+        ofParameter<float> fftAttraction;
     
         MotionAmplifier amplifier;
     
         vector<ofVec2f> voronoiSeedLocs;
         vector<ofVec2f> voronoiSeedVels;
         vector<ofVec2f> voronoiInitVels;
-
+    
+    bool test;
     
         ofxCv::FlowFarneback flow;
+    
+        ofxFFTLive fft;
         //ofFloatImage vf;
     
-        ofFbo* swapIn;
-        ofFbo* swapOut;
+        ofFbo* swapIn[2];
+        ofFbo* swapOut[2];
     
         ofTrueTypeFont ttf;
         ofTrueTypeFont ttfSmall;
     
         ofImage currImg, finalOutput;
             
-        ofFbo initialDraw, motionWarp, mosaicDraw, shaderPass;
+        ofFbo finalMix, motionWarp[2], mosaicDraw[2];
 };

@@ -1,12 +1,15 @@
 #include "ofApp.h"
 
-#define WIDTH ofGetWidth()
-#define HEIGHT ofGetHeight()
-#define VID_WIDTH 1280
-#define VID_HEIGHT 720
+#define WIDTH ofGetScreenWidth()
+#define HEIGHT ofGetScreenHeight()
+#define OUT_WIDTH 1920
+#define OUT_HEIGHT 1080
+#define VID_WIDTH 1920 //1280
+#define VID_HEIGHT 1080 //720
 #define NUM_SEEDS 200
+#define NUM_CHANNELS 20
 
-void stopAndLoadNewVid(ofxAVFVideoPlayer* vidPlayer, string vidToLoad) {
+void stopAndLoadNewVid(ofVideoPlayer* vidPlayer, string vidToLoad) {
     vidPlayer->stop();
     vidPlayer->close();
     vidPlayer->loadMovie(vidToLoad);
@@ -16,20 +19,25 @@ void stopAndLoadNewVid(ofxAVFVideoPlayer* vidPlayer, string vidToLoad) {
 void ofApp::setup(){
     ofBackground(30, 30, 30);
     
+//    ofSetLogLevel(OF_LOG_SILENT);
+    
     //Load fonts
     ttf.loadFont("Helvetica.ttf", 48);
     ttfSmall.loadFont("Helvetica.ttf", 14);
     
-    //Set last time in the past
-    lastTime = ofGetElapsedTimef() - 10.0;
-    
     //Setup the image tiler
-    mosaic = new videoTiler(1280, 720, 120);
+    mosaic = new videoTiler(VID_WIDTH, VID_HEIGHT, 120);
+    
+    //setup fft
+    fft.setMirrorData(false);
+    fft.setup();
+    fft.setBufferSize(NUM_CHANNELS);
+    int numChannels = fft.getFftRawData().size()-1;
     
     //setup each effect
     
     //Motion Amplifier
-    amplifier.setup(WIDTH, HEIGHT, 2, .25);
+    amplifier.setup(WIDTH, HEIGHT, 2, numChannels, .25);
     
     //Fade effect for mixing videos
     fade.load("shaders/DummyVert.glsl", "shaders/FadeFrag.glsl");
@@ -46,174 +54,149 @@ void ofApp::setup(){
         voronoiSeedVels[i] = vel;
         voronoiInitVels[i] = vel;
     }
-    //enDarken
-    Effect* endarken = new Effect();
-    endarken->setupGui("Endarken");
-    endarken->setUniformFlowField(&amplifier.flowTexture);
-    endarken->addUniformFloat("darkness", "Darkness", 0.0, 0.0, 1.0);
-    endarken->loadShader("shaders/endarkenFrag.glsl");
-    effects.push_back(endarken);
     
-    //Voronoi
-    Effect* voronoi = new Effect();
-    voronoi->setupGui("Voronoi");
-    voronoi->setUniformFlowField(&amplifier.flowTexture);
-    voronoi->addUniformFloat("numActiveSeeds", "Active Seeds", 200.0, 0.0, 200.0);
-    voronoi->addUniformVectorArray("locs", (float *)&voronoiSeedLocs[0], voronoiSeedLocs.size());
-    voronoi->addUniformFloat("seedVelsMultiplier", "Speed Factor", 0.0, 0.0, 20.0);
-    voronoi->loadShader("shaders/VoronoiFrag.glsl");
-    effects.push_back(voronoi);
-    
-    //BadTv
-    Effect* badTv = new Effect();
-    badTv->setupGui("BadTv");
-    badTv->setUniformFlowField(&amplifier.flowTexture);
-    badTv->addUniformFloat("amount", "Amount", 0.5, 0.0, 1.0);
-    badTv->addUniformFloat("speed", "Speed", 0.5, 0.0, 1.0);
-    badTv->addUniformFloat("rollSpeed", "Roll Speed", 0.5, 0.0, 1.0);
-    badTv->addUniformFloat("distortion", "Distortion 1", 5.0, 0.0, 10.0);
-    badTv->addUniformFloat("distortion2", "Distortion 2", 0.5, 0.0, 1.0);
-    badTv->loadShader("shaders/badtv.frag");
-    effects.push_back(badTv);
-    
-    //ColorMap
-    Effect* colorMap = new Effect();
-    ofImage* rampImg = new ofImage();
-    rampImg->loadImage("textures/ramp1.png");
-    colorMap->setupGui("ColorMap");
-    colorMap->setUniformFlowField(&amplifier.flowTexture);
-    colorMap->addUniformFloat("amount", "Amount", 0.5, 0.0, 1.0);
-    badTv->setUniformFlowField(&amplifier.flowTexture);
-    colorMap->setUniformImage("colorMap", rampImg);;
-    colorMap->loadShader("shaders/colorMap.frag");
-    effects.push_back(colorMap);
-    
-    //Emboss
-    Effect* emboss = new Effect();
-    emboss->setupGui("Emboss");
-    emboss->setUniformFlowField(&amplifier.flowTexture);
-    emboss->addUniformFloat("amount", "Amount", 0.5, 0.0, 1.0);
-    emboss->addUniformFloat("intensity", "Intensity", 50.0, 1.0, 100.0);
-    emboss->addUniformFloat("colorization", "Colorization", 0.5, 0.0, 1.0);
-    emboss->addUniformFloat("flowEffect", "Flow Effect", 0.0, 0.0, 100.0);
-    emboss->loadShader("shaders/emboss.frag");
-    effects.push_back(emboss);
-    
-    //RGB Shift
-    Effect* rgbShift = new Effect();
-    rgbShift->setupGui("RGB Shift");
-    rgbShift->setUniformFlowField(&amplifier.flowTexture);
-    rgbShift->addUniformFloat("amount", "Amount", 0.5, 0.0, 1.0);
-    rgbShift->addUniformFloat("rgbAmount", "RGB Amount", 0.05, 0.0, 0.1);
-    rgbShift->loadShader("shaders/rgbshift.frag");
-    effects.push_back(rgbShift);
-    
-    //Scan Lines
-    Effect* scanLines = new Effect();
-    scanLines->setupGui("Scane Lines");
-    scanLines->setUniformFlowField(&amplifier.flowTexture);
-    scanLines->addUniformFloat("amount", "Amount", 0.5, 0.0, 1.0);
-    scanLines->addUniformFloat("nIntensity", "N Intensity", 1.0, 0.0, 2.0);
-    scanLines->addUniformFloat("sIntensity", "S Intensity", 1.0, 0.0, 2.0);
-    scanLines->addUniformFloat("sCount", "S Count", 500, 50, 1000);
-    scanLines->loadShader("shaders/scanlines.frag");
-    effects.push_back(scanLines);
-    
-    //Sharpen
-    Effect* sharpen = new Effect();
-    sharpen->setupGui("Sharpen");
-    sharpen->setUniformFlowField(&amplifier.flowTexture);
-    sharpen->addUniformFloat("amount", "Amount", 0.5, 0.0, 1.0);
-    sharpen->addUniformFloat("theMix", "The Mix", 0.5, 0.0, 1.0);
-    sharpen->addUniformFloat("weirdness", "Weirdness", 0.5, 0.0, 1.0);
-    sharpen->loadShader("shaders/DummyFrag.glsl");
-    effects.push_back(sharpen);
-    
+    for(int i = 0; i < 2; i++) {
+        
+        //Voronoi
+        Effect* voronoi = new Effect();
+        voronoi->setupGui("Voronoi", numChannels);
+        voronoi->setUniformFlowField(&amplifier.flowTexture);
+        voronoi->addUniformFloat("numActiveSeeds", "Active Seeds", 200.0, 0.0, 200.0);
+        voronoi->addUniformVectorArray("locs", (float *)&voronoiSeedLocs[0], voronoiSeedLocs.size());
+        voronoi->addUniformFloat("seedVelsMultiplier", "Speed Factor", 0.0, 0.0, 20.0);
+        voronoi->loadShader("shaders/VoronoiFrag.glsl");
+        effects[i].push_back(voronoi);
+        
+        //BadTv
+        Effect* badTv = new Effect();
+        badTv->setupGui("BadTv", numChannels);
+        badTv->setUniformFlowField(&amplifier.flowTexture);
+        badTv->addUniformFloat("amount", "Amount", 0.5, 0.0, 1.0);
+        badTv->addUniformFloat("speed", "Speed", 0.5, 0.0, 1.0);
+        badTv->addUniformFloat("rollSpeed", "Roll Speed", 0.5, 0.0, 1.0);
+        badTv->addUniformFloat("distortion", "Distortion 1", 5.0, 0.0, 10.0);
+        badTv->addUniformFloat("distortion2", "Distortion 2", 0.5, 0.0, 1.0);
+        badTv->loadShader("shaders/badtv.frag");
+        effects[i].push_back(badTv);
+        
+        //ColorMap
+        Effect* colorMap = new Effect();
+        ofImage* rampImg = new ofImage();
+        rampImg->loadImage("textures/ramp1.png");
+        colorMap->setupGui("ColorMap", numChannels);
+        colorMap->setUniformFlowField(&amplifier.flowTexture);
+        colorMap->addUniformFloat("amount", "Amount", 0.5, 0.0, 1.0);
+        badTv->setUniformFlowField(&amplifier.flowTexture);
+        colorMap->setUniformImage("colorMap", rampImg);;
+        colorMap->loadShader("shaders/colorMap.frag");
+        effects[i].push_back(colorMap);
+        
+        //Emboss
+        Effect* emboss = new Effect();
+        emboss->setupGui("Emboss", numChannels);
+        emboss->setUniformFlowField(&amplifier.flowTexture);
+        emboss->addUniformFloat("amount", "Amount", 0.5, 0.0, 1.0);
+        emboss->addUniformFloat("intensity", "Intensity", 50.0, 1.0, 100.0);
+        emboss->addUniformFloat("colorization", "Colorization", 0.5, 0.0, 1.0);
+        emboss->addUniformFloat("flowEffect", "Flow Effect", 0.0, 0.0, 100.0);
+        emboss->loadShader("shaders/emboss.frag");
+        effects[i].push_back(emboss);
+        
+        //RGB Shift
+        Effect* rgbShift = new Effect();
+        rgbShift->setupGui("RGB Shift", numChannels);
+        rgbShift->setUniformFlowField(&amplifier.flowTexture);
+        rgbShift->addUniformFloat("amount", "Amount", 0.5, 0.0, 1.0);
+        rgbShift->addUniformFloat("rgbAmount", "RGB Amount", 0.05, 0.0, 0.1);
+        rgbShift->loadShader("shaders/rgbshift.frag");
+        effects[i].push_back(rgbShift);
+        
+        //Scan Lines
+        Effect* scanLines = new Effect();
+        scanLines->setupGui("Scan Lines", numChannels);
+        scanLines->setUniformFlowField(&amplifier.flowTexture);
+        scanLines->addUniformFloat("amount", "Amount", 0.5, 0.0, 1.0);
+        scanLines->addUniformFloat("nIntensity", "N Intensity", 1.0, 0.0, 2.0);
+        scanLines->addUniformFloat("sIntensity", "S Intensity", 1.0, 0.0, 2.0);
+        scanLines->addUniformFloat("sCount", "S Count", 500, 50, 1000);
+        scanLines->loadShader("shaders/scanlines.frag");
+        effects[i].push_back(scanLines);
+        
+        //Sharpen
+        Effect* sharpen = new Effect();
+        sharpen->setupGui("Sharpen", numChannels);
+        sharpen->setUniformFlowField(&amplifier.flowTexture);
+        sharpen->addUniformFloat("amount", "Amount", 0.5, 0.0, 1.0);
+        sharpen->addUniformFloat("theMix", "The Mix", 0.5, 0.0, 1.0);
+        sharpen->addUniformFloat("weirdness", "Weirdness", 0.5, 0.0, 1.0);
+        sharpen->loadShader("shaders/DummyFrag.glsl");
+        effects[i].push_back(sharpen);
+        
+        //enDarken
+        Effect* endarken = new Effect();
+        endarken->setupGui("Endarken", numChannels);
+        endarken->setUniformFlowField(&amplifier.flowTexture);
+        endarken->addUniformFloat("darkness", "Darkness", 0.0, 0.0, 1.0);
+        endarken->loadShader("shaders/endarkenFrag.glsl");
+        effects[i].push_back(endarken);
+    }
+
     //setup main gui
     //main.setup();
-    main.add(amount.set("Amount", 0.5, 0.0, 1.0));
-    main.add(activeEffect.set("Effect", 0, 0, effects.size() - 1));
-    main.add(strength.set("Motion Amplification", 0, -30, 30));
-    main.add(learningRate.set("Motion Learn Rate", 0, -0.2, 1.8));
     main.add(fadeAmnt.set("Fade", 0.0, 0.0, 1.0));
+    main.add(fftDamping.set("Damping", 0.5, 0.0, 2.0));
+    main.add(fftAttraction.set("Attraction", 0.5, 0.0, 2.0));
     
     string xmlSettingsPath = "settings/Settings.xml";
     gui.setup("Main", xmlSettingsPath);
     gui.add(main);
-    EffectsList.setName("Active Effects");
-    EffectsList.add(endarkenOn.set("Endarken", false));
-    EffectsList.add(voronoiOn.set("Voronoi", false));
-    EffectsList.add(motionAmpOn.set("Motion Amp", false));
-    EffectsList.add(badTvOn.set("Bad TV", false));
-    EffectsList.add(colorMapOn.set("Color Map", false));
-    EffectsList.add(embossOn.set("Emboss", false));
-    EffectsList.add(rgbShiftOn.set("RGB Shift", false));
-    EffectsList.add(scanLinesOn.set("Scan Lines", false));
-    EffectsList.add(sharpenOn.set("Sharpen", false));
-    
-    activeEffects.push_back(&endarkenOn);
-    activeEffects.push_back(&voronoiOn);
-    activeEffects.push_back(&badTvOn);
-    activeEffects.push_back(&colorMapOn);
-    activeEffects.push_back(&embossOn);
-    activeEffects.push_back(&rgbShiftOn);
-    activeEffects.push_back(&scanLinesOn);
-    activeEffects.push_back(&sharpenOn);
-
-    gui.add(EffectsList);
+    gui.setPosition(WIDTH/2 - gui.getWidth()/2, HEIGHT/2 - gui.getHeight()*2);
     
     gui.loadFromFile(xmlSettingsPath);
-    
-    for(int i = 0; i < effects.size(); i++) {
-        effects[i]->loadSettings();
-        effects[i]->setGuiPosition(gui.getWidth() + 20, 10);
+    for(int j = 0; j < 2; j++) {
+        for(int i = 0; i < effects[j].size(); i++) {
+            effects[j][i]->loadSettings();
+            effects[j][i]->setGuiPosition(gui.getWidth() + 20, 10 + j * gui.getHeight());
+        }
     }
     
-    //Load all the movies
-    ofDirectory moviesDir("movies");
-    //moviesDir.allowExt("mp4");
-    moviesDir.allowExt("mov");
-    moviesDir.listDir();
-    for(int i=0; i < moviesDir.numFiles(); i++) {
-        string path = moviesDir.getPath(i);
-        movies.push_back(path);
+    //LOAD MOVIES HERE
+    //***************
+    //
+    contentManager = new ContentManager();
+    contentManager->setup("movies/Press", "movies/Party", VID_WIDTH, VID_HEIGHT);
+    contentManager->play();
+    
+    contentManager->frames[0].setEffects(&effects[0]);
+    contentManager->frames[1].setEffects(&effects[1]);
+    contentManager->frames[0].setupGui("Left");
+    contentManager->frames[1].setupGui("Right");
+    
+    for(int i = 0; i < 2; i++) {
+        //allocate drawing fbo
+        finalMix.allocate(VID_WIDTH, VID_HEIGHT);
+        motionWarp[i].allocate(VID_WIDTH, VID_HEIGHT);
+        mosaicDraw[i].allocate(VID_WIDTH, VID_HEIGHT);
+        
+        swapIn[i] = new ofFbo();
+        swapOut[i] = new ofFbo();
+        
+        swapIn[i]->allocate(VID_WIDTH, VID_HEIGHT);
+        swapOut[i]->allocate(VID_WIDTH, VID_HEIGHT);
     }
-    
-    for(int i=0; i<2; i++) {
-        players[i] = new ofxAVFVideoPlayer();
-        players[i]->setLoopState(OF_LOOP_NORMAL);
-        players[i]->setPixelFormat(OF_PIXELS_RGB);
-        players[i]->loadMovie(movies[i]);
-    }
-    
-    //allocate drawing fbo
-    initialDraw.allocate(VID_WIDTH, VID_HEIGHT);
-    motionWarp.allocate(VID_WIDTH, VID_HEIGHT);
-    shaderPass.allocate(VID_WIDTH, VID_HEIGHT);
-    mosaicDraw.allocate(VID_WIDTH, VID_HEIGHT);
-    
-    swapIn = new ofFbo();
-    swapOut = new ofFbo();
-    
-    swapIn->allocate(VID_WIDTH, VID_HEIGHT);
-    swapOut->allocate(VID_WIDTH, VID_HEIGHT);
+
     
     currImg.allocate(VID_WIDTH, VID_HEIGHT, OF_IMAGE_COLOR);
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    for(int i = 0; i < 2; i++) {
-        players[i]->update();
-        if(players[i]->isLoaded()) {
-            players[i]->setPaused(false);
-            players[i]->play();
-        }
-    }
+//    for(int i = 0; i < 2; i++) {
+//        players[i]->update();
+//    }
     
-    //if(animating) {
         for(int i=0; i < voronoiSeedLocs.size(); i++) {
-            voronoiSeedLocs[i] += voronoiSeedVels[i] * effects[1]->floatUniforms["seedVelsMultiplier"]->get();
+            voronoiSeedLocs[i] += voronoiSeedVels[i] * effects[0][0]->floatUniforms["seedVelsMultiplier"]->get();
             float projX = ofMap(voronoiSeedLocs[i].x, 0, VID_WIDTH, 1, VID_HEIGHT-1, true);
             float projY = ofMap(voronoiSeedLocs[i].y, 0, VID_WIDTH, 1, VID_WIDTH-1, true);
             
@@ -228,91 +211,131 @@ void ofApp::update(){
                 voronoiSeedLocs[i].y = (voronoiSeedLocs[i].y < 0) ? 0 : VID_HEIGHT;
             }
         }
-    //}
+    
+//    fft.setDampingParams(fftDamping.get(), fftAttraction.get());
+    vector<float> vals = fft.getDampedNormData();
+    for(int j = 0; j < 2; j++) {
+        for(int i = 0; i < effects[j].size(); i++) {
+            effects[j][i]->updateFromFFT(vals);
+            amplifier.updateFromFFT(vals);
+        }
+    }
 
-    amplifier.setStrength(strength);
-    amplifier.setLearningRate(learningRate);
     amplifier.setBlurAmount(0);
     amplifier.setWindowSize(8);
     
-    if(motionAmpOn) {
-        amplifier.update(mosaic->img);
-    }
+//    if(motionAmpOn) {
+//        amplifier.update(mosaic->img);
+//    }
+    
+    fft.update();
+    
+    contentManager->update();
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
     
-    initialDraw.begin();
+    contentManager->drawBuffers();
+    
+//    finalMix.readToPixels(currImg);
+//    currImg.update();
+//    
+//    mosaic->addImage(currImg);
+//
+    for(int i = 0; i < 2; i++) {
+        mosaicDraw[i].begin();
+        mosaic->draw(&contentManager->frames[i].buffer, 0, 0, VID_WIDTH, VID_HEIGHT);
+        mosaicDraw[i].end();
+        
+//        if(motionAmpOn) {
+//            //finalMix[i].readToPixels(currImg);
+//            currImg.update();
+//            motionWarp[i].begin();
+//            ofClear(0);
+//            ofSetupScreenOrtho(ofGetWidth(), ofGetHeight(), -100, +100);
+//            ofEnableDepthTest();
+//            amplifier.draw(currImg);
+//            ofDisableDepthTest();
+//            motionWarp[i].end();
+//        }
+        
+        swapIn[i]->begin();
+        ofClear(0);
+        //if(motionAmpOn) motionWarp[i].draw(0, 0, ofGetWidth() * VID_WIDTH / currImg.getWidth(), ofGetHeight() * VID_HEIGHT / currImg.getHeight());
+        mosaicDraw[i].draw(0, 0, VID_WIDTH, VID_HEIGHT);
+        swapIn[i]->end();
+        swapOut[i]->begin();
+        ofClear(0);
+        //if(motionAmpOn) motionWarp[i].draw(0, 0, ofGetWidth() * VID_WIDTH / currImg.getWidth(), ofGetHeight() * VID_HEIGHT / currImg.getHeight());
+        mosaicDraw[i].draw(0, 0, VID_WIDTH, VID_HEIGHT);
+        swapOut[i]->end();
+    }
+    contentManager->applyEffects(swapIn[0], swapOut[0], swapIn[1], swapOut[1]);
+
+//    finalMix.draw(0, 0, WIDTH, HEIGHT);
+//    mosaicDraw.draw(0, 0, WIDTH, HEIGHT);
+//    swapIn->draw(WIDTH/2 - swapIn->getWidth()/2, HEIGHT/2 - swapIn->getHeight()/2);
+//    swapIn->draw(WIDTH, 0, OUT_WIDTH, OUT_HEIGHT);
+    
+    finalMix.begin();
     fade.begin();
-    fade.setUniformTexture("texOut", players[0]->getTextureReference(), 1);
-    fade.setUniformTexture("texIn", players[1]->getTextureReference(), 2);
+    fade.setUniformTexture("texOut", swapOut[0]->getTextureReference(), 1);
+    fade.setUniformTexture("texIn", swapOut[1]->getTextureReference(), 2);
     fade.setUniform1f("fadeAmnt", fadeAmnt);
     currImg.draw(0, 0, VID_WIDTH, VID_HEIGHT);
     fade.end();
-    initialDraw.end();
+    finalMix.end();
     
-    initialDraw.readToPixels(currImg);
-    currImg.update();
+    //swapIn[0]->draw(WIDTH/2 - swapIn[0]->getWidth()/2, HEIGHT/2 - swapIn[0]->getHeight()/2);
     
-    mosaic->addImage(currImg);
-    
-    mosaicDraw.begin();
-    mosaic->draw(0, 0, VID_WIDTH, VID_HEIGHT);
-    mosaicDraw.end();
-    
-    if(motionAmpOn) {
-        motionWarp.begin();
-        ofClear(0);
-        ofSetupScreenOrtho(ofGetWidth(), ofGetHeight(), -100, +100);
-        ofEnableDepthTest();
-        amplifier.draw(mosaic->img);
-        ofDisableDepthTest();
-        motionWarp.end();
-    }
-    
-    swapIn->begin();
-    ofClear(0);
-    if(motionAmpOn) motionWarp.draw(0, 0, ofGetWidth() * VID_WIDTH / currImg.getWidth(), ofGetHeight() * VID_HEIGHT / currImg.getHeight());
-    else mosaicDraw.draw(0, 0, VID_WIDTH, VID_HEIGHT);
-    swapIn->end();
+    swapOut[0]->draw(0, HEIGHT/2, VID_WIDTH/3, VID_HEIGHT/3);
+    ofDrawBitmapString("LEFT", 0 + VID_WIDTH/8, HEIGHT/2 - 10);
+    swapOut[1]->draw(WIDTH - VID_WIDTH/3, HEIGHT/2, VID_WIDTH/3, VID_HEIGHT/3);
+    ofDrawBitmapString("RIGHT", WIDTH - VID_WIDTH/4 + VID_WIDTH/8, HEIGHT/2 - 10);
+    finalMix.draw(WIDTH/2 - VID_WIDTH/6, HEIGHT/2, OUT_WIDTH/3, OUT_HEIGHT/3);
+    ofDrawBitmapString("OUTPUT", WIDTH/2, HEIGHT/2 - 10);
 
-    for(int i = 0; i < activeEffects.size(); i++) {
-        if(activeEffects[i]->get()) {
-            effects[i]->apply(swapIn, swapOut);
-            swapFbos();
-        }
+
+    //swapIn[1]->draw(WIDTH/2 + VID_WIDTH/4, HEIGHT/2 + VID_HEIGHT/8, VID_WIDTH/4, VID_HEIGHT/4);
+
+    finalMix.draw(WIDTH, 0, OUT_WIDTH, OUT_HEIGHT);
+    //swapIn[0]->draw(WIDTH/2 - swapIn[0]->getWidth()/2, HEIGHT/2 - swapIn[0]->getHeight()/2);
+
+    
+    for(int j = 0; j < 2; j++) {
+        //mosaic->gui.setPosition(10, 10+ gui.getHeight());
+        mosaic->drawGui();
     }
-    initialDraw.draw(0, 0, WIDTH, HEIGHT);
-    mosaicDraw.draw(0, 0, WIDTH, HEIGHT);
-    swapIn->draw(0, 0, WIDTH, HEIGHT);
     
     gui.draw();
-    int x = gui.getWidth() + 20;
-    for(int i = 0; i < activeEffects.size(); i++) {
-        if(activeEffects[i]->get()) {
-            effects[i]->setGuiPosition(x, 10);
-            effects[i]->drawGui();
-            x += effects[i]->getGuiWidth() + 10;
-        }
+    for(int i = 0; i < 2; i++) {
+        presets[i].draw();
     }
-    mosaic->gui.setPosition(10, 10+ gui.getHeight());
-    mosaic->drawGui();
     
-    ttfSmall.drawString(ofToString(ofGetFrameRate()), ofGetWidth() - 100, ofGetHeight() - 20);
+    contentManager->drawGuis(10, 10, ofGetScreenWidth()/2+10, 10);
+
+    for(int i = 0; i < 2; i++) {
+        int fftWidth = WIDTH/2;
+        int fftHeight = 100;
+        fft.draw(i * fftWidth, HEIGHT - fftHeight, fftWidth, fftHeight, &effects[i]);
+    }
+    
+    ofDrawBitmapStringHighlight(ofToString(ofGetFrameRate()), WIDTH - 100, HEIGHT - 20);
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-    players[currentPlayer]->stop();
-    players[currentPlayer]->close();
-    players[currentPlayer]->loadMovie("movies/Xballs2.mov");
+    ofShowCursor();
+//    players[currentPlayer]->stop();
+//    players[currentPlayer]->close();
+//    players[currentPlayer]->loadMovie("movies/Xballs2.mov");
 }
 
 //--------------------------------------------------------------
-void ofApp::swapFbos() {
+void ofApp::swapFbos(int i) {
     ofFbo* temp;
-    temp = swapIn;
-    swapIn = swapOut;
-    swapOut = temp;
+    temp = swapIn[i];
+    swapIn[i] = swapOut[i];
+    swapOut[i] = temp;
 }

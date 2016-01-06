@@ -11,6 +11,7 @@
 #include "ofMain.h"
 #include "ofxGui.h"
 #include "CircularTexture.h"
+#include "MotionAmplifier.h"
 
 class Effect {
     
@@ -21,12 +22,13 @@ class Effect {
     ofTexture* vectorField;
     string uniformCircularTexName;
     CircularTexture* uniformCircularTex;
+    MotionAmplifier* motionAmp;
     string uniformVectorArrayName;
     float* uniformVectorArray;
     int uniformVectorArraySize;
-    bool uniformImageSet, uniformCircularTexSet, uniformVectorArraySet;
-    ofxPanel gui;
+    bool uniformImageSet, uniformCircularTexSet, uniformVectorArraySet, motionAmpLoaded;
     ofParameterGroup uniformsGroup;
+    int numFFTChannels;
     
 public:
     Effect();
@@ -42,13 +44,18 @@ public:
     map<string, ofParameter<float>* > floatUniforms;
     map<string, ofParameter<bool>* > fftConnected;
     map<string, ofParameter<int>* > fftChannels;
+    ofxPanel gui;
+    
+    void updateFromFFT(vector<float> fft);
+    
+    void setMotionAmp(MotionAmplifier* amp);
     void setUniformFlowField(ofTexture* texture);
     void setUniformImage(string name, ofImage* img);
     void setUniformCircularTex(string name, CircularTexture* tex);
     void loadSettings();
     void setGuiPosition(int x, int y);
     float getGuiWidth();
-    void setupGui(string name);
+    void setupGui(string name, int numFFTChannels);
     bool loadShader(string ShaderPath);
     void addUniformFloat(string name, string parameterName, float initialValue, float minValue, float maxValue);
     void addUniformBool(string name, string parameterName, bool initialValue);

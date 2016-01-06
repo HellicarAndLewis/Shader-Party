@@ -1,0 +1,31 @@
+<Scane_Lines>
+	<Amount>0.985</Amount>
+	<N_Intensity>0.99</N_Intensity>
+	<S_Intensity>1</S_Intensity>
+	<S_Count>629.5</S_Count>
+<Scane_Lines/>
+	<fftConnected>0</fftConnected>
+	<Channel>0</Channel>
+<Amount_connected>0</Amount_connected>
+	<Amount_channel>0</Amount_channel>
+	<N_Intensity_connected>0</N_Intensity_connected>
+	<N_Intensity_channel>0</N_Intensity_channel>
+	<S_Intensity_connected>0</S_Intensity_connected>
+	<S_Intensity_channel>0</S_Intensity_channel>
+	<S_Count_connected>0</S_Count_connected>
+	<S_Count_channel>0</S_Count_channel>
+<Scan_Lines>
+		<Amount>0.5</Amount>
+		<Amount_connected>0</Amount_connected>
+		<Amount_channel>0</Amount_channel>
+		<N_Intensity>1</N_Intensity>
+		<N_Intensity_connected>0</N_Intensity_connected>
+		<N_Intensity_channel>0</N_Intensity_channel>
+		<S_Intensity>1</S_Intensity>
+		<S_Intensity_connected>0</S_Intensity_connected>
+		<S_Intensity_channel>0</S_Intensity_channel>
+		<S_Count>500</S_Count>
+		<S_Count_connected>0</S_Count_connected>
+		<S_Count_channel>0</S_Count_channel>
+	</Scan_Lines>
+</Scane_Lines>

@@ -24,7 +24,8 @@ public:
     ofxSlitScan slitScan;
     
     videoTiler(int width, int height, int depth);
-    void draw(int x, int y, int fullWidth, int fullHeight);
+    void drawWithTimeOffset(int x, int y, int fullWidth, int fullHeight);
+    void draw(ofFbo* fbo, int x, int y, int fullWidth, int fullHeight);
     void drawGui();
     void onSizeChange();
     void addImage(ofBaseHasPixels& image);

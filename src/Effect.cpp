@@ -12,6 +12,8 @@ Effect::Effect() {
     uniformImageSet = false;
     uniformCircularTexSet = false;
     uniformVectorArraySet = false;
+    motionAmpLoaded = false;
+    numFFTChannels = 0;
 }
 
 void Effect::setUniformImage(string name, ofImage *img) {
@@ -26,6 +28,11 @@ void Effect::setUniformCircularTex(string name, CircularTexture* tex) {
     uniformCircularTexSet = true;
 }
 
+void Effect::setMotionAmp(MotionAmplifier* amp) {
+    motionAmp = amp;
+    motionAmpLoaded = true;
+}
+
 void Effect::setUniformFlowField(ofTexture* texture) {
     vectorField = texture;
 }
@@ -35,8 +42,9 @@ void Effect::setGuiPosition(int x, int y) {
     gui.setPosition(x, y);
 }
 
-void Effect::setupGui(string name) {
+void Effect::setupGui(string name,int numChannels) {
     gui.setup(name, "settings/" + name + ".xml");
+    numFFTChannels = numChannels/2;
 }
 
 void Effect::loadSettings() {
@@ -51,9 +59,9 @@ void Effect::addUniformFloat(string name, string parameterName, float initialVal
     floatUniforms[name] = new ofParameter<float>();
     floatUniforms[name]->set(parameterName, initialValue, minValue, maxValue);
     fftConnected[name] = new ofParameter<bool>();
-    fftConnected[name]->set("fftConnected", false);
+    fftConnected[name]->set(parameterName + " connected", false);
     fftChannels[name] = new ofParameter<int>();
-    fftChannels[name]->set("Channel", 0, 0, 100);
+    fftChannels[name]->set(parameterName + " channel", 0, 0, numFFTChannels);
     gui.add(*floatUniforms[name]);
     gui.add(*fftConnected[name]);
     gui.add(*fftChannels[name]);
@@ -128,4 +136,18 @@ void Effect::apply(ofFbo* fboIn, ofFbo* fboOut) {
     fboIn->draw(0, 0);
     shader.end();
     fboOut->end();
+}
+
+void Effect::updateFromFFT(vector<float> fft) {
+    for(auto it = fftConnected.begin(); it != fftConnected.end(); it++) {
+        string paramName = it->first;
+        bool paramConnected = it->second->get();
+        if(paramConnected) {
+            float val = fft[fftChannels.find(paramName)->second->get()];
+            auto param = floatUniforms.find(paramName)->second;
+            val = ofMap(val, 0, 1, param->getMin(), param->getMax());
+            param->set(val);
+            //floatUniforms.find(paramName)->second->set(val);
+        }
+    }
 }

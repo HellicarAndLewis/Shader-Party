@@ -9,7 +9,8 @@ void main()
 {
     vec2 pos = gl_TexCoord[0].xy;
     
-    vec4 color = texture2DRect(diffuseTexture, pos) * (1-darkness);
+    vec4 color = texture2DRect(diffuseTexture, pos);
+    color.xyz *= (1-darkness);
 
     gl_FragColor = color;
 }

@@ -17,6 +17,11 @@
 		1AC274BC1C39BFDC00E19F19 /* ofxAVFVideoRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AC274BA1C39BFDC00E19F19 /* ofxAVFVideoRenderer.m */; };
 		1AC274C21C3AC7A600E19F19 /* videoTiler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AC274C01C3AC7A600E19F19 /* videoTiler.cpp */; };
 		1AC274C71C3ACE8A00E19F19 /* ofxSlitScan.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AC274C51C3ACE8A00E19F19 /* ofxSlitScan.cpp */; };
+		1AC2752B1C3B063B00E19F19 /* ofxFFTBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AC275221C3B063B00E19F19 /* ofxFFTBase.cpp */; };
+		1AC2752C1C3B063B00E19F19 /* ofxFFTFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AC275241C3B063B00E19F19 /* ofxFFTFile.cpp */; };
+		1AC2752D1C3B063B00E19F19 /* ofxFFTLive.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AC275261C3B063B00E19F19 /* ofxFFTLive.cpp */; };
+		1AC2752E1C3B063B00E19F19 /* fft.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AC275291C3B063B00E19F19 /* fft.cpp */; };
+		1AC275421C3C5AE100E19F19 /* ContentManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AC275401C3C5AE100E19F19 /* ContentManager.cpp */; };
 		1ADE77D61C21E898001036F4 /* ETF.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1ADE77B91C21E898001036F4 /* ETF.cpp */; };
 		1ADE77D71C21E898001036F4 /* fdog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1ADE77BA1C21E898001036F4 /* fdog.cpp */; };
 		1ADE77D81C21E898001036F4 /* Calibration.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1ADE77CA1C21E898001036F4 /* Calibration.cpp */; };
@@ -124,6 +129,17 @@
 		1AC274C11C3AC7A600E19F19 /* videoTiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = videoTiler.h; sourceTree = "<group>"; };
 		1AC274C51C3ACE8A00E19F19 /* ofxSlitScan.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxSlitScan.cpp; sourceTree = "<group>"; };
 		1AC274C61C3ACE8A00E19F19 /* ofxSlitScan.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxSlitScan.h; sourceTree = "<group>"; };
+		1AC275221C3B063B00E19F19 /* ofxFFTBase.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxFFTBase.cpp; sourceTree = "<group>"; };
+		1AC275231C3B063B00E19F19 /* ofxFFTBase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxFFTBase.h; sourceTree = "<group>"; };
+		1AC275241C3B063B00E19F19 /* ofxFFTFile.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxFFTFile.cpp; sourceTree = "<group>"; };
+		1AC275251C3B063B00E19F19 /* ofxFFTFile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxFFTFile.h; sourceTree = "<group>"; };
+		1AC275261C3B063B00E19F19 /* ofxFFTLive.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxFFTLive.cpp; sourceTree = "<group>"; };
+		1AC275271C3B063B00E19F19 /* ofxFFTLive.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxFFTLive.h; sourceTree = "<group>"; };
+		1AC275291C3B063B00E19F19 /* fft.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = fft.cpp; sourceTree = "<group>"; };
+		1AC2752A1C3B063B00E19F19 /* fft.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fft.h; sourceTree = "<group>"; };
+		1AC275361C3BF5DA00E19F19 /* ofxIntegrator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxIntegrator.h; sourceTree = "<group>"; };
+		1AC275401C3C5AE100E19F19 /* ContentManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ContentManager.cpp; sourceTree = "<group>"; };
+		1AC275411C3C5AE100E19F19 /* ContentManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContentManager.h; sourceTree = "<group>"; };
 		1ADE77AE1C21E898001036F4 /* ofxCv.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxCv.h; sourceTree = "<group>"; };
 		1ADE77B01C21E898001036F4 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		1ADE77B41C21E898001036F4 /* ETF.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETF.h; sourceTree = "<group>"; };
@@ -399,6 +415,56 @@
 			);
 			name = src;
 			path = ../../../addons/ofxSlitScan/src;
+			sourceTree = "<group>";
+		};
+		1AC275201C3B063B00E19F19 /* ofxFFT */ = {
+			isa = PBXGroup;
+			children = (
+				1AC275211C3B063B00E19F19 /* src */,
+				1AC275281C3B063B00E19F19 /* libs */,
+			);
+			name = ofxFFT;
+			sourceTree = "<group>";
+		};
+		1AC275211C3B063B00E19F19 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				1AC275221C3B063B00E19F19 /* ofxFFTBase.cpp */,
+				1AC275231C3B063B00E19F19 /* ofxFFTBase.h */,
+				1AC275241C3B063B00E19F19 /* ofxFFTFile.cpp */,
+				1AC275251C3B063B00E19F19 /* ofxFFTFile.h */,
+				1AC275261C3B063B00E19F19 /* ofxFFTLive.cpp */,
+				1AC275271C3B063B00E19F19 /* ofxFFTLive.h */,
+			);
+			name = src;
+			path = ../../../addons/ofxFFT/src;
+			sourceTree = "<group>";
+		};
+		1AC275281C3B063B00E19F19 /* libs */ = {
+			isa = PBXGroup;
+			children = (
+				1AC275291C3B063B00E19F19 /* fft.cpp */,
+				1AC2752A1C3B063B00E19F19 /* fft.h */,
+			);
+			name = libs;
+			path = ../../../addons/ofxFFT/libs;
+			sourceTree = "<group>";
+		};
+		1AC275341C3BF5DA00E19F19 /* ofxIntegrator */ = {
+			isa = PBXGroup;
+			children = (
+				1AC275351C3BF5DA00E19F19 /* src */,
+			);
+			name = ofxIntegrator;
+			sourceTree = "<group>";
+		};
+		1AC275351C3BF5DA00E19F19 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				1AC275361C3BF5DA00E19F19 /* ofxIntegrator.h */,
+			);
+			name = src;
+			path = ../../../addons/ofxIntegrator/src;
 			sourceTree = "<group>";
 		};
 		1ADE77AC1C21E898001036F4 /* ofxCv */ = {
@@ -713,6 +779,8 @@
 				1ADE77AC1C21E898001036F4 /* ofxCv */,
 				1AC274B51C39BFDC00E19F19 /* ofxAVFVideoPlayer */,
 				1AC274C31C3ACE8A00E19F19 /* ofxSlitScan */,
+				1AC275201C3B063B00E19F19 /* ofxFFT */,
+				1AC275341C3BF5DA00E19F19 /* ofxIntegrator */,
 			);
 			name = addons;
 			sourceTree = "<group>";
@@ -842,6 +910,8 @@
 				1A91BBAB1C22F7420056C790 /* CircularTexture.h */,
 				1AC274C01C3AC7A600E19F19 /* videoTiler.cpp */,
 				1AC274C11C3AC7A600E19F19 /* videoTiler.h */,
+				1AC275401C3C5AE100E19F19 /* ContentManager.cpp */,
+				1AC275411C3C5AE100E19F19 /* ContentManager.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -959,6 +1029,7 @@
 				1A91BBA81C22C3F80056C790 /* Effect.cpp in Sources */,
 				1ADE77D81C21E898001036F4 /* Calibration.cpp in Sources */,
 				483908258D00B98B4BE69F07 /* ofxLabel.cpp in Sources */,
+				1AC2752C1C3B063B00E19F19 /* ofxFFTFile.cpp in Sources */,
 				1ADE77D61C21E898001036F4 /* ETF.cpp in Sources */,
 				F285EB3169F1566CA3D93C20 /* ofxPanel.cpp in Sources */,
 				1A91BBAC1C22F7420056C790 /* CircularTexture.cpp in Sources */,
@@ -975,12 +1046,16 @@
 				63020F16C7E8DED980111241 /* ofxCvImage.cpp in Sources */,
 				D3301F6A0B43BB293ED97C1D /* ofxCvShortImage.cpp in Sources */,
 				1ADE77E01C21E898001036F4 /* Tracker.cpp in Sources */,
+				1AC2752B1C3B063B00E19F19 /* ofxFFTBase.cpp in Sources */,
 				1ADE77D91C21E898001036F4 /* ContourFinder.cpp in Sources */,
 				1ADE77E11C21E898001036F4 /* Utilities.cpp in Sources */,
 				1ADE77DA1C21E898001036F4 /* Distance.cpp in Sources */,
 				1ADE77DE1C21E898001036F4 /* ObjectFinder.cpp in Sources */,
 				1ADE77DF1C21E898001036F4 /* RunningBackground.cpp in Sources */,
+				1AC275421C3C5AE100E19F19 /* ContentManager.cpp in Sources */,
 				1ADE77DD1C21E898001036F4 /* Kalman.cpp in Sources */,
+				1AC2752E1C3B063B00E19F19 /* fft.cpp in Sources */,
+				1AC2752D1C3B063B00E19F19 /* ofxFFTLive.cpp in Sources */,
 				1AC274C71C3ACE8A00E19F19 /* ofxSlitScan.cpp in Sources */,
 				1ADE77DC1C21E898001036F4 /* Helpers.cpp in Sources */,
 				1ADE77D71C21E898001036F4 /* fdog.cpp in Sources */,

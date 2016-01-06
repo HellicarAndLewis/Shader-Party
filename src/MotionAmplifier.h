@@ -12,11 +12,21 @@ private:
     ofVboMesh mesh;
     float rescale;
     
+    ofxPanel gui;
+    ofParameter<float> strength;
+    ofParameter<float> learningRate;
+    ofParameter<bool> strengthConnected;
+    ofParameter<bool> learnRateConnected;
+    ofParameter<int> strengthChannel;
+    ofParameter<int> learnRateChannel;
+    
     int stepSize, xSteps, ySteps;
     cv::Mat accumulator;
     bool needToReset;
     
-    float strength, learningRate;
+    //float strength, learningRate;
+    //bool strengthConnected, learningRateConnected;
+    //int strengthChannel, learningRateChannel;
     int blurAmount, windowSize;
     
     void duplicateFirstChannel(cv::Mat& twoChannel, cv::Mat& threeChannel) {
@@ -29,7 +39,7 @@ private:
 public:
     ofTexture flowTexture;
 
-    void setup(int w, int h, int stepSize, float rescale = 1) {
+    void setup(int w, int h, int stepSize, int numChannels, float rescale = 1) {
         this->rescale = rescale;
         shader.load("shaders/MotionAmplifier");
         scaleFactor = 1. / 10; // could dynamically calculate this from flow3
@@ -58,6 +68,14 @@ public:
                 mesh.addIndex(sw);
             }
         }
+        
+        gui.setup("Motion Amplifier");
+        gui.add(strength.set("Motion Amplification", 0, -30, 30));
+        gui.add(strengthConnected.set("fftConnected", false));
+        gui.add(strengthChannel.set("Channel", 0, 0, numChannels));
+        gui.add(learningRate.set("Motion Learn Rate", 0, -0.2, 1.0));
+        gui.add(learnRateConnected.set("fftConnected", false));
+        gui.add(learnRateChannel.set("Channel", 0, 0, numChannels));
     }
     
     template <class T>
@@ -82,13 +100,13 @@ public:
     void draw(ofBaseHasTexture& tex) {
         if(flowTexture.isAllocated()) {
             shader.begin();
-            shader.setUniformTexture("source", tex, 1);
-            shader.setUniformTexture("flow", flowTexture, 2);
-            shader.setUniform1f("strength", strength);
-            shader.setUniform1f("scaleFactor", scaleFactor);
-            shader.setUniform1f("flowRescale", rescale);
-            shader.setUniform1f("sourceRescale", 1);
-            mesh.drawFaces();
+                shader.setUniformTexture("source", tex, 1);
+                shader.setUniformTexture("flow", flowTexture, 2);
+                shader.setUniform1f("strength", strength);
+                shader.setUniform1f("scaleFactor", scaleFactor);
+                shader.setUniform1f("flowRescale", rescale);
+                shader.setUniform1f("sourceRescale", 1);
+                mesh.drawFaces();
             shader.end();
         }
     }
@@ -96,13 +114,13 @@ public:
     void drawMesh() {
         if(flowTexture.isAllocated()) {
             shader.begin();
-            shader.setUniformTexture("source", flowTexture, 1);
-            shader.setUniformTexture("flow", flowTexture, 2);
-            shader.setUniform1f("strength", strength);
-            shader.setUniform1f("scaleFactor", scaleFactor);
-            shader.setUniform1f("flowRescale", rescale);
-            shader.setUniform1f("sourceRescale", rescale);
-            mesh.drawWireframe();
+                shader.setUniformTexture("source", flowTexture, 1);
+                shader.setUniformTexture("flow", flowTexture, 2);
+                shader.setUniform1f("strength", strength);
+                shader.setUniform1f("scaleFactor", scaleFactor);
+                shader.setUniform1f("flowRescale", rescale);
+                shader.setUniform1f("sourceRescale", rescale);
+                mesh.drawWireframe();
             shader.end();
         }
     }
@@ -121,6 +139,31 @@ public:
     
     void setBlurAmount(int blurAmount) {
         this->blurAmount = blurAmount;
+    }
+    
+    void updateFromFFT(vector<float> fft) {
+        if(strengthConnected) {
+            float val = fft[strengthChannel];
+            val = ofMap(val, 0, 1, strength.getMin(), strength.getMax());
+            strength.set(val);
+        }
+        if(learnRateConnected) {
+            float val = fft[learnRateChannel];
+            val = ofMap(val, 0, 1, learningRate.getMin(), learningRate.getMax());
+            learningRate.set(val);
+        }
+    }
+    
+    void drawGui() {
+        gui.draw();
+    }
+    
+    float getGuiWidth() {
+        return gui.getWidth();
+    }
+    
+    void setGuiPosition(int x, int y) {
+        gui.setPosition(x, y);
     }
     
     void setWindowSize(int windowSize) {

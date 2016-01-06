@@ -1,0 +1,13 @@
+<Left>
+	<Active_Effects>
+		<Voronoi>0</Voronoi>
+		<Motion_Amp>0</Motion_Amp>
+		<Bad_TV>1</Bad_TV>
+		<Color_Map>1</Color_Map>
+		<Emboss>1</Emboss>
+		<RGB_Shift>0</RGB_Shift>
+		<Scan_Lines>1</Scan_Lines>
+		<Sharpen>1</Sharpen>
+		<Endarken>0</Endarken>
+	</Active_Effects>
+</Left>

@@ -1,0 +1,11 @@
+<Voronoi>
+	<Active_Seeds>200</Active_Seeds>
+	<Speed_Factor>5.1</Speed_Factor>
+<Voronoi/>
+	<fftConnected>0</fftConnected>
+	<Channel>0</Channel>
+<Active_Seeds_connected>0</Active_Seeds_connected>
+	<Active_Seeds_channel>0</Active_Seeds_channel>
+	<Speed_Factor_connected>0</Speed_Factor_connected>
+	<Speed_Factor_channel>0</Speed_Factor_channel>
+</Voronoi>
