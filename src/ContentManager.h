@@ -96,12 +96,16 @@ public:
             //        }
             for(int i = 0; i < activeEffects.size(); i++) {
                 if(activeEffects[i]->get()) {
-                    (*effects)[i]->setGuiPosition(x, 10);
+                    (*effects)[i]->setGuiPosition(x, y);
                     (*effects)[i]->drawGui();
                     x += (*effects)[i]->getGuiWidth() + 10;
+                    if(x - guiX > ofGetScreenWidth()/2 - gui.getWidth()) {
+                        x = guiX + gui.getWidth() + 20;
+                        y += gui.getHeight() + 10;
+                    }
                 }
             }
-            Presets.setPosition(guiX, gui.getHeight());
+            Presets.setPosition(guiX, gui.getHeight() + 20);
             Presets.draw();
         }
         void setEffects(vector<Effect*>* newEffects) {

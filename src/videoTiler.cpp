@@ -16,6 +16,7 @@ videoTiler::videoTiler(int width, int height, int depth) {
     gui.add(numRows.set("numRows", 1, 1, 6));
     gui.add(numCols.set("numCols", 1, 1, 6));
     gui.add(size.set("size", 1, 1, 10));
+    gui.setPosition(ofGetScreenWidth()/2, ofGetScreenHeight()/2);
 }
 
 void videoTiler::addImage(ofBaseHasPixels& image) {
