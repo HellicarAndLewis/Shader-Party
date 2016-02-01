@@ -5,6 +5,8 @@ uniform float angle;
 uniform vec2 size;
 uniform float time;
 
+varying vec2 texCoord;
+
 #define M_PI 3.1415926535897932384626433832795
 
 void main() {
@@ -12,9 +14,9 @@ void main() {
 //    vec2 offset = 100.0 * vec2( .25, .25 );
 //    offset *= size;
     
-    vec4 cr = texture2DRect(diffuseTexture, gl_TexCoord[0].xy + offset );
-    vec4 cga = texture2DRect(diffuseTexture, gl_TexCoord[0].xy);
-    vec4 cb = texture2DRect(diffuseTexture, gl_TexCoord[0].xy - offset);
+    vec4 cr = texture2DRect(diffuseTexture, texCoord + offset );
+    vec4 cga = texture2DRect(diffuseTexture, texCoord);
+    vec4 cb = texture2DRect(diffuseTexture, texCoord - offset);
     gl_FragColor = vec4(cr.r, cga.g, cb.b, cga.a);
 //    gl_FragColor = vec4( size.x, size.y, 0.0, 1.0 );
 }

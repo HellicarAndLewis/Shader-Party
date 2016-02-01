@@ -8,6 +8,8 @@ uniform float intensity;
 uniform float colorization;
 uniform float amount;
 
+varying vec2 texCoord;
+
 uniform sampler2DRect vectorField;
 uniform vec2 vectorFieldSize;
 uniform float flowEffect;
@@ -27,7 +29,7 @@ void main(void)
     
     
 	vec2 uv = gl_FragCoord.xy / resolution.xy;
-	vec3 col = texture2DRect( diffuseTexture, gl_TexCoord[0].xy ).xyz;
+	vec3 col = texture2DRect( diffuseTexture, texCoord ).xyz;
     vec3 actualCol = col;
 	float lum = dot(col,vec3(0.333));
 	vec3 ocol = col;

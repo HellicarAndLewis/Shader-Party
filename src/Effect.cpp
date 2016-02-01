@@ -10,7 +10,7 @@
 
 Effect::Effect() {
     uniformImageSet = false;
-    uniformCircularTexSet = false;
+//    uniformCircularTexSet = false;
     uniformVectorArraySet = false;
     motionAmpLoaded = false;
     numFFTChannels = 0;
@@ -22,11 +22,11 @@ void Effect::setUniformImage(string name, ofImage *img) {
     uniformImageSet = true;
 }
 
-void Effect::setUniformCircularTex(string name, CircularTexture* tex) {
-    uniformCircularTexName = name;
-    uniformCircularTex = tex;
-    uniformCircularTexSet = true;
-}
+//void Effect::setUniformCircularTex(string name, CircularTexture* tex) {
+//    uniformCircularTexName = name;
+//    uniformCircularTex = tex;
+//    uniformCircularTexSet = true;
+//}
 
 void Effect::setMotionAmp(MotionAmplifier* amp) {
     motionAmp = amp;
@@ -52,7 +52,11 @@ void Effect::loadSettings() {
 }
 
 bool Effect::loadShader(string ShaderPath) {
-    return shader.load("shaders/DummyVert.glsl", ShaderPath);
+    if(!shader.load(ShaderPath)) {
+        return shader.load("shaders/DummyVert.glsl", ShaderPath);
+    } else {
+        return true;
+    }
 }
 
 void Effect::addUniformFloat(string name, string parameterName, float initialValue, float minValue, float maxValue){
@@ -94,13 +98,13 @@ void Effect::setUniqueUniforms() {
 //    }
     if(uniformImageSet) {
         shader.setUniformTexture(uniformImageName, *uniformImage, 1);
-        shader.setUniform2f(uniformImageName + "Size", uniformImage->width, uniformImage->height);
+        shader.setUniform2f(uniformImageName + "Size", uniformImage->getWidth(), uniformImage->getHeight());
     }
-    if(uniformCircularTexSet) {
-        shader.setUniformTexture(uniformCircularTexName, uniformCircularTex->texData.textureTarget,uniformCircularTex->texData.textureID,  1);
-        shader.setUniform2f(uniformCircularTexName + "Size", uniformCircularTex->width, uniformCircularTex->height);
-        shader.setUniform1f("depthOffset", uniformCircularTex->depth);
-    }
+//    if(uniformCircularTexSet) {
+//        shader.setUniformTexture(uniformCircularTexName, uniformCircularTex->texData.textureTarget,uniformCircularTex->texData.textureID,  1);
+//        shader.setUniform2f(uniformCircularTexName + "Size", uniformCircularTex->width, uniformCircularTex->height);
+//        shader.setUniform1f("depthOffset", uniformCircularTex->depth);
+//    }
     if(uniformVectorArraySet) {
         shader.setUniform2fv(uniformVectorArrayName, uniformVectorArray, uniformVectorArraySize);
     }
@@ -127,11 +131,23 @@ ofParameterGroup* Effect::getParametersRef() {
     return &uniformsGroup;
 }
 
+void Effect::apply(ofFbo* fboIn, ofFbo* fboOut, ofMesh* mesh) {
+    fboOut->begin();
+    ofClear(0);
+    shader.begin();
+    setSharedUniforms(fboIn->getTexture(), *vectorField, ofGetWidth(), ofGetHeight());
+    setUniqueUniforms();
+//    fboIn->draw(0, 0);
+    mesh->draw();
+    shader.end();
+    fboOut->end();
+}
+
 void Effect::apply(ofFbo* fboIn, ofFbo* fboOut) {
     fboOut->begin();
     ofClear(0);
     shader.begin();
-    setSharedUniforms(fboIn->getTextureReference(), *vectorField, ofGetWidth(), ofGetHeight());
+    setSharedUniforms(fboIn->getTexture(), *vectorField, ofGetWidth(), ofGetHeight());
     setUniqueUniforms();
     fboIn->draw(0, 0);
     shader.end();

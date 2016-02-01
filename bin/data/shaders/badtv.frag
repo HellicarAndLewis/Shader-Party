@@ -8,8 +8,11 @@ uniform float speed;
 uniform float rollSpeed;
 uniform float amount;
 
+varying vec2 texCoord;
+
 uniform vec2 size;
 uniform vec2 resolution;
+
 //varying vec2 vUv;
 
 vec3 mod289(vec3 x) {
@@ -53,9 +56,10 @@ float snoise(vec2 v) {
 }
 
 void main() {
-    vec4 passThruColor = texture2DRect( diffuseTexture, gl_TexCoord[0].xy );
+    vec2 pos = texCoord;
+    vec4 passThruColor = texture2DRect( diffuseTexture, pos );
     
-    vec2 p = gl_TexCoord[0].xy / size;
+    vec2 p = pos / size;
     float ty = time*speed;
     float yt = p.y - ty;
     float offset = snoise(vec2(yt*3.0,0.0))*0.2;
@@ -63,7 +67,7 @@ void main() {
     offset += snoise(vec2(yt*50.0,0.0))*distortion2*0.001;
     vec2 normalizedCoords = vec2(fract(p.x + offset),fract(p.y-time*rollSpeed));
     // crossfade between normal tex coords and bad tv tex coords
-    vec2 finalCoords = mix(gl_TexCoord[0].xy, normalizedCoords * size, amount );
+    vec2 finalCoords = mix(pos, normalizedCoords * size, amount );
     gl_FragColor = texture2DRect( diffuseTexture, finalCoords );
 }
 

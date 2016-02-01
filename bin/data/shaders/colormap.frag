@@ -8,6 +8,8 @@ uniform vec2 colorMapSize;
 uniform float amount;
 uniform float timeRate;
 
+varying vec2 texCoord;
+
 // vector field encoded into floating point texture
 uniform sampler2DRect vectorField;
 uniform vec2 vectorFieldSize;
@@ -66,7 +68,7 @@ void main(void) {
     
     
     // Sample the input pixel
-    vec4    color   = texture2DRect(diffuseTexture, gl_TexCoord [ 0 ].xy);
+    vec4    color   = texture2DRect(diffuseTexture, texCoord);
     float   luma    = dot( vec3(0.2126, 0.7152, 0.0722), color.rgb );
     
     vec3 rampColor = texture2DRect( colorMap, vec2( mod(luma + time*timeRate, 1.0), 0.0 ) * colorMapSize ).xyz;

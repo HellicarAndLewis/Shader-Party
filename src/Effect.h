@@ -10,7 +10,7 @@
 
 #include "ofMain.h"
 #include "ofxGui.h"
-#include "CircularTexture.h"
+//#include "CircularTexture.h"
 #include "MotionAmplifier.h"
 
 class Effect {
@@ -20,13 +20,13 @@ class Effect {
     string uniformImageName;
     ofImage* uniformImage;
     ofTexture* vectorField;
-    string uniformCircularTexName;
-    CircularTexture* uniformCircularTex;
+//    string uniformCircularTexName;
+//    CircularTexture* uniformCircularTex;
     MotionAmplifier* motionAmp;
     string uniformVectorArrayName;
     float* uniformVectorArray;
     int uniformVectorArraySize;
-    bool uniformImageSet, uniformCircularTexSet, uniformVectorArraySet, motionAmpLoaded;
+    bool uniformImageSet, /*uniformCircularTexSet,*/ uniformVectorArraySet, motionAmpLoaded;
     ofParameterGroup uniformsGroup;
     int numFFTChannels;
     
@@ -51,7 +51,7 @@ public:
     void setMotionAmp(MotionAmplifier* amp);
     void setUniformFlowField(ofTexture* texture);
     void setUniformImage(string name, ofImage* img);
-    void setUniformCircularTex(string name, CircularTexture* tex);
+//    void setUniformCircularTex(string name, CircularTexture* tex);
     void loadSettings();
     void setGuiPosition(int x, int y);
     float getGuiWidth();
@@ -61,6 +61,7 @@ public:
     void addUniformBool(string name, string parameterName, bool initialValue);
     void addUniformVectorArray(string name, float* _vectorArray, int _size);
     void apply(ofFbo* fboIn, ofFbo* fboOut);
+    void apply(ofFbo* fboIn, ofFbo* fboOut, ofMesh* mesh);
     void beginShader();
     void setUniqueUniforms();
     void endShader();

@@ -11,6 +11,8 @@ uniform float theMix;
 uniform float weirdness;
 uniform float amount;
 
+varying vec2 texCoord;
+
 float strength = 9.0; //  effect strength
 
 vec4 sharp( sampler2DRect sampler, vec2 uv )
@@ -30,8 +32,8 @@ vec4 sharp( sampler2DRect sampler, vec2 uv )
 void main() {
     vec2 pos = gl_TexCoord[0].xy;
     
-    vec4 col0 = sharp(diffuseTexture, pos);
-    vec4 col1 = texture2DRect(diffuseTexture, gl_TexCoord[0].xy );
+    vec4 col0 = sharp(diffuseTexture, texCoord);
+    vec4 col1 = texture2DRect(diffuseTexture, texCoord );
     
     vec4 weird = abs( col0 - col1 ) * weirdness * 100.0;
     //weird = vec4(1.0) - weird;

@@ -8,11 +8,13 @@ uniform sampler2DRect diffuseTexture;
 uniform float numActiveSeeds;
 uniform vec2 locs[MAX_SEEDS];
 
+varying vec2 texCoord;
+
 float distance(vec2 loc1, vec2 loc2);
 
 void main() {
     //Getting coordinates of the current pixel in texture
-    vec2 pos = gl_TexCoord[0].xy;
+    vec2 pos = texCoord;
     float minDistance = distance(pos, locs[0]);
     int nearestSeed = 0;
     

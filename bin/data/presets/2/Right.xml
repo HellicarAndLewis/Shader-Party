@@ -8,6 +8,7 @@
 		<Scan_Lines>0</Scan_Lines>
 		<Sharpen>0</Sharpen>
 		<Endarken>0</Endarken>
+	<Explode>1</Explode>
 	</Active_Effects>
 <Right/>
 </Right>

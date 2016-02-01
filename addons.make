@@ -1,4 +1,7 @@
 ofxGui
 ofxOpenCv
-ofxAVFVideoPlayer
-ofxSmile
+ofxCv
+ofxFFT
+ofxIntegrator
+ofxNestedFileLoader
+ofxSlitScan

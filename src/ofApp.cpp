@@ -12,20 +12,20 @@
 void stopAndLoadNewVid(ofVideoPlayer* vidPlayer, string vidToLoad) {
     vidPlayer->stop();
     vidPlayer->close();
-    vidPlayer->loadMovie(vidToLoad);
+    vidPlayer->load(vidToLoad);
 }
 
 //--------------------------------------------------------------
 void ofApp::setup(){
     ofBackground(30, 30, 30);
     
-    ofSetLogLevel(OF_LOG_SILENT);
+    ofSetLogLevel(OF_LOG_VERBOSE);
     
     drawGui = true;
     
     //Load fonts
-    ttf.loadFont("Helvetica.ttf", 48);
-    ttfSmall.loadFont("Helvetica.ttf", 14);
+    ttf.load("Helvetica.ttf", 48);
+    ttfSmall.load("Helvetica.ttf", 14);
     
     //Setup the image tiler
     mosaic = new videoTiler(VID_WIDTH, VID_HEIGHT, 50);
@@ -34,6 +34,7 @@ void ofApp::setup(){
     fft.setMirrorData(false);
     fft.setup();
     fft.setBufferSize(NUM_CHANNELS);
+    fft.setConnectedParams(&connectedParams);
     int numChannels = fft.getFftRawData().size()-1;
     
     //setup each effect
@@ -45,7 +46,7 @@ void ofApp::setup(){
     
     amplifier.gui.setPosition(10, 500);
     
-    dieselHashtag.loadMovie("movies/hashtag.mov");
+    dieselHashtag.load("movies/hashtag.mov");
     dieselHashtag.setLoopState(OF_LOOP_NORMAL);
     dieselHashtag.setPaused(false);
     dieselHashtag.play();
@@ -91,7 +92,7 @@ void ofApp::setup(){
     //ColorMap
     Effect* colorMap = new Effect();
     ofImage* rampImg = new ofImage();
-    rampImg->loadImage("textures/ramp1.png");
+    rampImg->load("textures/ramp1.png");
     colorMap->setupGui("ColorMap", numChannels);
     colorMap->setUniformFlowField(&amplifier.flowTexture);
     colorMap->addUniformFloat("amount", "Amount", 0.5, 0.0, 1.0);
@@ -143,13 +144,25 @@ void ofApp::setup(){
     effects.push_back(sharpen);
     
     //enDarken
-    endarken = new Effect();
+    Effect* endarken = new Effect();
     endarken->setupGui("Endarken", numChannels);
     endarken->setUniformFlowField(&amplifier.flowTexture);
     endarken->addUniformFloat("darkness", "Darkness", 0.5, 0.5, 1.0);
     endarken->loadShader("shaders/endarkenFrag.glsl");
-    endarken->setGuiPosition(10, HEIGHT - 300);
-    //effects.push_back(endarken);
+//    endarken->setGuiPosition(10, HEIGHT - 300);
+    effects.push_back(endarken);
+    
+    //explode
+    Effect* explode = new Effect();
+    explode->setupGui("Explode", numChannels);
+    explode->setUniformFlowField(&amplifier.flowTexture);
+    explode->addUniformFloat("x_Strength", "X Strength", 0, 0, 400);
+    explode->addUniformFloat("y_Strength", "Y Strength", 0, 0, 400);
+    explode->addUniformFloat("z_Strength", "Z Strength", 0, 0, 400);
+    explode->addUniformFloat("speed", "Speed", 0.2, 0.0, 1.0);
+    explode->addUniformFloat("noiseScale", "Scale", 500, 1.0, 1000);
+    explode->loadShader("shaders/explode");
+    effects.push_back(explode);
 
     //setup main gui
     //main.setup();
@@ -242,6 +255,21 @@ void ofApp::update(){
     if(camInput) {
         dieselHashtag.update();
     }
+    
+    connectedParams.clear();
+    for(int i=0; i < effects.size(); i++) {
+        map<string, ofParameter<bool>*> paramsConnected = effects[i]->fftConnected;
+        map<string, ofParameter<int>*> connectedParamValues = effects[i]->fftChannels;
+        string effectName = effects[i]->gui.getName();
+        for(auto it = paramsConnected.begin(); it != paramsConnected.end(); it++) {
+            if(it->second->get()) {
+                string paramName = effectName + "\n" + it->first;
+                int channel = connectedParamValues.find(it->first)->second->get();
+                pair<int, string> channelAndName = make_pair(channel, paramName);
+                connectedParams.push_back(channelAndName);
+            }
+        }
+    }
 }
 
 //--------------------------------------------------------------
@@ -267,10 +295,9 @@ void ofApp::draw(){
         activeBuffer = swapIn;
     }
     
-    //finalMix.begin();
-    endarken->apply(activeBuffer, &finalMix);
-    //activeBuffer->draw(0, 0, VID_WIDTH, VID_HEIGHT);
-    //finalMix.end();
+    finalMix.begin();
+        activeBuffer->draw(0, 0, VID_WIDTH, VID_HEIGHT);
+    finalMix.end();
     
     finalMix.readToPixels(currImg);
     currImg.update();
@@ -282,7 +309,7 @@ void ofApp::draw(){
         dieselHashtag.draw(90, HEIGHT - dieselHashtag.getHeight() - 90, dieselHashtag.getWidth(), dieselHashtag.getHeight());
         ofPushStyle();
         ofSetColor(0);
-        ofRect(90 + dieselHashtag.getWidth() - 1, HEIGHT - dieselHashtag.getHeight() - 90, 2, dieselHashtag.getHeight());
+        ofDrawRectangle(90 + dieselHashtag.getWidth() - 1, HEIGHT - dieselHashtag.getHeight() - 90, 2, dieselHashtag.getHeight());
         ofPopStyle();
         if(drawGui){            
             mosaic->drawGui();
@@ -294,13 +321,13 @@ void ofApp::draw(){
             
             amplifier.drawGui();
             
-            endarken->drawGui();
+//            endarken->drawGui();
             
             fftCut.draw();
             
             int fftWidth = WIDTH/2;
             int fftHeight = 100;
-            fft.draw(WIDTH/2 - fftWidth/2, HEIGHT - fftHeight, fftWidth, fftHeight, &effects, upperCut, lowerCut);
+            fft.draw(WIDTH/2 - fftWidth/2, HEIGHT - fftHeight, fftWidth, fftHeight);
             
             ofDrawBitmapStringHighlight(ofToString(ofGetFrameRate()), WIDTH - 100, HEIGHT - 20);
         }
@@ -318,13 +345,13 @@ void ofApp::draw(){
         
         amplifier.drawGui();
         
-        endarken->drawGui();
+//        endarken->drawGui();
         
         fftCut.draw();
         
         int fftWidth = WIDTH/2;
         int fftHeight = 100;
-        fft.draw(WIDTH/2 - fftWidth/2, HEIGHT - fftHeight, fftWidth, fftHeight, &effects, upperCut, lowerCut);
+        fft.draw(WIDTH/2 - fftWidth/2, HEIGHT - fftHeight, fftWidth, fftHeight);
         
         ofDrawBitmapStringHighlight(ofToString(ofGetFrameRate()), WIDTH - 100, HEIGHT - 20);
         ofDrawBitmapString(ofGetTimestampString("Time: %H : %M"), WIDTH - 200, 20);

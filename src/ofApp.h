@@ -33,8 +33,9 @@ class ofApp : public ofBaseApp{
         ofShader fade;
     
         vector<Effect*> effects;
-        Effect* endarken;
-        
+    
+        vector< pair<int, string> > connectedParams;
+
         ofxPanel gui;
         ofParameterGroup main;
         ofParameter<int> activeEffect;

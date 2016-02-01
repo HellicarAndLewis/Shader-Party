@@ -5,10 +5,11 @@
 uniform sampler2DRect diffuseTexture;
 uniform vec2 diffuseTextureSize;
 uniform float darkness;
+varying vec2 texCoord;
 
 void main()
 {
-    vec2 pos = gl_TexCoord[0].xy;
+    vec2 pos = texCoord;
     vec2 diffuseTextureSize;
     float height = pos.y / 720;
     float invDarkness = 1 - darkness;
