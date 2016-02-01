@@ -14,4 +14,11 @@
 		<Preset>0</Preset>
 	</Presets>
 <Right/>
+<Motion_Amplifier>
+		<Enabled>0</Enabled>
+		<Motion_Amplification>30</Motion_Amplification>
+		<fftConnected>1</fftConnected>
+		<Channel>8</Channel>
+		<Motion_Learn_Rate>0.220816</Motion_Learn_Rate>
+	</Motion_Amplifier>
 </Right>

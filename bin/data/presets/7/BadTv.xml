@@ -1,8 +1,8 @@
 <BadTv>
-	<Speed>0.805</Speed>
-	<Roll_Speed>0.735</Roll_Speed>
-	<Distortion_1>2.35</Distortion_1>
-	<Distortion_2>0.645</Distortion_2>
+	<Speed>0.5</Speed>
+	<Roll_Speed>0.5</Roll_Speed>
+	<Distortion_1>5</Distortion_1>
+	<Distortion_2>0.5</Distortion_2>
 <BadTv/>
 	<Amount>0.5</Amount>
 	<fftConnected>0</fftConnected>

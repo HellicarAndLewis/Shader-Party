@@ -138,14 +138,14 @@ void Effect::apply(ofFbo* fboIn, ofFbo* fboOut) {
     fboOut->end();
 }
 
-void Effect::updateFromFFT(vector<float> fft) {
+void Effect::updateFromFFT(vector<float> fft, float upperCut, float lowerCut) {
     for(auto it = fftConnected.begin(); it != fftConnected.end(); it++) {
         string paramName = it->first;
         bool paramConnected = it->second->get();
         if(paramConnected) {
             float val = fft[fftChannels.find(paramName)->second->get()];
             auto param = floatUniforms.find(paramName)->second;
-            val = ofMap(val, 0, 1, param->getMin(), param->getMax());
+            val = ofMap(val, lowerCut, upperCut, param->getMin(), param->getMax(), true);
             param->set(val);
             //floatUniforms.find(paramName)->second->set(val);
         }

@@ -7,16 +7,17 @@
 //
 
 #include "videoTiler.h"
-#define MAX_IMAGES 36
+#define MAX_IMAGES 25
 
 videoTiler::videoTiler(int width, int height, int depth) {
     slitScan.setup(width, height, depth);
     slitScan.setTimeDelayAndWidth(0, depth);
-    gui.setup("Tiling");
+    gui.setup("Tiling", "settings/Tiler.xml");
     gui.add(numRows.set("numRows", 1, 1, 6));
     gui.add(numCols.set("numCols", 1, 1, 6));
-    gui.add(size.set("size", 1, 1, 10));
-    gui.setPosition(ofGetScreenWidth()/2, ofGetScreenHeight()/2);
+    gui.add(size.set("size", 1, 1, 5));
+    //gui.setPosition(ofGetScreenWidth()/2, ofGetScreenHeight()/2);
+    gui.loadFromFile("settings/Tiler.xml");
 }
 
 void videoTiler::addImage(ofBaseHasPixels& image) {
@@ -30,13 +31,13 @@ void videoTiler::addImage(unsigned char* image){
     slitScan.addImage(image);
 }
 
-void videoTiler::drawWithTimeOffset(int x, int y, int width, int height) {
+void videoTiler::drawWithTimeOffset(int xOffset, int yOffset, int width, int height) {
     img.allocate(slitScan.getWidth(), slitScan.getHeight(), OF_IMAGE_COLOR_ALPHA);
     for(int i = 0; i < size*size; i++) {
         slitScan.pixelsForFrame(ofMap(i, 0, size*size, slitScan.getCapacity()-1, 0), &img);
         int x = i % size;
         int y = (i - x)/size;
-        img.draw(x*width/size, y*height/size, width/size, height/size);
+        img.draw(xOffset + x*width/size-1, yOffset + y*height/size-1, width/size+2, height/size+2);
     }
 }
 

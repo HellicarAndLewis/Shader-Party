@@ -2,7 +2,7 @@
 #extension GL_ARB_texture_rectangle : enable
 #extension GL_EXT_gpu_shader4 : enable
 
-#define MAX_SEEDS 200
+#define MAX_SEEDS 400
 
 uniform sampler2DRect diffuseTexture;
 uniform float numActiveSeeds;

@@ -90,3 +90,10 @@ Desktop.ini
 *.exe
 *.out
 *.app
+
+# Content
+*.mov
+*.mp3
+*.jpg
+*.png
+*.jpeg

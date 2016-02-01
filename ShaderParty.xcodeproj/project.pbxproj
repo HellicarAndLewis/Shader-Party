@@ -13,6 +13,7 @@
 		1A6927671BAC1EF1001BE14E /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A6927661BAC1EF1001BE14E /* AVFoundation.framework */; };
 		1A91BBA81C22C3F80056C790 /* Effect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A91BBA61C22C3F80056C790 /* Effect.cpp */; };
 		1A91BBAC1C22F7420056C790 /* CircularTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A91BBAA1C22F7420056C790 /* CircularTexture.cpp */; };
+		1AB4E0B71C3ED7BB00C23870 /* Sparticles.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AB4E0B51C3ED7BB00C23870 /* Sparticles.cpp */; };
 		1AC274BB1C39BFDC00E19F19 /* ofxAVFVideoPlayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1AC274B81C39BFDC00E19F19 /* ofxAVFVideoPlayer.mm */; };
 		1AC274BC1C39BFDC00E19F19 /* ofxAVFVideoRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AC274BA1C39BFDC00E19F19 /* ofxAVFVideoRenderer.m */; };
 		1AC274C21C3AC7A600E19F19 /* videoTiler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1AC274C01C3AC7A600E19F19 /* videoTiler.cpp */; };
@@ -121,6 +122,8 @@
 		1A91BBAA1C22F7420056C790 /* CircularTexture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CircularTexture.cpp; sourceTree = "<group>"; };
 		1A91BBAB1C22F7420056C790 /* CircularTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CircularTexture.h; sourceTree = "<group>"; };
 		1A91BBAE1C2324490056C790 /* MotionAmplifier.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MotionAmplifier.h; sourceTree = "<group>"; };
+		1AB4E0B51C3ED7BB00C23870 /* Sparticles.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Sparticles.cpp; sourceTree = "<group>"; };
+		1AB4E0B61C3ED7BB00C23870 /* Sparticles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sparticles.h; sourceTree = "<group>"; };
 		1AC274B71C39BFDC00E19F19 /* ofxAVFVideoPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxAVFVideoPlayer.h; sourceTree = "<group>"; };
 		1AC274B81C39BFDC00E19F19 /* ofxAVFVideoPlayer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ofxAVFVideoPlayer.mm; sourceTree = "<group>"; };
 		1AC274B91C39BFDC00E19F19 /* ofxAVFVideoRenderer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxAVFVideoRenderer.h; sourceTree = "<group>"; };
@@ -912,6 +915,8 @@
 				1AC274C11C3AC7A600E19F19 /* videoTiler.h */,
 				1AC275401C3C5AE100E19F19 /* ContentManager.cpp */,
 				1AC275411C3C5AE100E19F19 /* ContentManager.h */,
+				1AB4E0B51C3ED7BB00C23870 /* Sparticles.cpp */,
+				1AB4E0B61C3ED7BB00C23870 /* Sparticles.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -1028,6 +1033,7 @@
 				B266578FC55D23BFEBC042E7 /* ofxGuiGroup.cpp in Sources */,
 				1A91BBA81C22C3F80056C790 /* Effect.cpp in Sources */,
 				1ADE77D81C21E898001036F4 /* Calibration.cpp in Sources */,
+				1AB4E0B71C3ED7BB00C23870 /* Sparticles.cpp in Sources */,
 				483908258D00B98B4BE69F07 /* ofxLabel.cpp in Sources */,
 				1AC2752C1C3B063B00E19F19 /* ofxFFTFile.cpp in Sources */,
 				1ADE77D61C21E898001036F4 /* ETF.cpp in Sources */,

@@ -46,7 +46,7 @@ public:
     map<string, ofParameter<int>* > fftChannels;
     ofxPanel gui;
     
-    void updateFromFFT(vector<float> fft);
+    void updateFromFFT(vector<float> fft, float upperCut, float lowerCut);
     
     void setMotionAmp(MotionAmplifier* amp);
     void setUniformFlowField(ofTexture* texture);

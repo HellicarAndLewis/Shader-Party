@@ -3,11 +3,11 @@
 	<Colorization>0.2</Colorization>
 	<Flow_Effect>0</Flow_Effect>
 <Emboss/>
-<Amount>6.73173e-05</Amount>
+<Amount>0.0963269</Amount>
 	<fftConnected>0</fftConnected>
 	<Channel>0</Channel>
-<Amount_connected>1</Amount_connected>
-	<Amount_channel>6</Amount_channel>
+<Amount_connected>0</Amount_connected>
+	<Amount_channel>0</Amount_channel>
 	<Intensity_connected>0</Intensity_connected>
 	<Intensity_channel>0</Intensity_channel>
 	<Colorization_connected>0</Colorization_connected>

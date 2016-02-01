@@ -16,10 +16,11 @@ class ofApp : public ofBaseApp{
 		void setup();
 		void update();
 		void draw();
-        void swapPlayer();
-        void swapFbos(int i);
+        void swapFbos();
 
 		void keyPressed(int key);
+    
+        void onPartyModeChange(bool & b);
     
         ContentManager* contentManager;
         videoTiler* mosaic;
@@ -31,22 +32,30 @@ class ofApp : public ofBaseApp{
     
         ofShader fade;
     
-        vector<Effect*> effects[2];
-    
+        vector<Effect*> effects;
+        Effect* endarken;
+        
         ofxPanel gui;
         ofParameterGroup main;
         ofParameter<int> activeEffect;
         ofParameter<float> strength;
         ofParameter<float> learningRate;
     
-        ofxPanel presets[2];
-        ofParameter<int> presetNum[2];
-        
-        ofParameterGroup EffectsList;
-
-        ofParameter<float> fadeAmnt;
-        ofParameter<float> fftDamping;
-        ofParameter<float> fftAttraction;
+        ofxPanel presets;
+        ofParameter<int> presetNum;
+        ofParameter<int> presetDuration;
+        int timeOfLastSwap;
+    
+        ofxPanel fftCut;
+        ofParameter<float> upperCut;
+        ofParameter<float> lowerCut;
+    
+        ofParameter<bool> PartyOn; //Garth
+        ofParameter<bool> camInput;
+    
+        ofVideoGrabber cam;
+    
+        ofVideoPlayer dieselHashtag;
     
         MotionAmplifier amplifier;
     
@@ -54,20 +63,23 @@ class ofApp : public ofBaseApp{
         vector<ofVec2f> voronoiSeedVels;
         vector<ofVec2f> voronoiInitVels;
     
-    bool test;
+        bool drawGui;
+        
+        bool test;
     
         ofxCv::FlowFarneback flow;
     
         ofxFFTLive fft;
         //ofFloatImage vf;
     
-        ofFbo* swapIn[2];
-        ofFbo* swapOut[2];
+        ofFbo* activeBuffer;
+        ofFbo* swapIn;
+        ofFbo* swapOut;
     
         ofTrueTypeFont ttf;
         ofTrueTypeFont ttfSmall;
     
         ofImage currImg, finalOutput;
             
-        ofFbo finalMix, motionWarp[2], mosaicDraw[2];
+        ofFbo finalMix, motionWarp, mosaicDraw;
 };

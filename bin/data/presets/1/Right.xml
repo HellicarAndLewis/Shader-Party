@@ -8,7 +8,7 @@
 		<RGB_Shift>0</RGB_Shift>
 		<Scan_Lines>0</Scan_Lines>
 		<Sharpen>0</Sharpen>
-		<Endarken>1</Endarken>
+		<Endarken>0</Endarken>
 	</Active_Effects>
 	<Presets>
 		<Preset>0</Preset>

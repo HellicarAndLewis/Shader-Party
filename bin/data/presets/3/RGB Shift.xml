@@ -1,15 +1,15 @@
 <RGB_Shift>
-	<Amount>5.33177e-05</Amount>
+	<Amount>1.82373</Amount>
 	<fftConnected>0</fftConnected>
 	<Channel>0</Channel>
-	<RGB_Amount>3.78776e-06</RGB_Amount>
+	<RGB_Amount>0.182373</RGB_Amount>
 <RGB_Shift/>
 <Amountconnected>1</Amountconnected>
 	<Amountchannel>8</Amountchannel>
 	<RGB_Amountconnected>1</RGB_Amountconnected>
 	<RGB_Amountchannel>5</RGB_Amountchannel>
-<Amount_connected>0</Amount_connected>
+<Amount_connected>1</Amount_connected>
 	<Amount_channel>0</Amount_channel>
-	<RGB_Amount_connected>0</RGB_Amount_connected>
+	<RGB_Amount_connected>1</RGB_Amount_connected>
 	<RGB_Amount_channel>0</RGB_Amount_channel>
 </RGB_Shift>

@@ -1,8 +1,8 @@
 <ColorMap>
-	<Amount>0.218677</Amount>
+	<Amount>0.5</Amount>
 	<fftConnected>0</fftConnected>
 	<Channel>0</Channel>
 <ColorMap/>
-	<Amount_connected>1</Amount_connected>
-	<Amount_channel>3</Amount_channel>
+	<Amount_connected>0</Amount_connected>
+	<Amount_channel>0</Amount_channel>
 </ColorMap>

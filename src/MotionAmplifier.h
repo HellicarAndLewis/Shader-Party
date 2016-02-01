@@ -12,13 +12,13 @@ private:
     ofVboMesh mesh;
     float rescale;
     
-    ofxPanel gui;
     ofParameter<float> strength;
     ofParameter<float> learningRate;
     ofParameter<bool> strengthConnected;
     ofParameter<bool> learnRateConnected;
     ofParameter<int> strengthChannel;
     ofParameter<int> learnRateChannel;
+
     
     int stepSize, xSteps, ySteps;
     cv::Mat accumulator;
@@ -37,6 +37,8 @@ private:
     }
     
 public:
+    ofxPanel gui;
+    ofParameter<bool> Enabled;
     ofTexture flowTexture;
 
     void setup(int w, int h, int stepSize, int numChannels, float rescale = 1) {
@@ -69,13 +71,15 @@ public:
             }
         }
         
-        gui.setup("Motion Amplifier");
+        gui.setup("Motion Amplifier", "settings/MotionAmp.xml");
+        gui.add(Enabled.set("Enabled", false));
         gui.add(strength.set("Motion Amplification", 0, -30, 30));
-        gui.add(strengthConnected.set("fftConnected", false));
-        gui.add(strengthChannel.set("Channel", 0, 0, numChannels));
+        gui.add(strengthConnected.set("strength fftConnected", false));
+        gui.add(strengthChannel.set("strength Channel", 0, 0, numChannels));
         gui.add(learningRate.set("Motion Learn Rate", 0, -0.2, 1.0));
-        gui.add(learnRateConnected.set("fftConnected", false));
-        gui.add(learnRateChannel.set("Channel", 0, 0, numChannels));
+        gui.add(learnRateConnected.set("learn Rate fftConnected", false));
+        gui.add(learnRateChannel.set("learn Rate Channel", 0, 0, numChannels));
+        gui.loadFromFile("settings/MotionAmp.xml");
     }
     
     template <class T>
@@ -141,15 +145,15 @@ public:
         this->blurAmount = blurAmount;
     }
     
-    void updateFromFFT(vector<float> fft) {
+    void updateFromFFT(vector<float> fft, float upperCut, float lowerCut) {
         if(strengthConnected) {
             float val = fft[strengthChannel];
-            val = ofMap(val, 0, 1, strength.getMin(), strength.getMax());
+            val = ofMap(val, lowerCut, upperCut, strength.getMin(), strength.getMax(), true);
             strength.set(val);
         }
         if(learnRateConnected) {
             float val = fft[learnRateChannel];
-            val = ofMap(val, 0, 1, learningRate.getMin(), learningRate.getMax());
+            val = ofMap(val, lowerCut, upperCut, learningRate.getMin(), learningRate.getMax(), true);
             learningRate.set(val);
         }
     }
