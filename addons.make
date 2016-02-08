@@ -1,7 +1,8 @@
-ofxGui
-ofxOpenCv
+ofxAubio
 ofxCv
 ofxFFT
+ofxGui
 ofxIntegrator
 ofxNestedFileLoader
+ofxOpenCv
 ofxSlitScan

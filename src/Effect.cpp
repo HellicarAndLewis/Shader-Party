@@ -10,7 +10,6 @@
 
 Effect::Effect() {
     uniformImageSet = false;
-//    uniformCircularTexSet = false;
     uniformVectorArraySet = false;
     motionAmpLoaded = false;
     numFFTChannels = 0;
@@ -21,12 +20,6 @@ void Effect::setUniformImage(string name, ofImage *img) {
     uniformImage = img;
     uniformImageSet = true;
 }
-
-//void Effect::setUniformCircularTex(string name, CircularTexture* tex) {
-//    uniformCircularTexName = name;
-//    uniformCircularTex = tex;
-//    uniformCircularTexSet = true;
-//}
 
 void Effect::setMotionAmp(MotionAmplifier* amp) {
     motionAmp = amp;
@@ -92,19 +85,10 @@ void Effect::setUniqueUniforms() {
     for(auto it = floatUniforms.begin(); it != floatUniforms.end(); it++) {
         shader.setUniform1f(it->first, it->second->get());
     }
-//    for(auto it = boolUniforms.begin(); it != boolUniforms.end(); it++) {
-//        shader.setUniform1f(it->first, it->second->get());
-//        shader.setUniform1
-//    }
     if(uniformImageSet) {
         shader.setUniformTexture(uniformImageName, *uniformImage, 1);
         shader.setUniform2f(uniformImageName + "Size", uniformImage->getWidth(), uniformImage->getHeight());
     }
-//    if(uniformCircularTexSet) {
-//        shader.setUniformTexture(uniformCircularTexName, uniformCircularTex->texData.textureTarget,uniformCircularTex->texData.textureID,  1);
-//        shader.setUniform2f(uniformCircularTexName + "Size", uniformCircularTex->width, uniformCircularTex->height);
-//        shader.setUniform1f("depthOffset", uniformCircularTex->depth);
-//    }
     if(uniformVectorArraySet) {
         shader.setUniform2fv(uniformVectorArrayName, uniformVectorArray, uniformVectorArraySize);
     }
@@ -137,7 +121,6 @@ void Effect::apply(ofFbo* fboIn, ofFbo* fboOut, ofMesh* mesh) {
     shader.begin();
     setSharedUniforms(fboIn->getTexture(), *vectorField, ofGetWidth(), ofGetHeight());
     setUniqueUniforms();
-//    fboIn->draw(0, 0);
     mesh->draw();
     shader.end();
     fboOut->end();
@@ -164,6 +147,19 @@ void Effect::updateFromFFT(vector<float> fft, float upperCut, float lowerCut) {
             val = ofMap(val, lowerCut, upperCut, param->getMin(), param->getMax(), true);
             param->set(val);
             //floatUniforms.find(paramName)->second->set(val);
+        }
+    }
+}
+
+void Effect::updateFromFloat(float value, float upperCut, float lowerCut) {
+    for(auto it = fftConnected.begin(); it != fftConnected.end(); it++) {
+        string paramName = it->first;
+        bool paramConnected = it->second->get();
+        if(paramConnected) {
+            float val = value;
+            auto param = floatUniforms.find(paramName)->second;
+            val = ofMap(value, lowerCut, upperCut, param->getMin(), param->getMax(), true);
+            param->set(val);
         }
     }
 }

@@ -59,9 +59,13 @@ public:
         
         //pointer to our list of effects
         vector<Effect*>* effects;
+        // an internal list of our active effects in order
+        vector<Effect*> activeEffectsInOrder;
         
         void setupGui(string name);
         
+        void applyEffectsInFixedOrder(ofFbo* swapIn, ofFbo* swapOut);
+        void applyEffectsInOrderOfActivation(ofFbo* swapIn, ofFbo* swapOut);
         void applyEffects(ofFbo* swapIn, ofFbo* swapOut);
         void drawGui();
         
@@ -71,6 +75,7 @@ public:
         void onPresetChange(int &e);
         void onSaveChange(bool &b);
         void onApplyChange(bool &b);
+        void onActiveEffectChanged(ofAbstractParameter &p);
     };
     
     int numEffectsOn;

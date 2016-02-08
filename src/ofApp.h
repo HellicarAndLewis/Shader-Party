@@ -9,6 +9,7 @@
 #include "videoTiler.h"
 #include "ofxFFTLive.h"
 #include "ContentManager.h"
+#include "ofxAubio.h"
 
 class ofApp : public ofBaseApp{
     
@@ -16,7 +17,7 @@ class ofApp : public ofBaseApp{
 		void setup();
 		void update();
 		void draw();
-        void swapFbos();
+        void audioIn(float * input, int bufferSize, int nChannels);
 
 		void keyPressed(int key);
     
@@ -71,7 +72,7 @@ class ofApp : public ofBaseApp{
         ofxCv::FlowFarneback flow;
     
         ofxFFTLive fft;
-        //ofFloatImage vf;
+        ofxAubioOnset onset;
     
         ofFbo* activeBuffer;
         ofFbo* swapIn;

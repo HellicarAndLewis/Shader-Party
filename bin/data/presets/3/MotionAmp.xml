@@ -3,7 +3,7 @@
 	<Motion_Amplification>30</Motion_Amplification>
 	<fftConnected>1</fftConnected>
 	<Channel>7</Channel>
-	<Motion_Learn_Rate>0.0370035</Motion_Learn_Rate>
+	<Motion_Learn_Rate>0.137786</Motion_Learn_Rate>
 <Motion_Amplifier/>
 <strength_fftConnected>0</strength_fftConnected>
 	<strength_Channel>0</strength_Channel>

@@ -33,7 +33,10 @@ void ContentManager::contentCreator::setupGui(string name) {
     activeEffects.push_back(&sharpenOn);
     activeEffects.push_back(&endarkenOn);
     activeEffects.push_back(&explodeOn);
+    activeEffectsInOrder.clear();
     gui.add(EffectsList);
+    
+    ofAddListener(EffectsList.parameterChangedE(), this, &contentCreator::onActiveEffectChanged);
     
     Presets.setName("Presets");
     
@@ -56,14 +59,28 @@ void ContentManager::contentCreator::setupGui(string name) {
 }
 
 void ContentManager::contentCreator::applyEffects(ofFbo* swapIn, ofFbo* swapOut) {
-    for(int j = 0; j < activeEffects.size(); j++) {
-        if(activeEffects[j]->get()) {
-            (*effects)[j]->apply(swapIn, swapOut, &mesh);
+    applyEffectsInFixedOrder(swapIn, swapOut);
+}
+
+void ContentManager::contentCreator::applyEffectsInFixedOrder(ofFbo* swapIn, ofFbo* swapOut) {
+    for(int i = 0; i < activeEffects.size(); i++) {
+        if(activeEffects[i]->get()) {
+            (*effects)[i]->apply(swapIn, swapOut, &mesh);
             ofFbo* temp;
             temp = swapIn;
             swapIn = swapOut;
             swapOut = temp;
         }
+    }
+}
+
+void ContentManager::contentCreator::applyEffectsInOrderOfActivation(ofFbo* swapIn, ofFbo* swapOut) {
+    for(int i = 0; i < activeEffectsInOrder.size(); i++) {
+        activeEffectsInOrder[i]->apply(swapIn, swapOut, &mesh);
+        ofFbo* temp;
+        temp = swapIn;
+        swapIn = swapOut;
+        swapOut = temp;
     }
 }
 
@@ -125,6 +142,21 @@ void ContentManager::contentCreator::onApplyChange(bool &b) {
         tiler->gui.loadFromFile("presets/" + ofToString(presetNum) + "/" + "Tiler" + ".xml");
         Particles.loadFromFile("presets/" + ofToString(presetNum) + "/" + "Particles.xml");
         apply = false;
+    }
+}
+
+void ContentManager::contentCreator::onActiveEffectChanged(ofAbstractParameter &p) {
+    string name = p.getName();
+    for(auto it = activeEffectsInOrder.begin(); it != activeEffectsInOrder.end(); it++) {
+        if((*it)->gui.getName() == name) {
+            activeEffectsInOrder.erase(it);
+            return;
+        }
+    }
+    for(int i = 0; i < effects->size(); i++) {
+        if((*effects)[i]->gui.getName() == name) {
+            activeEffectsInOrder.push_back((*effects)[i]);
+        }
     }
 }
 

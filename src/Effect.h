@@ -10,7 +10,6 @@
 
 #include "ofMain.h"
 #include "ofxGui.h"
-//#include "CircularTexture.h"
 #include "MotionAmplifier.h"
 
 class Effect {
@@ -20,8 +19,6 @@ class Effect {
     string uniformImageName;
     ofImage* uniformImage;
     ofTexture* vectorField;
-//    string uniformCircularTexName;
-//    CircularTexture* uniformCircularTex;
     MotionAmplifier* motionAmp;
     string uniformVectorArrayName;
     float* uniformVectorArray;
@@ -39,7 +36,6 @@ public:
         shader.setUniform1f( "time", ofGetElapsedTimef() );
         shader.setUniform2f( "size", (float)screenWidth, (float)screenHeight);
         shader.setUniform2f( "resolution", (float)screenWidth, (float)screenHeight);
-        //shader.setUniform2f( "mouse", (float)(ofGetMouseX()/WIDTH), (float)(ofGetMouseY()/HEIGHT));
     }
     map<string, ofParameter<float>* > floatUniforms;
     map<string, ofParameter<bool>* > fftConnected;
@@ -47,11 +43,11 @@ public:
     ofxPanel gui;
     
     void updateFromFFT(vector<float> fft, float upperCut, float lowerCut);
+    void updateFromFloat(float value, float upperCut, float lowerCut);
     
     void setMotionAmp(MotionAmplifier* amp);
     void setUniformFlowField(ofTexture* texture);
     void setUniformImage(string name, ofImage* img);
-//    void setUniformCircularTex(string name, CircularTexture* tex);
     void loadSettings();
     void setGuiPosition(int x, int y);
     float getGuiWidth();

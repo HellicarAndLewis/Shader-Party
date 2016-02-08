@@ -7,7 +7,8 @@
 #define VID_WIDTH 1280
 #define VID_HEIGHT 720
 #define NUM_SEEDS 400
-#define NUM_CHANNELS 20
+#define NUM_CHANNELS 10
+//#define USING_FFT
 
 void stopAndLoadNewVid(ofVideoPlayer* vidPlayer, string vidToLoad) {
     vidPlayer->stop();
@@ -31,11 +32,17 @@ void ofApp::setup(){
     mosaic = new videoTiler(VID_WIDTH, VID_HEIGHT, 50);
     
     //setup fft
+#ifdef USING_FFT
     fft.setMirrorData(false);
     fft.setup();
     fft.setBufferSize(NUM_CHANNELS);
     fft.setConnectedParams(&connectedParams);
     int numChannels = fft.getFftRawData().size()-1;
+#else
+    onset.setup();
+    int numChannels = 20;
+#endif
+    ofSoundStreamSetup(0, 2);
     
     //setup each effect
     
@@ -79,7 +86,7 @@ void ofApp::setup(){
     
     //BadTv
     Effect* badTv = new Effect();
-    badTv->setupGui("BadTv", numChannels);
+    badTv->setupGui("Bad TV", numChannels);
     badTv->setUniformFlowField(&amplifier.flowTexture);
     badTv->addUniformFloat("amount", "Amount", 0.5, 0.0, 1.0);
     badTv->addUniformFloat("speed", "Speed", 0.5, 0.0, 1.0);
@@ -93,7 +100,7 @@ void ofApp::setup(){
     Effect* colorMap = new Effect();
     ofImage* rampImg = new ofImage();
     rampImg->load("textures/ramp1.png");
-    colorMap->setupGui("ColorMap", numChannels);
+    colorMap->setupGui("Color Map", numChannels);
     colorMap->setUniformFlowField(&amplifier.flowTexture);
     colorMap->addUniformFloat("amount", "Amount", 0.5, 0.0, 1.0);
     colorMap->addUniformFloat("timeRate", "Rate", 0.5, 0.1, 1.0);
@@ -184,8 +191,8 @@ void ofApp::setup(){
     //INITIALIZE CAMERA
     cam.initGrabber(VID_WIDTH, VID_HEIGHT);
     
-    motionWarp.allocate(VID_WIDTH, VID_HEIGHT);
     //allocate drawing fbo
+    motionWarp.allocate(VID_WIDTH, VID_HEIGHT);
     finalMix.allocate(VID_WIDTH, VID_HEIGHT);
     mosaicDraw.allocate(VID_WIDTH, VID_HEIGHT);
     
@@ -197,8 +204,6 @@ void ofApp::setup(){
 
     currImg.allocate(VID_WIDTH, VID_HEIGHT, OF_IMAGE_COLOR);
     
-    //LOAD MOVIES HERE
-    //***************
     contentManager = new ContentManager();
     contentManager->setup("movies/Press", "movies/Party", VID_WIDTH, VID_HEIGHT);
     contentManager->play();
@@ -214,8 +219,8 @@ void ofApp::setup(){
     contentManager->frame.Particles.setPosition(10, HEIGHT - contentManager->frame.Particles.getHeight() - 10);
     
     fftCut.setup("FFT Cut", "settings/fftCut.xml");
-    fftCut.add(upperCut.set("Upper", 1.0, 0.0, 3.0));
-    fftCut.add(lowerCut.set("Lower", 0.0, 0.0, 3.0));
+    fftCut.add(upperCut.set("Upper", 10000.0, 0.0, 10000.0));
+    fftCut.add(lowerCut.set("Lower", 0.0, 0.0, 10000.0));
     fftCut.setPosition(10, HEIGHT - 300 - endarken->gui.getHeight());
     
     mosaic->gui.setPosition(10, 675);
@@ -242,14 +247,19 @@ void ofApp::update(){
         }
     }
     
-//    fft.setDampingParams(fftDamping.get(), fftAttraction.get());
+#ifdef USING_FFT
     vector<float> vals = fft.getFftPeakData();
     for(int i = 0; i < effects.size(); i++) {
         effects[i]->updateFromFFT(vals, upperCut, lowerCut);
         amplifier.updateFromFFT(vals, upperCut, lowerCut);
     }
-    
     fft.update();
+#else
+    for(int i = 0; i < effects.size(); i++) {
+        effects[i]->updateFromFloat(onset.novelty, upperCut, lowerCut);
+    }
+//    amplifier.updateFromFloat(onset.novelty, upperCut, lowerCut);
+#endif
     
     contentManager->update(camInput);
     if(camInput) {
@@ -321,14 +331,19 @@ void ofApp::draw(){
             
             amplifier.drawGui();
             
-//            endarken->drawGui();
-            
             fftCut.draw();
             
             int fftWidth = WIDTH/2;
             int fftHeight = 100;
+#ifdef USING_FFT
             fft.draw(WIDTH/2 - fftWidth/2, HEIGHT - fftHeight, fftWidth, fftHeight);
-            
+#else
+            ofPushStyle();
+            ofSetColor(255);
+            float rectWidth = ofMap(onset.novelty, 0, 10000, ofGetWidth()/2 - VID_WIDTH/2, ofGetWidth()/2 + VID_WIDTH/2);
+            ofDrawRectangle(ofGetWidth()/2 - VID_WIDTH/2, ofGetHeight() - 100, rectWidth, 100);
+            ofPopMatrix();
+#endif
             ofDrawBitmapStringHighlight(ofToString(ofGetFrameRate()), WIDTH - 100, HEIGHT - 20);
         }
     } else {
@@ -344,15 +359,39 @@ void ofApp::draw(){
         contentManager->drawGuis();
         
         amplifier.drawGui();
-        
-//        endarken->drawGui();
-        
+                
         fftCut.draw();
         
         int fftWidth = WIDTH/2;
         int fftHeight = 100;
+#ifdef USING_FFT
         fft.draw(WIDTH/2 - fftWidth/2, HEIGHT - fftHeight, fftWidth, fftHeight);
+        ofPushStyle();
+        ofSetColor(255, 0, 0);
+        float upperCutHeight = ofMap(upperCut, 0, 3, HEIGHT, HEIGHT - fftHeight*3);
+        ofDrawLine(WIDTH/2 - fftWidth/2, upperCutHeight, WIDTH/2 + fftWidth/2, upperCutHeight);
+        float lowerCutHeight = ofMap(lowerCut, 0, 3, HEIGHT, HEIGHT - fftHeight*3);
+        ofSetColor(0, 0, 255);
+        ofDrawLine(WIDTH/2 - fftWidth/2, lowerCutHeight, WIDTH/2 + fftWidth/2, lowerCutHeight);
+        ofPopStyle();
         
+#else
+        ofPushStyle();
+        ofSetColor(255);
+        float rectWidth = ofMap(onset.novelty, 0, 10000, 0, VID_WIDTH, true);
+        ofDrawRectangle(ofGetWidth()/2 - VID_WIDTH/2, ofGetHeight() - 100, rectWidth, 100);
+        ofPopMatrix();
+        ofPushStyle();
+        ofSetColor(255, 0, 0);
+        float upperCutX = ofMap(upperCut, 0, 10000, ofGetWidth()/2 - VID_WIDTH/2, ofGetWidth()/2 + VID_WIDTH/2);
+        ofDrawLine(upperCutX, ofGetHeight(), upperCutX, ofGetHeight() - 100);
+        float lowerCutX = ofMap(lowerCut, 0, 10000, ofGetWidth()/2 - VID_WIDTH/2, ofGetWidth()/2 + VID_WIDTH/2);
+        ofSetColor(0, 0, 255);
+        ofDrawLine(lowerCutX, ofGetHeight(), lowerCutX, ofGetHeight() - 100);
+        ofPopStyle();
+        
+        
+#endif
         ofDrawBitmapStringHighlight(ofToString(ofGetFrameRate()), WIDTH - 100, HEIGHT - 20);
         ofDrawBitmapString(ofGetTimestampString("Time: %H : %M"), WIDTH - 200, 20);
     }
@@ -368,6 +407,15 @@ void ofApp::keyPressed(int key){
             drawGui = !drawGui;
         }
     }
+    if(key == '1') {
+        contentManager->frame.mesh.setMode(OF_PRIMITIVE_LINE_LOOP);
+    }
+    if(key == '2') {
+        contentManager->frame.mesh.setMode(OF_PRIMITIVE_LINES);
+    }
+    if(key == '2') {
+        contentManager->frame.mesh.setMode(OF_PRIMITIVE_TRIANGLES);
+    }
 }
 
 //--------------------------------------------------------------
@@ -375,11 +423,10 @@ void ofApp::onPartyModeChange(bool &b) {
     contentManager->changeMode(b);
 }
 
-
 //--------------------------------------------------------------
-void ofApp::swapFbos() {
-    ofFbo* temp;
-    temp = swapIn;
-    swapIn = swapOut;
-    swapOut = temp;
+void ofApp::audioIn(float * input, int bufferSize, int nChannels) {
+#ifndef USING_FFT
+    onset.audioIn(input, bufferSize, nChannels);
+#endif
 }
+

@@ -5,4 +5,7 @@
 <ColorMap/>
 	<Amount_connected>0</Amount_connected>
 	<Amount_channel>0</Amount_channel>
+<Rate>0.5</Rate>
+	<Rate_connected>0</Rate_connected>
+	<Rate_channel>0</Rate_channel>
 </ColorMap>
