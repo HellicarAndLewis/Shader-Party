@@ -1,5 +1,7 @@
 #pragma once
 
+//#define USING_FFT // uncomment this to use FFT instead of onset detection
+
 #include "ofMain.h"
 #include "ofxOpenCv.h"
 #include "ofxCv.h"
@@ -10,6 +12,7 @@
 #include "ofxFFTLive.h"
 #include "ContentManager.h"
 #include "ofxAubio.h"
+#include "midiManager.h"
 
 class ofApp : public ofBaseApp{
     
@@ -17,6 +20,7 @@ class ofApp : public ofBaseApp{
 		void setup();
 		void update();
 		void draw();
+        void exit();
         void audioIn(float * input, int bufferSize, int nChannels);
 
 		void keyPressed(int key);
@@ -24,6 +28,7 @@ class ofApp : public ofBaseApp{
         void onPartyModeChange(bool & b);
     
         ContentManager* contentManager;
+        MidiManager* midiManager;
         videoTiler* mosaic;
         vector<string> pressContent;
         vector<ofImage> pressImages;
@@ -66,8 +71,8 @@ class ofApp : public ofBaseApp{
         vector<ofVec2f> voronoiInitVels;
     
         bool drawGui;
-        
-        bool test;
+    
+        int voronoiNum;
     
         ofxCv::FlowFarneback flow;
     

@@ -1,6 +1,5 @@
 uniform sampler2DRect diffuseTexture;
 uniform float amount;
-uniform float rgbAmount;
 uniform float angle;
 uniform vec2 size;
 uniform float time;
@@ -10,7 +9,7 @@ varying vec2 texCoord;
 #define M_PI 3.1415926535897932384626433832795
 
 void main() {
-    vec2 offset = rgbAmount * amount * vec2( 1000.0, 1000.0 ) * vec2( cos(angle * amount * M_PI), sin(angle * amount * M_PI));
+    vec2 offset = 0.3 * amount * vec2( 1000.0, 1000.0 ) * vec2( cos(angle * amount * M_PI), sin(angle * amount * M_PI));
 //    vec2 offset = 100.0 * vec2( .25, .25 );
 //    offset *= size;
     

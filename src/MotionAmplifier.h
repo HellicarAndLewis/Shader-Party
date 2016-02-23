@@ -16,8 +16,10 @@ private:
     ofParameter<float> learningRate;
     ofParameter<bool> strengthConnected;
     ofParameter<bool> learnRateConnected;
+#ifdef USING_FFT
     ofParameter<int> strengthChannel;
     ofParameter<int> learnRateChannel;
+#endif
 
     
     int stepSize, xSteps, ySteps;
@@ -75,10 +77,14 @@ public:
         gui.add(Enabled.set("Enabled", false));
         gui.add(strength.set("Motion Amplification", 0, -30, 30));
         gui.add(strengthConnected.set("strength fftConnected", false));
+#ifdef USING_FFT
         gui.add(strengthChannel.set("strength Channel", 0, 0, numChannels));
+#endif
         gui.add(learningRate.set("Motion Learn Rate", 0, -0.2, 1.0));
         gui.add(learnRateConnected.set("learn Rate fftConnected", false));
+#ifdef USING_FFT
         gui.add(learnRateChannel.set("learn Rate Channel", 0, 0, numChannels));
+#endif
         gui.loadFromFile("settings/MotionAmp.xml");
     }
     
@@ -146,6 +152,7 @@ public:
     }
     
     void updateFromFFT(vector<float> fft, float upperCut, float lowerCut) {
+#ifdef USING_FFT
         if(strengthConnected) {
             float val = fft[strengthChannel];
             val = ofMap(val, lowerCut, upperCut, strength.getMin(), strength.getMax(), true);
@@ -156,6 +163,7 @@ public:
             val = ofMap(val, lowerCut, upperCut, learningRate.getMin(), learningRate.getMax(), true);
             learningRate.set(val);
         }
+#endif
     }
     
     void drawGui() {

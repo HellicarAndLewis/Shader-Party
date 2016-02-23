@@ -9,6 +9,20 @@
 #ifndef ____midiManager__
 #define ____midiManager__
 
-#include <stdio.h>
+#include "ofMain.h"
+#include "ofxMidi.h"
+#include "ContentManager.h"
+
+class MidiManager : public ofxMidiListener {
+public:
+    MidiManager();
+    void setupMidi();
+    void setContentManager(ContentManager* _contentManager) { contentManager = _contentManager; };
+private:
+    ContentManager* contentManager;
+    ofxMidiIn midiIn;
+    ofxMidiMessage midiMessage;
+    void newMidiMessage(ofxMidiMessage& eventArgs);
+};
 
 #endif /* defined(____midiManager__) */

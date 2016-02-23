@@ -13,6 +13,7 @@ Effect::Effect() {
     uniformVectorArraySet = false;
     motionAmpLoaded = false;
     numFFTChannels = 0;
+    lastParamChanged = "";
 }
 
 void Effect::setUniformImage(string name, ofImage *img) {
@@ -55,13 +56,18 @@ bool Effect::loadShader(string ShaderPath) {
 void Effect::addUniformFloat(string name, string parameterName, float initialValue, float minValue, float maxValue){
     floatUniforms[name] = new ofParameter<float>();
     floatUniforms[name]->set(parameterName, initialValue, minValue, maxValue);
+    floatUniformsVector.push_back(floatUniforms[name]);
     fftConnected[name] = new ofParameter<bool>();
     fftConnected[name]->set(parameterName + " connected", false);
+#ifdef USING_FFT
     fftChannels[name] = new ofParameter<int>();
     fftChannels[name]->set(parameterName + " channel", 0, 0, numFFTChannels);
+#endif
     gui.add(*floatUniforms[name]);
     gui.add(*fftConnected[name]);
+#ifdef USING_FFT
     gui.add(*fftChannels[name]);
+#endif
 }
 
 void Effect::addUniformBool(string name, string parameterName, bool initialValue) {
@@ -138,6 +144,7 @@ void Effect::apply(ofFbo* fboIn, ofFbo* fboOut) {
 }
 
 void Effect::updateFromFFT(vector<float> fft, float upperCut, float lowerCut) {
+#ifdef USING_FFT
     for(auto it = fftConnected.begin(); it != fftConnected.end(); it++) {
         string paramName = it->first;
         bool paramConnected = it->second->get();
@@ -149,6 +156,7 @@ void Effect::updateFromFFT(vector<float> fft, float upperCut, float lowerCut) {
             //floatUniforms.find(paramName)->second->set(val);
         }
     }
+#endif
 }
 
 void Effect::updateFromFloat(float value, float upperCut, float lowerCut) {
@@ -161,5 +169,11 @@ void Effect::updateFromFloat(float value, float upperCut, float lowerCut) {
             val = ofMap(value, lowerCut, upperCut, param->getMin(), param->getMax(), true);
             param->set(val);
         }
+    }
+}
+
+void Effect::updateFromFloat(float value, int paramIndex) {
+    if(paramIndex < floatUniformsVector.size()) {
+        floatUniformsVector[paramIndex]->set(value);
     }
 }

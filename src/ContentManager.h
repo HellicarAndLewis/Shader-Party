@@ -34,6 +34,9 @@ public:
         ofParameter<bool> sharpenOn;
         ofParameter<bool> endarkenOn;
         ofParameter<bool> explodeOn;
+        ofParameter<bool> pixelationOn;
+        ofParameter<bool> nightVisionOn;
+        ofParameter<bool> badVHSOn;
         
         ofxPanel Presets;
         ofParameter<int> presetNum;

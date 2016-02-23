@@ -8,7 +8,6 @@
 #define VID_HEIGHT 720
 #define NUM_SEEDS 400
 #define NUM_CHANNELS 10
-//#define USING_FFT
 
 void stopAndLoadNewVid(ofVideoPlayer* vidPlayer, string vidToLoad) {
     vidPlayer->stop();
@@ -20,7 +19,7 @@ void stopAndLoadNewVid(ofVideoPlayer* vidPlayer, string vidToLoad) {
 void ofApp::setup(){
     ofBackground(30, 30, 30);
     
-    ofSetLogLevel(OF_LOG_VERBOSE);
+    //ofSetLogLevel(OF_LOG_SILENT);
     
     drawGui = true;
     
@@ -73,60 +72,46 @@ void ofApp::setup(){
         voronoiSeedVels[i] = vel;
         voronoiInitVels[i] = vel;
     }
-        
-    //Voronoi
-    Effect* voronoi = new Effect();
-    voronoi->setupGui("Voronoi", numChannels);
-    voronoi->setUniformFlowField(&amplifier.flowTexture);
-    voronoi->addUniformFloat("numActiveSeeds", "Active Seeds", 200.0, 0.0, NUM_SEEDS);
-    voronoi->addUniformVectorArray("locs", (float *)&voronoiSeedLocs[0], voronoiSeedLocs.size());
-    voronoi->addUniformFloat("seedVelsMultiplier", "Speed Factor", 0.0, 0.0, 20.0);
-    voronoi->loadShader("shaders/VoronoiFrag.glsl");
-    effects.push_back(voronoi);
     
-    //BadTv
-    Effect* badTv = new Effect();
-    badTv->setupGui("Bad TV", numChannels);
-    badTv->setUniformFlowField(&amplifier.flowTexture);
-    badTv->addUniformFloat("amount", "Amount", 0.5, 0.0, 1.0);
-    badTv->addUniformFloat("speed", "Speed", 0.5, 0.0, 1.0);
-    badTv->addUniformFloat("rollSpeed", "Roll Speed", 0.5, 0.0, 1.0);
-    badTv->addUniformFloat("distortion", "Distortion 1", 5.0, 0.0, 10.0);
-    badTv->addUniformFloat("distortion2", "Distortion 2", 0.5, 0.0, 1.0);
-    badTv->loadShader("shaders/badtv.frag");
-    effects.push_back(badTv);
+    int num = 1;
     
-    //ColorMap
-    Effect* colorMap = new Effect();
-    ofImage* rampImg = new ofImage();
-    rampImg->load("textures/ramp1.png");
-    colorMap->setupGui("Color Map", numChannels);
-    colorMap->setUniformFlowField(&amplifier.flowTexture);
-    colorMap->addUniformFloat("amount", "Amount", 0.5, 0.0, 1.0);
-    colorMap->addUniformFloat("timeRate", "Rate", 0.5, 0.1, 1.0);
-    badTv->setUniformFlowField(&amplifier.flowTexture);
-    colorMap->setUniformImage("colorMap", rampImg);;
-    colorMap->loadShader("shaders/colorMap.frag");
-    effects.push_back(colorMap);
+    //Bad VHS
+    Effect* badVHS = new Effect();
+    badVHS->setUniformFlowField(&amplifier.flowTexture);
+    badVHS->setupGui("Bad VHS", numChannels);
+    badVHS->addUniformFloat("waves", "Waves", 1.0, 0.0, 10.0);
+    badVHS->addUniformFloat("chromaAb", "Chroma AB", 1.0, 0.0, 10.0);
+    badVHS->loadShader("shaders/vhs.frag");
+    badVHS->setControllerNumber(num++);
+    effects.push_back(badVHS);
     
-    //Emboss
-    Effect* emboss = new Effect();
-    emboss->setupGui("Emboss", numChannels);
-    emboss->setUniformFlowField(&amplifier.flowTexture);
-    emboss->addUniformFloat("amount", "Amount", 0.5, 0.0, 1.0);
-    emboss->addUniformFloat("intensity", "Intensity", 50.0, 1.0, 100.0);
-    emboss->addUniformFloat("colorization", "Colorization", 0.5, 0.0, 1.0);
-    emboss->addUniformFloat("flowEffect", "Flow Effect", 0.0, 0.0, 100.0);
-    emboss->loadShader("shaders/emboss.frag");
-    effects.push_back(emboss);
+    //Night Vision
+    Effect* nightVision = new Effect();
+    nightVision->setUniformFlowField(&amplifier.flowTexture);
+    nightVision->setupGui("Night Vision", numChannels);
+    nightVision->addUniformFloat("luminanceThreshold", "Luminance", 0.2, 0.01, 1.0);
+    nightVision->addUniformFloat("colorAmplification", "Color Amp", 4.0, 0.0, 20.0);
+    nightVision->loadShader("shaders/nightVision.frag");
+    nightVision->setControllerNumber(num++);
+    effects.push_back(nightVision);
+    
+    //Pixels
+    Effect* pixels = new Effect();
+    pixels->setUniformFlowField(&amplifier.flowTexture);
+    pixels->setupGui("Pixelation", numChannels);
+    pixels->addUniformFloat("pixel_w", "Pixel Width", 15.0, 1.0, 30.0);
+    pixels->addUniformFloat("pixel_h", "Pixel Height", 10.0, 1.0, 30.0);
+    pixels->loadShader("shaders/pixelation.frag");
+    pixels->setControllerNumber(num++);
+    effects.push_back(pixels);
     
     //RGB Shift
     Effect* rgbShift = new Effect();
     rgbShift->setupGui("RGB Shift", numChannels);
     rgbShift->setUniformFlowField(&amplifier.flowTexture);
     rgbShift->addUniformFloat("amount", "Amount", 0.5, 0.0, 3.0);
-    rgbShift->addUniformFloat("rgbAmount", "RGB Amount", 0.05, 0.0, 0.3);
     rgbShift->loadShader("shaders/rgbshift.frag");
+    rgbShift->setControllerNumber(num++);
     effects.push_back(rgbShift);
     
     //Scan Lines
@@ -138,6 +123,7 @@ void ofApp::setup(){
     scanLines->addUniformFloat("sIntensity", "S Intensity", 1.0, 0.0, 2.0);
     scanLines->addUniformFloat("sCount", "S Count", 500, 50, 1000);
     scanLines->loadShader("shaders/scanlines.frag");
+    scanLines->setControllerNumber(num++);
     effects.push_back(scanLines);
     
     //Sharpen
@@ -148,7 +134,47 @@ void ofApp::setup(){
     sharpen->addUniformFloat("theMix", "The Mix", 0.5, 0.0, 1.0);
     sharpen->addUniformFloat("weirdness", "Weirdness", 0.5, 0.0, 1.0);
     sharpen->loadShader("shaders/DummyFrag.glsl");
+    sharpen->setControllerNumber(num++);
     effects.push_back(sharpen);
+    
+    //ColorMap
+    Effect* colorMap = new Effect();
+    ofImage* rampImg = new ofImage();
+    rampImg->load("textures/ramp1.png");
+    colorMap->setupGui("Color Map", numChannels);
+    colorMap->setUniformFlowField(&amplifier.flowTexture);
+    colorMap->addUniformFloat("amount", "Amount", 0.5, 0.0, 1.0);
+    colorMap->addUniformFloat("timeRate", "Rate", 0.5, 0.1, 1.0);
+    colorMap->setUniformFlowField(&amplifier.flowTexture);
+    colorMap->setUniformImage("colorMap", rampImg);;
+    colorMap->loadShader("shaders/colorMap.frag");
+    colorMap->setControllerNumber(num++);
+    effects.push_back(colorMap);
+    
+    //BadTv
+    Effect* badTv = new Effect();
+    badTv->setupGui("Bad TV", numChannels);
+    badTv->setUniformFlowField(&amplifier.flowTexture);
+    badTv->addUniformFloat("amount", "Amount", 0.5, 0.0, 1.0);
+    badTv->addUniformFloat("speed", "Speed", 0.5, 0.0, 1.0);
+    badTv->addUniformFloat("rollSpeed", "Roll Speed", 0.5, 0.0, 1.0);
+    badTv->addUniformFloat("distortion", "Distortion 1", 5.0, 0.0, 10.0);
+    badTv->addUniformFloat("distortion2", "Distortion 2", 0.5, 0.0, 1.0);
+    badTv->loadShader("shaders/badtv.frag");
+    badTv->setControllerNumber(num++);
+    effects.push_back(badTv);
+    
+    //Voronoi
+    Effect* voronoi = new Effect();
+    voronoi->setupGui("Voronoi", numChannels);
+    voronoi->setUniformFlowField(&amplifier.flowTexture);
+    voronoi->addUniformFloat("numActiveSeeds", "Active Seeds", 200.0, 0.0, NUM_SEEDS);
+    voronoi->addUniformVectorArray("locs", (float *)&voronoiSeedLocs[0], voronoiSeedLocs.size());
+    voronoi->addUniformFloat("seedVelsMultiplier", "Speed Factor", 0.0, 0.0, 20.0);
+    voronoi->loadShader("shaders/VoronoiFrag.glsl");
+    voronoiNum = num - 1;
+    voronoi->setControllerNumber(num++);
+    effects.push_back(voronoi);
     
     //enDarken
     Effect* endarken = new Effect();
@@ -156,20 +182,33 @@ void ofApp::setup(){
     endarken->setUniformFlowField(&amplifier.flowTexture);
     endarken->addUniformFloat("darkness", "Darkness", 0.5, 0.5, 1.0);
     endarken->loadShader("shaders/endarkenFrag.glsl");
-//    endarken->setGuiPosition(10, HEIGHT - 300);
+    endarken->setControllerNumber(num++);
     effects.push_back(endarken);
-    
+
     //explode
     Effect* explode = new Effect();
     explode->setupGui("Explode", numChannels);
     explode->setUniformFlowField(&amplifier.flowTexture);
+    explode->addUniformFloat("noiseScale", "Scale", 500, 1.0, 1000);
     explode->addUniformFloat("x_Strength", "X Strength", 0, 0, 400);
     explode->addUniformFloat("y_Strength", "Y Strength", 0, 0, 400);
     explode->addUniformFloat("z_Strength", "Z Strength", 0, 0, 400);
     explode->addUniformFloat("speed", "Speed", 0.2, 0.0, 1.0);
-    explode->addUniformFloat("noiseScale", "Scale", 500, 1.0, 1000);
     explode->loadShader("shaders/explode");
+    explode->setControllerNumber(num++);
     effects.push_back(explode);
+    
+//    //Emboss
+//    Effect* emboss = new Effect();
+//    emboss->setupGui("Emboss", numChannels);
+//    emboss->setUniformFlowField(&amplifier.flowTexture);
+//    emboss->addUniformFloat("amount", "Amount", 0.5, 0.0, 1.0);
+//    emboss->addUniformFloat("intensity", "Intensity", 50.0, 1.0, 100.0);
+//    emboss->addUniformFloat("colorization", "Colorization", 0.5, 0.0, 1.0);
+//    emboss->addUniformFloat("flowEffect", "Flow Effect", 0.0, 0.0, 100.0);
+//    emboss->loadShader("shaders/emboss.frag");
+//    emboss->setControllerNumber(num++);
+//    effects.push_back(emboss);
 
     //setup main gui
     //main.setup();
@@ -218,6 +257,10 @@ void ofApp::setup(){
     contentManager->frame.Presets.setPosition(10, contentManager->frame.gui.getHeight() + 20);
     contentManager->frame.Particles.setPosition(10, HEIGHT - contentManager->frame.Particles.getHeight() - 10);
     
+    midiManager = new MidiManager();
+    midiManager->setupMidi();
+    midiManager->setContentManager(contentManager);
+    
     fftCut.setup("FFT Cut", "settings/fftCut.xml");
     fftCut.add(upperCut.set("Upper", 10000.0, 0.0, 10000.0));
     fftCut.add(lowerCut.set("Lower", 0.0, 0.0, 10000.0));
@@ -231,7 +274,7 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
     for(int i=0; i < voronoiSeedLocs.size(); i++) {
-        voronoiSeedLocs[i] += voronoiSeedVels[i] * effects[0]->floatUniforms["seedVelsMultiplier"]->get();
+        voronoiSeedLocs[i] += voronoiSeedVels[i] * effects[voronoiNum]->floatUniforms["seedVelsMultiplier"]->get();
         float projX = ofMap(voronoiSeedLocs[i].x, 0, VID_WIDTH, 1, VID_HEIGHT-1, true);
         float projY = ofMap(voronoiSeedLocs[i].y, 0, VID_WIDTH, 1, VID_WIDTH-1, true);
         
@@ -258,14 +301,13 @@ void ofApp::update(){
     for(int i = 0; i < effects.size(); i++) {
         effects[i]->updateFromFloat(onset.novelty, upperCut, lowerCut);
     }
-//    amplifier.updateFromFloat(onset.novelty, upperCut, lowerCut);
 #endif
     
     contentManager->update(camInput);
     if(camInput) {
         dieselHashtag.update();
     }
-    
+#ifdef USING_FFT
     connectedParams.clear();
     for(int i=0; i < effects.size(); i++) {
         map<string, ofParameter<bool>*> paramsConnected = effects[i]->fftConnected;
@@ -280,6 +322,7 @@ void ofApp::update(){
             }
         }
     }
+#endif
 }
 
 //--------------------------------------------------------------
@@ -340,9 +383,9 @@ void ofApp::draw(){
 #else
             ofPushStyle();
             ofSetColor(255);
-            float rectWidth = ofMap(onset.novelty, 0, 10000, ofGetWidth()/2 - VID_WIDTH/2, ofGetWidth()/2 + VID_WIDTH/2);
-            ofDrawRectangle(ofGetWidth()/2 - VID_WIDTH/2, ofGetHeight() - 100, rectWidth, 100);
-            ofPopMatrix();
+            float rectWidth = ofMap(onset.novelty, 0, 10000, ofGetScreenWidth()/2 - VID_WIDTH/2, ofGetScreenWidth()/2 + VID_WIDTH/2);
+            ofDrawRectangle(ofGetScreenWidth()/2 - VID_WIDTH/2, ofGetScreenHeight() - 100, rectWidth, 100);
+            ofPopStyle();
 #endif
             ofDrawBitmapStringHighlight(ofToString(ofGetFrameRate()), WIDTH - 100, HEIGHT - 20);
         }
@@ -379,18 +422,16 @@ void ofApp::draw(){
         ofPushStyle();
         ofSetColor(255);
         float rectWidth = ofMap(onset.novelty, 0, 10000, 0, VID_WIDTH, true);
-        ofDrawRectangle(ofGetWidth()/2 - VID_WIDTH/2, ofGetHeight() - 100, rectWidth, 100);
-        ofPopMatrix();
+        ofDrawRectangle(WIDTH/2 - VID_WIDTH/2, HEIGHT - 100, rectWidth, 100);
+        ofPopStyle();
         ofPushStyle();
         ofSetColor(255, 0, 0);
-        float upperCutX = ofMap(upperCut, 0, 10000, ofGetWidth()/2 - VID_WIDTH/2, ofGetWidth()/2 + VID_WIDTH/2);
-        ofDrawLine(upperCutX, ofGetHeight(), upperCutX, ofGetHeight() - 100);
-        float lowerCutX = ofMap(lowerCut, 0, 10000, ofGetWidth()/2 - VID_WIDTH/2, ofGetWidth()/2 + VID_WIDTH/2);
+        float upperCutX = ofMap(upperCut, 0, 10000, WIDTH/2 - VID_WIDTH/2, WIDTH/2 + VID_WIDTH/2);
+        ofDrawLine(upperCutX, HEIGHT, upperCutX, HEIGHT - 100);
+        float lowerCutX = ofMap(lowerCut, 0, 10000, WIDTH/2 - VID_WIDTH/2, WIDTH/2 + VID_WIDTH/2);
         ofSetColor(0, 0, 255);
-        ofDrawLine(lowerCutX, ofGetHeight(), lowerCutX, ofGetHeight() - 100);
+        ofDrawLine(lowerCutX, HEIGHT, lowerCutX, HEIGHT - 100);
         ofPopStyle();
-        
-        
 #endif
         ofDrawBitmapStringHighlight(ofToString(ofGetFrameRate()), WIDTH - 100, HEIGHT - 20);
         ofDrawBitmapString(ofGetTimestampString("Time: %H : %M"), WIDTH - 200, 20);
@@ -428,5 +469,10 @@ void ofApp::audioIn(float * input, int bufferSize, int nChannels) {
 #ifndef USING_FFT
     onset.audioIn(input, bufferSize, nChannels);
 #endif
+}
+
+//--------------------------------------------------------------
+void ofApp::exit() {
+    ofSoundStreamClose();
 }
 

@@ -13,6 +13,17 @@
 		10B69DE456AED1288FC9316B /* Tracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A810DF70319A10353588F5DB /* Tracker.cpp */; };
 		169D3C72FDE6C5590A1616F5 /* ofxCvFloatImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7B6A03390302D5A2C9F0E4AB /* ofxCvFloatImage.cpp */; };
 		1711FD836260FE025DDDF8C9 /* ofxFFTBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B8722F32B945F2D45559A533 /* ofxFFTBase.cpp */; };
+		1A1579E01C74C0B500AB51A3 /* MidiManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A1579DE1C74C0B500AB51A3 /* MidiManager.cpp */; };
+		1A37F3FC1C737FA2009515DF /* ofxRtMidiIn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A37F3D01C737FA2009515DF /* ofxRtMidiIn.cpp */; };
+		1A37F3FD1C737FA2009515DF /* ofxRtMidiOut.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A37F3D21C737FA2009515DF /* ofxRtMidiOut.cpp */; };
+		1A37F3FE1C737FA2009515DF /* ofxBaseMidi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A37F3DF1C737FA2009515DF /* ofxBaseMidi.cpp */; };
+		1A37F3FF1C737FA2009515DF /* ofxMidi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A37F3E11C737FA2009515DF /* ofxMidi.cpp */; };
+		1A37F4001C737FA2009515DF /* ofxMidiIn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A37F3E41C737FA2009515DF /* ofxMidiIn.cpp */; };
+		1A37F4011C737FA2009515DF /* ofxMidiMessage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A37F3E61C737FA2009515DF /* ofxMidiMessage.cpp */; };
+		1A37F4021C737FA2009515DF /* ofxMidiOut.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A37F3E81C737FA2009515DF /* ofxMidiOut.cpp */; };
+		1A37F4031C737FA2009515DF /* RtMidi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A37F3F81C737FA2009515DF /* RtMidi.cpp */; };
+		1A37F4041C737FA2009515DF /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A37F3FA1C737FA2009515DF /* CoreMIDI.framework */; };
+		1A37F4051C737FA2009515DF /* CoreMIDI.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1A37F3FA1C737FA2009515DF /* CoreMIDI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1A436CAE1C63B1D30061143F /* aubio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A436CAD1C63B1D30061143F /* aubio.framework */; };
 		1CD33E884D9E3358252E82A1 /* ofxToggle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 907C5B5E104864A2D3A25745 /* ofxToggle.cpp */; };
 		1D5F3298C2FA073628012944 /* ofxCvContourFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C76DE5C29BDBD2CAA1DD0021 /* ofxCvContourFinder.cpp */; };
@@ -42,7 +53,6 @@
 		B6840996567E78436F7ECFAB /* ETF.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B047FF96258DC01792B272DB /* ETF.cpp */; };
 		C60077973A257D8F44947E2E /* ofxAubioBlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 737C0C27DB7B0C9484DCEBAE /* ofxAubioBlock.cpp */; };
 		C602002DE761F9B52DB4400A /* ObjectFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE75A3FBA2C2D87D14F06FE6 /* ObjectFinder.cpp */; };
-		C6A557419E961E61AC0F6481 /* CircularTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43177B638AF5A54B432134FB /* CircularTexture.cpp */; };
 		CAA4584E574DF68558BDE99F /* ofxSlitScan.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9BECBF64EE56B0205CDD6C29 /* ofxSlitScan.cpp */; };
 		D3301F6A0B43BB293ED97C1D /* ofxCvShortImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A4DD23693DFAB8EC05FAA5D /* ofxCvShortImage.cpp */; };
 		D75776B1465EF369BB2B19CD /* ofxFFTLive.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 803F1723C773514ECB0B2603 /* ofxFFTLive.cpp */; };
@@ -81,6 +91,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				1A37F4051C737FA2009515DF /* CoreMIDI.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +123,28 @@
 		17CE5A4068930946980DE788 /* stabilizer.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = stabilizer.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/videostab/stabilizer.hpp; sourceTree = SOURCE_ROOT; };
 		17E65988300FBD9AAA2CD0CA /* ofxGui.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxGui.h; path = ../../../addons/ofxGui/src/ofxGui.h; sourceTree = SOURCE_ROOT; };
 		18E16A7CA55F6761C64833F7 /* vec_traits.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = vec_traits.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/gpu/device/vec_traits.hpp; sourceTree = SOURCE_ROOT; };
+		1A1579DE1C74C0B500AB51A3 /* MidiManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MidiManager.cpp; sourceTree = "<group>"; };
+		1A1579DF1C74C0B500AB51A3 /* MidiManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MidiManager.h; sourceTree = "<group>"; };
+		1A37F3D01C737FA2009515DF /* ofxRtMidiIn.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxRtMidiIn.cpp; sourceTree = "<group>"; };
+		1A37F3D11C737FA2009515DF /* ofxRtMidiIn.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxRtMidiIn.h; sourceTree = "<group>"; };
+		1A37F3D21C737FA2009515DF /* ofxRtMidiOut.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxRtMidiOut.cpp; sourceTree = "<group>"; };
+		1A37F3D31C737FA2009515DF /* ofxRtMidiOut.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxRtMidiOut.h; sourceTree = "<group>"; };
+		1A37F3DF1C737FA2009515DF /* ofxBaseMidi.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxBaseMidi.cpp; sourceTree = "<group>"; };
+		1A37F3E01C737FA2009515DF /* ofxBaseMidi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxBaseMidi.h; sourceTree = "<group>"; };
+		1A37F3E11C737FA2009515DF /* ofxMidi.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxMidi.cpp; sourceTree = "<group>"; };
+		1A37F3E21C737FA2009515DF /* ofxMidi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxMidi.h; sourceTree = "<group>"; };
+		1A37F3E31C737FA2009515DF /* ofxMidiConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxMidiConstants.h; sourceTree = "<group>"; };
+		1A37F3E41C737FA2009515DF /* ofxMidiIn.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxMidiIn.cpp; sourceTree = "<group>"; };
+		1A37F3E51C737FA2009515DF /* ofxMidiIn.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxMidiIn.h; sourceTree = "<group>"; };
+		1A37F3E61C737FA2009515DF /* ofxMidiMessage.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxMidiMessage.cpp; sourceTree = "<group>"; };
+		1A37F3E71C737FA2009515DF /* ofxMidiMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxMidiMessage.h; sourceTree = "<group>"; };
+		1A37F3E81C737FA2009515DF /* ofxMidiOut.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxMidiOut.cpp; sourceTree = "<group>"; };
+		1A37F3E91C737FA2009515DF /* ofxMidiOut.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxMidiOut.h; sourceTree = "<group>"; };
+		1A37F3EA1C737FA2009515DF /* ofxMidiTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxMidiTypes.h; sourceTree = "<group>"; };
+		1A37F3F71C737FA2009515DF /* readme */ = {isa = PBXFileReference; lastKnownFileType = text; path = readme; sourceTree = "<group>"; };
+		1A37F3F81C737FA2009515DF /* RtMidi.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = RtMidi.cpp; sourceTree = "<group>"; };
+		1A37F3F91C737FA2009515DF /* RtMidi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RtMidi.h; sourceTree = "<group>"; };
+		1A37F3FA1C737FA2009515DF /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = ../../../../../../../System/Library/Frameworks/CoreMIDI.framework; sourceTree = "<group>"; };
 		1A436CAD1C63B1D30061143F /* aubio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = aubio.framework; sourceTree = "<group>"; };
 		1A9ED14A070186E3021B6A6D /* ofxSlitScan.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxSlitScan.h; path = ../../../addons/ofxSlitScan/src/ofxSlitScan.h; sourceTree = SOURCE_ROOT; };
 		1AD5FD8CB7EA240501080287 /* vec_math.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = vec_math.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/gpu/device/vec_math.hpp; sourceTree = SOURCE_ROOT; };
@@ -120,7 +153,6 @@
 		1D9A138564A5FC9CE23B0404 /* Effect.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = Effect.h; path = src/Effect.h; sourceTree = SOURCE_ROOT; };
 		1E95EFD35ED9C5D97F2F015E /* timer.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = timer.h; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/flann/timer.h; sourceTree = SOURCE_ROOT; };
 		1F9D46D19614774956DFE362 /* seam_finders.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = seam_finders.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/stitching/detail/seam_finders.hpp; sourceTree = SOURCE_ROOT; };
-		22F6D6E5A33281C25BD03186 /* CircularTexture.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = CircularTexture.h; path = src/CircularTexture.h; sourceTree = SOURCE_ROOT; };
 		238BB8FC8860C7A7012B2E27 /* ofxAubioMelBands.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxAubioMelBands.h; path = ../../../addons/ofxAubio/src/ofxAubioMelBands.h; sourceTree = SOURCE_ROOT; };
 		23A1C37E36041498070B7E4D /* ofxNestedFileLoader.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxNestedFileLoader.cpp; path = ../../../addons/ofxNestedFileLoader/src/ofxNestedFileLoader.cpp; sourceTree = SOURCE_ROOT; };
 		2411F6B35DAAAE5083D51167 /* motion_estimators.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = motion_estimators.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/stitching/detail/motion_estimators.hpp; sourceTree = SOURCE_ROOT; };
@@ -146,7 +178,6 @@
 		402C8F4015542356D362AC88 /* Calibration.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = Calibration.cpp; path = ../../../addons/ofxCv/libs/ofxCv/src/Calibration.cpp; sourceTree = SOURCE_ROOT; };
 		417A0B7154103C22ECC253E8 /* reduce_key_val.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = reduce_key_val.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/gpu/device/detail/reduce_key_val.hpp; sourceTree = SOURCE_ROOT; };
 		41E9090E543FC2D51BFD312C /* warp_reduce.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = warp_reduce.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/gpu/device/warp_reduce.hpp; sourceTree = SOURCE_ROOT; };
-		43177B638AF5A54B432134FB /* CircularTexture.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = CircularTexture.cpp; path = src/CircularTexture.cpp; sourceTree = SOURCE_ROOT; };
 		44A8175B7C8A100B5BEF5DE4 /* autocalib.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = autocalib.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/stitching/detail/autocalib.hpp; sourceTree = SOURCE_ROOT; };
 		452417865E4BFB10C9CBF8A2 /* internal.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = internal.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/core/internal.hpp; sourceTree = SOURCE_ROOT; };
 		4524C0ED0C2DD3E085CE3350 /* ObjectFinder.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ObjectFinder.h; path = ../../../addons/ofxCv/libs/ofxCv/include/ofxCv/ObjectFinder.h; sourceTree = SOURCE_ROOT; };
@@ -361,6 +392,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */,
+				1A37F4041C737FA2009515DF /* CoreMIDI.framework in Frameworks */,
 				1A436CAE1C63B1D30061143F /* aubio.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -446,6 +478,67 @@
 				A0399084868E7CAFB7E3D8E9 /* retina.hpp */,
 			);
 			name = contrib;
+			sourceTree = "<group>";
+		};
+		1A37F3CD1C737FA2009515DF /* ofxMidi */ = {
+			isa = PBXGroup;
+			children = (
+				1A37F3CE1C737FA2009515DF /* src */,
+				1A37F3EB1C737FA2009515DF /* libs */,
+				1A37F3FA1C737FA2009515DF /* CoreMIDI.framework */,
+			);
+			name = ofxMidi;
+			sourceTree = "<group>";
+		};
+		1A37F3CE1C737FA2009515DF /* src */ = {
+			isa = PBXGroup;
+			children = (
+				1A37F3CF1C737FA2009515DF /* desktop */,
+				1A37F3DF1C737FA2009515DF /* ofxBaseMidi.cpp */,
+				1A37F3E01C737FA2009515DF /* ofxBaseMidi.h */,
+				1A37F3E11C737FA2009515DF /* ofxMidi.cpp */,
+				1A37F3E21C737FA2009515DF /* ofxMidi.h */,
+				1A37F3E31C737FA2009515DF /* ofxMidiConstants.h */,
+				1A37F3E41C737FA2009515DF /* ofxMidiIn.cpp */,
+				1A37F3E51C737FA2009515DF /* ofxMidiIn.h */,
+				1A37F3E61C737FA2009515DF /* ofxMidiMessage.cpp */,
+				1A37F3E71C737FA2009515DF /* ofxMidiMessage.h */,
+				1A37F3E81C737FA2009515DF /* ofxMidiOut.cpp */,
+				1A37F3E91C737FA2009515DF /* ofxMidiOut.h */,
+				1A37F3EA1C737FA2009515DF /* ofxMidiTypes.h */,
+			);
+			name = src;
+			path = ../../../addons/ofxMidi/src;
+			sourceTree = "<group>";
+		};
+		1A37F3CF1C737FA2009515DF /* desktop */ = {
+			isa = PBXGroup;
+			children = (
+				1A37F3D01C737FA2009515DF /* ofxRtMidiIn.cpp */,
+				1A37F3D11C737FA2009515DF /* ofxRtMidiIn.h */,
+				1A37F3D21C737FA2009515DF /* ofxRtMidiOut.cpp */,
+				1A37F3D31C737FA2009515DF /* ofxRtMidiOut.h */,
+			);
+			path = desktop;
+			sourceTree = "<group>";
+		};
+		1A37F3EB1C737FA2009515DF /* libs */ = {
+			isa = PBXGroup;
+			children = (
+				1A37F3F61C737FA2009515DF /* rtmidi */,
+			);
+			name = libs;
+			path = ../../../addons/ofxMidi/libs;
+			sourceTree = "<group>";
+		};
+		1A37F3F61C737FA2009515DF /* rtmidi */ = {
+			isa = PBXGroup;
+			children = (
+				1A37F3F71C737FA2009515DF /* readme */,
+				1A37F3F81C737FA2009515DF /* RtMidi.cpp */,
+				1A37F3F91C737FA2009515DF /* RtMidi.h */,
+			);
+			path = rtmidi;
 			sourceTree = "<group>";
 		};
 		1B64B7957A22C4BDA1592DD4 /* libs */ = {
@@ -889,6 +982,7 @@
 				92DDF90AFF14815B41ED2DDC /* ofxNestedFileLoader */,
 				A0B90D3B0ADB9C1716816714 /* ofxOpenCv */,
 				DDC2887E401806EB6DF29874 /* ofxSlitScan */,
+				1A37F3CD1C737FA2009515DF /* ofxMidi */,
 			);
 			name = addons;
 			sourceTree = "<group>";
@@ -1042,8 +1136,6 @@
 				E4B69E1D0A3A1BDC003C02F2 /* main.cpp */,
 				E4B69E1E0A3A1BDC003C02F2 /* ofApp.cpp */,
 				E4B69E1F0A3A1BDC003C02F2 /* ofApp.h */,
-				43177B638AF5A54B432134FB /* CircularTexture.cpp */,
-				22F6D6E5A33281C25BD03186 /* CircularTexture.h */,
 				71A9D9D6A023CBE720C352F0 /* ContentManager.cpp */,
 				B48B33D3515DB4457B5B049C /* ContentManager.h */,
 				7FF487DF4DCE937A2B7E68CD /* Effect.cpp */,
@@ -1053,6 +1145,8 @@
 				5D0E813C98942B35F9AABDA1 /* Sparticles.h */,
 				D15530DCD0DD99D7B52FA536 /* videoTiler.cpp */,
 				C1770917329FCF9260CD84EC /* videoTiler.h */,
+				1A1579DE1C74C0B500AB51A3 /* MidiManager.cpp */,
+				1A1579DF1C74C0B500AB51A3 /* MidiManager.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -1198,8 +1292,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
+				1A37F4001C737FA2009515DF /* ofxMidiIn.cpp in Sources */,
+				1A1579E01C74C0B500AB51A3 /* MidiManager.cpp in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* ofApp.cpp in Sources */,
-				C6A557419E961E61AC0F6481 /* CircularTexture.cpp in Sources */,
 				3A67D655D54AEC6753A9EF0D /* ContentManager.cpp in Sources */,
 				979774E08943CEFC29D7B141 /* Effect.cpp in Sources */,
 				00CCD5E465DF3D1162E7B56D /* Sparticles.cpp in Sources */,
@@ -1208,16 +1303,21 @@
 				C60077973A257D8F44947E2E /* ofxAubioBlock.cpp in Sources */,
 				67383740F5CC47ED5F955A76 /* ofxAubioMelBands.cpp in Sources */,
 				9C7B8B4D99CDFC508E76CC3A /* ofxAubioOnset.cpp in Sources */,
+				1A37F4021C737FA2009515DF /* ofxMidiOut.cpp in Sources */,
+				1A37F4011C737FA2009515DF /* ofxMidiMessage.cpp in Sources */,
 				101D2DB773940813A5C898CD /* ofxAubioPitch.cpp in Sources */,
 				B6840996567E78436F7ECFAB /* ETF.cpp in Sources */,
+				1A37F3FD1C737FA2009515DF /* ofxRtMidiOut.cpp in Sources */,
 				F76B4A79BD8DE4854141CB47 /* fdog.cpp in Sources */,
 				EBCDE831EFAE08274E799C97 /* Calibration.cpp in Sources */,
 				6AABAB39E82AF5CFEA23A205 /* ContourFinder.cpp in Sources */,
 				45CC483A999BF1065A6B926C /* Distance.cpp in Sources */,
+				1A37F3FF1C737FA2009515DF /* ofxMidi.cpp in Sources */,
 				5CC34D433F5806179935B89D /* Flow.cpp in Sources */,
 				2023EF517ED2D8B397511D4B /* Helpers.cpp in Sources */,
 				311DF864378748129984EA1D /* Kalman.cpp in Sources */,
 				C602002DE761F9B52DB4400A /* ObjectFinder.cpp in Sources */,
+				1A37F4031C737FA2009515DF /* RtMidi.cpp in Sources */,
 				7CDAD32BE4FA46701E3552C7 /* RunningBackground.cpp in Sources */,
 				10B69DE456AED1288FC9316B /* Tracker.cpp in Sources */,
 				A6668C5B1272D7FCD5B5A16F /* Utilities.cpp in Sources */,
@@ -1239,6 +1339,8 @@
 				1D5F3298C2FA073628012944 /* ofxCvContourFinder.cpp in Sources */,
 				169D3C72FDE6C5590A1616F5 /* ofxCvFloatImage.cpp in Sources */,
 				FB09C6B2A1DA0EA217240CB8 /* ofxCvGrayscaleImage.cpp in Sources */,
+				1A37F3FC1C737FA2009515DF /* ofxRtMidiIn.cpp in Sources */,
+				1A37F3FE1C737FA2009515DF /* ofxBaseMidi.cpp in Sources */,
 				E212C821D1064B92DD953A42 /* ofxCvHaarFinder.cpp in Sources */,
 				63020F16C7E8DED980111241 /* ofxCvImage.cpp in Sources */,
 				D3301F6A0B43BB293ED97C1D /* ofxCvShortImage.cpp in Sources */,
@@ -1486,6 +1588,7 @@
 					../../../addons/ofxOpenCv/libs/opencv/lib/osx/opencv.a,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)Debug";
+				USER_HEADER_SEARCH_PATHS = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1560,6 +1663,7 @@
 					../../../addons/ofxOpenCv/libs/opencv/lib/osx/opencv.a,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				USER_HEADER_SEARCH_PATHS = "";
 				WRAPPER_EXTENSION = app;
 				baseConfigurationReference = E4EB6923138AFD0F00A09F29;
 			};

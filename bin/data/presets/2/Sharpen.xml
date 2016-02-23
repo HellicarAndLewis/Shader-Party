@@ -1,6 +1,6 @@
 <Sharpen>
 	<The_Mix>0.5</The_Mix>
-	<Weirdness>0.5</Weirdness>
+	<Weirdness>0.220434</Weirdness>
 <Sharpen/>
 <Amount>0.5</Amount>
 	<fftConnected>0</fftConnected>
@@ -9,6 +9,6 @@
 	<Amount_channel>0</Amount_channel>
 	<The_Mix_connected>0</The_Mix_connected>
 	<The_Mix_channel>0</The_Mix_channel>
-	<Weirdness_connected>0</Weirdness_connected>
+	<Weirdness_connected>1</Weirdness_connected>
 	<Weirdness_channel>0</Weirdness_channel>
 </Sharpen>

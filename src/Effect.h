@@ -13,7 +13,6 @@
 #include "MotionAmplifier.h"
 
 class Effect {
-    
     ofShader shader;
     map<string, ofParameter<bool>* > boolUniforms;
     string uniformImageName;
@@ -26,28 +25,36 @@ class Effect {
     bool uniformImageSet, /*uniformCircularTexSet,*/ uniformVectorArraySet, motionAmpLoaded;
     ofParameterGroup uniformsGroup;
     int numFFTChannels;
+    int controllerNumber;
     
 public:
     Effect();
     void setSharedUniforms(ofTexture diffuse, ofTexture vectorField, int screenWidth, int screenHeight) {
         shader.setUniformTexture( "diffuseTexture", diffuse, 0 );
         shader.setUniformTexture( "vectorField", vectorField, 2 );
+        shader.setUniform2f( "diffuseTextureSize", diffuse.getWidth(), diffuse.getHeight() );
         shader.setUniform2f( "vectorFieldSize", vectorField.getWidth(), vectorField.getHeight() );
         shader.setUniform1f( "time", ofGetElapsedTimef() );
         shader.setUniform2f( "size", (float)screenWidth, (float)screenHeight);
         shader.setUniform2f( "resolution", (float)screenWidth, (float)screenHeight);
     }
     map<string, ofParameter<float>* > floatUniforms;
+    vector< ofParameter<float>* > floatUniformsVector;
     map<string, ofParameter<bool>* > fftConnected;
     map<string, ofParameter<int>* > fftChannels;
     ofxPanel gui;
     
+    string lastParamChanged;
     void updateFromFFT(vector<float> fft, float upperCut, float lowerCut);
     void updateFromFloat(float value, float upperCut, float lowerCut);
+    void updateFromFloat(float value, int param);
+
     
     void setMotionAmp(MotionAmplifier* amp);
     void setUniformFlowField(ofTexture* texture);
     void setUniformImage(string name, ofImage* img);
+    void setControllerNumber(int _controllerNumber) { controllerNumber = _controllerNumber; };
+    int getControllerNumber() { return controllerNumber; };
     void loadSettings();
     void setGuiPosition(int x, int y);
     float getGuiWidth();

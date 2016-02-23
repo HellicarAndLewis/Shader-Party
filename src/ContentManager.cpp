@@ -14,25 +14,30 @@
 void ContentManager::contentCreator::setupGui(string name) {
     gui.setup(name);
     EffectsList.setName("Active Effects");
-    EffectsList.add(voronoiOn.set("Voronoi", false));
-    EffectsList.add(badTvOn.set("Bad TV", false));
-    EffectsList.add(colorMapOn.set("Color Map", false));
-    EffectsList.add(embossOn.set("Emboss", false));
+    EffectsList.add(badVHSOn.set("Bad VHS", false));
+    EffectsList.add(nightVisionOn.set("Night Vision", false));
+    EffectsList.add(pixelationOn.set("Pixelation", false));
     EffectsList.add(rgbShiftOn.set("RGB Shift", false));
     EffectsList.add(scanLinesOn.set("Scan Lines", false));
     EffectsList.add(sharpenOn.set("Sharpen", false));
+    EffectsList.add(colorMapOn.set("Color Map", false));
+    EffectsList.add(badTvOn.set("Bad TV", false));
+    EffectsList.add(voronoiOn.set("Voronoi", false));
     EffectsList.add(endarkenOn.set("Endarken", false));
     EffectsList.add(explodeOn.set("Explode", false));
     
-    activeEffects.push_back(&voronoiOn);
-    activeEffects.push_back(&badTvOn);
-    activeEffects.push_back(&colorMapOn);
-    activeEffects.push_back(&embossOn);
+    activeEffects.push_back(&badVHSOn);
+    activeEffects.push_back(&nightVisionOn);
+    activeEffects.push_back(&pixelationOn);
     activeEffects.push_back(&rgbShiftOn);
     activeEffects.push_back(&scanLinesOn);
     activeEffects.push_back(&sharpenOn);
+    activeEffects.push_back(&colorMapOn);
+    activeEffects.push_back(&badTvOn);
+    activeEffects.push_back(&voronoiOn);
     activeEffects.push_back(&endarkenOn);
     activeEffects.push_back(&explodeOn);
+
     activeEffectsInOrder.clear();
     gui.add(EffectsList);
     
