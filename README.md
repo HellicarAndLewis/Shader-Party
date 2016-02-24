@@ -9,3 +9,4 @@ ofxGui
 ofxOpenCv
 ofxFFT
 ofxAubio
+ofxSyphon
