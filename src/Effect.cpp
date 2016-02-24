@@ -38,7 +38,7 @@ void Effect::setGuiPosition(int x, int y) {
 
 void Effect::setupGui(string name,int numChannels) {
     gui.setup(name, "settings/" + name + ".xml");
-    active.set(name+"On", false);
+    active.set(name, false);
     numFFTChannels = numChannels/2;
 }
 
