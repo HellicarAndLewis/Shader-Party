@@ -13,8 +13,6 @@ videoTiler::videoTiler(int width, int height, int depth) {
     slitScan.setup(width, height, depth);
     slitScan.setTimeDelayAndWidth(0, depth);
     gui.setup("Tiling", "settings/Tiler.xml");
-    gui.add(numRows.set("numRows", 1, 1, 6));
-    gui.add(numCols.set("numCols", 1, 1, 6));
     gui.add(size.set("size", 1, 1, 5));
     //gui.setPosition(ofGetScreenWidth()/2, ofGetScreenHeight()/2);
     gui.loadFromFile("settings/Tiler.xml");

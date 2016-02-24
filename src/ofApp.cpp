@@ -74,26 +74,26 @@ void ofApp::setup(){
     }
     
     int num = 1;
-    
-    //Bad VHS
-    Effect* badVHS = new Effect();
-    badVHS->setUniformFlowField(&amplifier.flowTexture);
-    badVHS->setupGui("Bad VHS", numChannels);
-    badVHS->addUniformFloat("waves", "Waves", 1.0, 0.0, 10.0);
-    badVHS->addUniformFloat("chromaAb", "Chroma AB", 1.0, 0.0, 10.0);
-    badVHS->loadShader("shaders/vhs.frag");
-    badVHS->setControllerNumber(num++);
-    effects.push_back(badVHS);
-    
-    //Night Vision
-    Effect* nightVision = new Effect();
-    nightVision->setUniformFlowField(&amplifier.flowTexture);
-    nightVision->setupGui("Night Vision", numChannels);
-    nightVision->addUniformFloat("luminanceThreshold", "Luminance", 0.2, 0.01, 1.0);
-    nightVision->addUniformFloat("colorAmplification", "Color Amp", 4.0, 0.0, 20.0);
-    nightVision->loadShader("shaders/nightVision.frag");
-    nightVision->setControllerNumber(num++);
-    effects.push_back(nightVision);
+//    
+//    //Bad VHS
+//    Effect* badVHS = new Effect();
+//    badVHS->setUniformFlowField(&amplifier.flowTexture);
+//    badVHS->setupGui("Bad VHS", numChannels);
+//    badVHS->addUniformFloat("waves", "Waves", 1.0, 0.0, 10.0);
+//    badVHS->addUniformFloat("chromaAb", "Chroma AB", 1.0, 0.0, 10.0);
+//    badVHS->loadShader("shaders/vhs.frag");
+//    badVHS->setControllerNumber(num++);
+//    effects.push_back(badVHS);
+//    
+//    //Night Vision
+//    Effect* nightVision = new Effect();
+//    nightVision->setUniformFlowField(&amplifier.flowTexture);
+//    nightVision->setupGui("Night Vision", numChannels);
+//    nightVision->addUniformFloat("luminanceThreshold", "Luminance", 0.2, 0.01, 1.0);
+//    nightVision->addUniformFloat("colorAmplification", "Color Amp", 4.0, 0.0, 20.0);
+//    nightVision->loadShader("shaders/nightVision.frag");
+//    nightVision->setControllerNumber(num++);
+//    effects.push_back(nightVision);
     
     //Pixels
     Effect* pixels = new Effect();
@@ -214,6 +214,7 @@ void ofApp::setup(){
     //main.setup();
     main.add(camInput.set("Camera On", false));
     main.add(PartyOn.set("Party Mode", false));
+    main.add(syphonOut.set("Syphon Output", false));
     PartyOn.addListener(this, &ofApp::onPartyModeChange);
     
     string xmlSettingsPath = "settings/Settings.xml";
@@ -269,6 +270,9 @@ void ofApp::setup(){
     mosaic->gui.setPosition(10, 675);
     
     activeBuffer = swapIn;
+    
+    texOutputToSyphon.setName("Screen Output");
+
 }
 
 //--------------------------------------------------------------
@@ -375,7 +379,7 @@ void ofApp::draw(){
             amplifier.drawGui();
             
             fftCut.draw();
-            
+                        
             int fftWidth = WIDTH/2;
             int fftHeight = 100;
 #ifdef USING_FFT
@@ -392,13 +396,23 @@ void ofApp::draw(){
     } else {
         mosaic->drawWithTimeOffset(WIDTH/2 - VID_WIDTH/2, HEIGHT/2 - VID_HEIGHT/2, VID_WIDTH, VID_HEIGHT);
         
-        mosaic->drawWithTimeOffset(WIDTH, 0, OUT_WIDTH, OUT_HEIGHT);
+        finalMix.begin();
+            mosaic->drawWithTimeOffset(0, 0, VID_WIDTH, VID_HEIGHT);
+        finalMix.end();
+        
+        if(syphonOut) {
+            texOutputToSyphon.publishTexture(&(finalMix.getTexture()));
+        } else {
+            finalMix.draw(WIDTH, 0, OUT_WIDTH, OUT_HEIGHT);
+        }
+
+        
         
         mosaic->drawGui();
         
         gui.draw();
         presets.draw();
-        
+                
         contentManager->drawGuis();
         
         amplifier.drawGui();

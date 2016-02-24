@@ -15,6 +15,7 @@
 class Effect {
     ofShader shader;
     map<string, ofParameter<bool>* > boolUniforms;
+    ofParameter<bool> active;
     string uniformImageName;
     ofImage* uniformImage;
     ofTexture* vectorField;
@@ -55,6 +56,7 @@ public:
     void setUniformImage(string name, ofImage* img);
     void setControllerNumber(int _controllerNumber) { controllerNumber = _controllerNumber; };
     int getControllerNumber() { return controllerNumber; };
+    ofParameter<bool> * getActiveParameter() { return &active; };
     void loadSettings();
     void setGuiPosition(int x, int y);
     float getGuiWidth();

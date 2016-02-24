@@ -13,6 +13,7 @@
 #include "ContentManager.h"
 #include "ofxAubio.h"
 #include "midiManager.h"
+#include "ofxSyphon.h"
 
 class ofApp : public ofBaseApp{
     
@@ -59,6 +60,8 @@ class ofApp : public ofBaseApp{
     
         ofParameter<bool> PartyOn; //Garth
         ofParameter<bool> camInput;
+        ofParameter<bool> syphonOut;
+
     
         ofVideoGrabber cam;
     
@@ -89,4 +92,6 @@ class ofApp : public ofBaseApp{
         ofImage currImg, finalOutput;
             
         ofFbo finalMix, motionWarp, mosaicDraw;
+    
+        ofxSyphonServer texOutputToSyphon;
 };

@@ -25,18 +25,18 @@ public:
         ofParameterGroup EffectsList;
         
         vector< ofParameter<bool>* > activeEffects;
-        ofParameter<bool> voronoiOn;
-        ofParameter<bool> badTvOn;
-        ofParameter<bool> colorMapOn;
-        ofParameter<bool> embossOn;
-        ofParameter<bool> rgbShiftOn;
-        ofParameter<bool> scanLinesOn;
-        ofParameter<bool> sharpenOn;
-        ofParameter<bool> endarkenOn;
-        ofParameter<bool> explodeOn;
-        ofParameter<bool> pixelationOn;
-        ofParameter<bool> nightVisionOn;
-        ofParameter<bool> badVHSOn;
+//        ofParameter<bool> voronoiOn;
+//        ofParameter<bool> badTvOn;
+//        ofParameter<bool> colorMapOn;
+//        ofParameter<bool> embossOn;
+//        ofParameter<bool> rgbShiftOn;
+//        ofParameter<bool> scanLinesOn;
+//        ofParameter<bool> sharpenOn;
+//        ofParameter<bool> endarkenOn;
+//        ofParameter<bool> explodeOn;
+//        ofParameter<bool> pixelationOn;
+//        ofParameter<bool> nightVisionOn;
+//        ofParameter<bool> badVHSOn;
         
         ofxPanel Presets;
         ofParameter<int> presetNum;
