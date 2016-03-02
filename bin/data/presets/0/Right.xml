@@ -17,13 +17,14 @@
 		<Active_Effects>
 			<Voronoi>0</Voronoi>
 			<Bad_TV>0</Bad_TV>
-			<Color_Map>0</Color_Map>
+			<Color_Map>1</Color_Map>
 			<Emboss>0</Emboss>
 			<RGB_Shift>0</RGB_Shift>
 			<Scan_Lines>0</Scan_Lines>
 			<Sharpen>0</Sharpen>
 			<Endarken>0</Endarken>
-		<Explode>1</Explode>
+		<Explode>0</Explode>
+		<Pixelation>1</Pixelation>
 		</Active_Effects>
 	</Right>
 </Left>

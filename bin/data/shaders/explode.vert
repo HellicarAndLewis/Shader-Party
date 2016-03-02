@@ -85,10 +85,8 @@ float snoise(vec2 v)
 
 void main() {
     vec2 baseCoord = gl_Vertex.xy;
-    texCoord = baseCoord * 1; //sourceRescale;
+    texCoord = baseCoord; //sourceRescale;
     vec3 col = texture2DRect(diffuseTexture, texCoord).xyz;
-    float brightness = col.r + col.g + col.g;
-    brightness /= 3;
     vec4 position = gl_Vertex;
     position.x += x_Strength * snoise(gl_Vertex.xy/noiseScale + time * speed + 43.0);
     position.y += y_Strength * snoise(gl_Vertex.xy/noiseScale + time * speed + 17.0);

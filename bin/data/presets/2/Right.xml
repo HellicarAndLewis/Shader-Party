@@ -1,14 +1,15 @@
 <Right>
 	<Active_Effects>
 		<Voronoi>0</Voronoi>
-		<Bad_TV>0</Bad_TV>
+		<Bad_TV>1</Bad_TV>
 		<Color_Map>0</Color_Map>
 		<Emboss>0</Emboss>
-		<RGB_Shift>0</RGB_Shift>
-		<Scan_Lines>0</Scan_Lines>
+		<RGB_Shift>1</RGB_Shift>
+		<Scan_Lines>1</Scan_Lines>
 		<Sharpen>0</Sharpen>
 		<Endarken>0</Endarken>
 	<Explode>0</Explode>
+	<Pixelation>0</Pixelation>
 	</Active_Effects>
 <Right/>
 </Right>
