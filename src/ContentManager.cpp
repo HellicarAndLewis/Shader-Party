@@ -8,7 +8,6 @@
 
 #include "ContentManager.h"
 
-
 // CONTENT CREATOR STUFF
 
 void ContentManager::contentCreator::setupGui(string name) {
@@ -18,7 +17,7 @@ void ContentManager::contentCreator::setupGui(string name) {
         EffectsList.add(*(*effects)[i]->getActiveParameter());
         activeEffects.push_back((*effects)[i]->getActiveParameter());
     }
-
+    
     activeEffectsInOrder.clear();
     gui.add(EffectsList);
     
@@ -270,7 +269,17 @@ void ContentManager::updateCamera() {
         timeSinceLastSwap = ofGetElapsedTimef();
     }
     if(frame.particlesOn) {
-        scaledImage.setFromPixels(camera->getPixels(), camera->getWidth(), camera->getHeight());
+        float camWidth;
+        float camHeight;
+#ifdef USING_BLACKMAGIC
+        camWidth = camera->getColorTexture().getWidth();
+        camHeight = camera->getColorTexture().getHeight();
+        scaledImage.setFromPixels(camera->getColorPixels(), camWidth, camHeight);
+#else
+        camWidth = camera->getWidth();
+        camHeight = camera->getHeight();
+        scaledImage.setFromPixels(camera->getPixels(), canWidth, camHeight);
+#endif
         grayImage = scaledImage;
         
         // take the abs value of the difference between background and incoming and then threshold:
@@ -279,7 +288,7 @@ void ContentManager::updateCamera() {
         
         // find contours which are between the size of 20 pixels and 1/3 the w*h pixels.
         // also, find holes is set to true so we will get interior contours as well....
-        contourFinder.findContours(grayDiff, 20, (camera->getWidth()*camera->getHeight())/3, 10, true);	// find holes
+        contourFinder.findContours(grayDiff, 20, (camWidth*camHeight)/3, 10, true);	// find holes
         
         // now just stick some particles on the contour and emit them randomly
         for(int i = 0; i < contourFinder.nBlobs; i++) {
@@ -298,14 +307,14 @@ void ContentManager::updateCamera() {
         // grayBg = grayBg * 0.9 + grayImage * 0.1
         grayBg += grayImage;
         particles.update();
-        numEffectsOn = 0;
-        for(int i = 0; i < frame.EffectsList.size(); i++) {
-            if(frame.EffectsList.getBool(i)) {
-                numEffectsOn++;
-            }
-        }
-        frame.numEffectsOn = numEffectsOn;
     }
+    numEffectsOn = 0;
+    for(int i = 0; i < frame.EffectsList.size(); i++) {
+        if(frame.EffectsList.getBool(i)) {
+            numEffectsOn++;
+        }
+    }
+    frame.numEffectsOn = numEffectsOn;
 }
 
 void ContentManager::updateContent() {
@@ -328,14 +337,42 @@ void ContentManager::updateContent() {
 }
 
 void ContentManager::drawCamera() {
+    float camWidth;
+    float camHeight;
+#ifdef USING_BLACKMAGIC
+    camWidth = camera->getColorTexture().getWidth();
+    camHeight = camera->getColorTexture().getHeight();
+    ofImage img;
+    if(amplifier->Enabled) {
+
+        img.setFromPixels(camera->getColorPixels());
+        img.resize(VID_WIDTH, VID_HEIGHT);
+        amplifier->update(img);
+    }
+#else
     amplifier->update(*camera);
+#endif
     frame.buffer.begin();
     glBlendFuncSeparate(GL_ONE, GL_SRC_COLOR, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
     ofClear(0);
-    ofScale(-1, 1);
-    ofTranslate(-bufferWidth, 0);
+    if(flipInput->get()) {
+        ofScale(-1, 1);
+        ofTranslate(-bufferWidth, 0);
+    }
+#ifdef USING_BLACKMAGIC
+    if(amplifier->Enabled) {
+        amplifier->draw(img);
+    }
+    else {
+        ofPushMatrix();
+        ofScale(VID_WIDTH/camWidth, VID_HEIGHT/camHeight);
+        camera->drawColor();
+        ofPopMatrix();
+    }
+#else
     if(amplifier->Enabled) amplifier->draw(*camera);
     else camera->draw(0, 0, bufferWidth, bufferHeight);
+#endif
     if(frame.particlesOn) particles.draw();
     frame.buffer.end();
 }

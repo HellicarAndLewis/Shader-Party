@@ -1,11 +1,13 @@
 #pragma once
 
 //#define USING_FFT // uncomment this to use FFT instead of onset detection
+#define USING_BLACKMAGIC
 
 #include "ofMain.h"
 #include "ofxOpenCv.h"
 #include "ofxCv.h"
 #include "ofxGui.h"
+#include "ofxBlackMagic.h"
 #include "Effect.h"
 #include "MotionAmplifier.h"
 #include "videoTiler.h"
@@ -61,9 +63,13 @@ class ofApp : public ofBaseApp{
         ofParameter<bool> PartyOn; //Garth
         ofParameter<bool> camInput;
         ofParameter<bool> syphonOut;
+        ofParameter<bool> flipInput;
 
-    
-        ofVideoGrabber cam;
+#ifdef USING_BLACKMAGIC
+    ofxBlackMagic cam;
+#else
+    ofVideoGrabber cam;
+#endif
     
         ofVideoPlayer dieselHashtag;
     
@@ -72,6 +78,9 @@ class ofApp : public ofBaseApp{
         vector<ofVec2f> voronoiSeedLocs;
         vector<ofVec2f> voronoiSeedVels;
         vector<ofVec2f> voronoiInitVels;
+    
+        vector<ofVec2f> kaleidoscopeSeedLocs;
+        vector<ofVec2f> kaleidoscopeSeedNormals;
     
         bool drawGui;
     

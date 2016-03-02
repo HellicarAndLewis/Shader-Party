@@ -10,7 +10,6 @@
 
 Effect::Effect() {
     uniformImageSet = false;
-    uniformVectorArraySet = false;
     motionAmpLoaded = false;
     numFFTChannels = 0;
     lastParamChanged = "";
@@ -60,6 +59,7 @@ void Effect::addUniformFloat(string name, string parameterName, float initialVal
     floatUniformsVector.push_back(floatUniforms[name]);
     fftConnected[name] = new ofParameter<bool>();
     fftConnected[name]->set(parameterName + " connected", false);
+    lastParamChanged= parameterName;
 #ifdef USING_FFT
     fftChannels[name] = new ofParameter<int>();
     fftChannels[name]->set(parameterName + " channel", 0, 0, numFFTChannels);
@@ -78,10 +78,9 @@ void Effect::addUniformBool(string name, string parameterName, bool initialValue
 }
 
 void Effect::addUniformVectorArray(string name, float* _vectorArray, int _size) {
-    uniformVectorArrayName = name;
-    uniformVectorArray = _vectorArray;
-    uniformVectorArraySize = _size;
-    uniformVectorArraySet = true;
+    uniformVectorArrayNames.push_back(name);
+    uniformVectorArrays.push_back(_vectorArray);
+    uniformVectorArraySizes.push_back(_size);
 }
 
 void Effect::beginShader() {
@@ -96,8 +95,8 @@ void Effect::setUniqueUniforms() {
         shader.setUniformTexture(uniformImageName, *uniformImage, 1);
         shader.setUniform2f(uniformImageName + "Size", uniformImage->getWidth(), uniformImage->getHeight());
     }
-    if(uniformVectorArraySet) {
-        shader.setUniform2fv(uniformVectorArrayName, uniformVectorArray, uniformVectorArraySize);
+    for(int i = 0; i < uniformVectorArrays.size(); i++) {
+        shader.setUniform2fv(uniformVectorArrayNames[i], uniformVectorArrays[i], uniformVectorArraySizes[i]);
     }
 }
 

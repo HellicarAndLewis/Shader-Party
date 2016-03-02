@@ -11,11 +11,7 @@ private:
     float scaleFactor;
     ofVboMesh mesh;
     float rescale;
-    
-    ofParameter<float> strength;
-    ofParameter<float> learningRate;
-    ofParameter<bool> strengthConnected;
-    ofParameter<bool> learnRateConnected;
+
 #ifdef USING_FFT
     ofParameter<int> strengthChannel;
     ofParameter<int> learnRateChannel;
@@ -42,6 +38,11 @@ public:
     ofxPanel gui;
     ofParameter<bool> Enabled;
     ofTexture flowTexture;
+    
+    ofParameter<float> strength;
+    ofParameter<float> learningRate;
+    ofParameter<bool> strengthConnected;
+    ofParameter<bool> learnRateConnected;
 
     void setup(int w, int h, int stepSize, int numChannels, float rescale = 1) {
         this->rescale = rescale;

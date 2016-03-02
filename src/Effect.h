@@ -20,10 +20,10 @@ class Effect {
     ofImage* uniformImage;
     ofTexture* vectorField;
     MotionAmplifier* motionAmp;
-    string uniformVectorArrayName;
-    float* uniformVectorArray;
-    int uniformVectorArraySize;
-    bool uniformImageSet, /*uniformCircularTexSet,*/ uniformVectorArraySet, motionAmpLoaded;
+    vector<string> uniformVectorArrayNames;
+    vector<float*> uniformVectorArrays;
+    vector<int> uniformVectorArraySizes;
+    bool uniformImageSet, /*uniformCircularTexSet,*/ motionAmpLoaded;
     ofParameterGroup uniformsGroup;
     int numFFTChannels;
     int controllerNumber;
@@ -57,6 +57,7 @@ public:
     void setControllerNumber(int _controllerNumber) { controllerNumber = _controllerNumber; };
     int getControllerNumber() { return controllerNumber; };
     ofParameter<bool> * getActiveParameter() { return &active; };
+    void setActiveParameter(bool _param) { active.set(_param); };
     void loadSettings();
     void setGuiPosition(int x, int y);
     float getGuiWidth();

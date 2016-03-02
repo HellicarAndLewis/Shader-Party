@@ -30,6 +30,7 @@ void MidiManager::newMidiMessage(ofxMidiMessage& msg) {
     stringstream text;
     // draw the last recieved message contents to the screen
     
+    
     text << "control: " << midiMessage.control;
     cout<< text.str() <<endl;
     text.str(""); // clear
@@ -37,6 +38,8 @@ void MidiManager::newMidiMessage(ofxMidiMessage& msg) {
     text << "value: " << midiMessage.value;
     cout<< text.str() <<endl;
     text.str(""); // clear
+    
+   cout<<midiMessage.getStatusString(midiMessage.status)<<endl;
     
     cout<<midiMessage.toString()<<endl;
     vector<Effect *> * effects = contentManager->frame.effects;
@@ -49,6 +52,22 @@ void MidiManager::newMidiMessage(ofxMidiMessage& msg) {
     
     int val = midiMessage.value;
     
+    if(controller == 2) {
+        if(parameter == 3) {
+            int numTiles = ofMap(val, 0, 127, videoTiler->size.getMin(), videoTiler->size.getMax(), true);
+            videoTiler->size.set(numTiles);
+        }
+    }
+    if(controller == 1) {
+        if(parameter == 4) {
+            float strength = ofMap(val, 0, 127, motionAmplifier->strength.getMin(), motionAmplifier->strength.getMax(), true);
+            motionAmplifier->setStrength(strength);
+        } else if(parameter == 5) {
+            float learnRate = ofMap(val, 0, 127, motionAmplifier->learningRate.getMin(), motionAmplifier->learningRate.getMax(), true);
+            motionAmplifier->setLearningRate(learnRate);
+        }
+    }
+    
     for(int i = 0; i < effects->size(); i++) {
         Effect* effect = (*effects)[i];
         if(effect->getControllerNumber() == controller) {
@@ -57,7 +76,8 @@ void MidiManager::newMidiMessage(ofxMidiMessage& msg) {
                 if(parameter < effect->floatUniforms.size()) {
                     float value = ofMap(val, 0, 127, effect->floatUniformsVector[parameter]->getMin(), effect->floatUniformsVector[parameter]->getMax());
                     effect->updateFromFloat(value, parameter);
-                    contentManager->frame.activeEffects[controller-1]->set(true);
+                    effect->setActiveParameter(true);
+                    //contentManager->frame.activeEffects[controller-1]->set(true);
                     for(auto it = effect->floatUniforms.begin(); it != effect->floatUniforms.end(); it++) {
                         if(it->second == effect->floatUniformsVector[parameter]) {
                             effect->lastParamChanged = it->first;
@@ -68,16 +88,20 @@ void MidiManager::newMidiMessage(ofxMidiMessage& msg) {
             } else {
                 if (parameter == 0) {
                     if(val == 127) {
-                        if(contentManager->frame.activeEffects[controller-1]->get()) {
-                            contentManager->frame.activeEffects[controller-1]->set(false);
-                        } else {
-                            contentManager->frame.activeEffects[controller-1]->set(true);
-                        }
+                        effect->setActiveParameter(!(*effect->getActiveParameter()));
                     }
                 } else if (parameter == 1) {
                     if(val == 127) {
                         effect->fftConnected[effect->lastParamChanged]->set(!(effect->fftConnected[effect->lastParamChanged]->get()));
                     }
+                }
+            }
+        }
+        if(controller == 0) {
+            if(effect->getControllerNumber() == 9) {
+                cout<<val<<endl;
+                if(midiMessage.getStatusString(midiMessage.status) == "Note On") {
+                    effect->fftConnected[effect->lastParamChanged]->set(!(effect->fftConnected[effect->lastParamChanged]->get()));
                 }
             }
         }

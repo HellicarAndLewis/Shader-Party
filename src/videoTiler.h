@@ -16,8 +16,6 @@
 class videoTiler {
 public:
     ofxPanel gui;
-    ofParameter<int> numRows;
-    ofParameter<int> numCols;
     ofParameter<int> size;
     ofImage img;
     

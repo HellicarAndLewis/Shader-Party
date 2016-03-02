@@ -9,10 +9,16 @@
 #ifndef __ShaderParty__ContentManager__
 #define __ShaderParty__ContentManager__
 
+#define USING_BLACKMAGIC
+
+#define VID_WIDTH 1280
+#define VID_HEIGHT 720
+
 #include "ofMain.h"
 #include "ofxCv.h"
 #include "ofxOpenCv.h"
 #include "ofxGui.h"
+#include "ofxBlackMagic.h"
 #include "Effect.h"
 #include "videoTiler.h"
 #include "Sparticles.h"
@@ -88,7 +94,12 @@ public:
     
     ofVideoPlayer player;
     ofImage image;
+    
+#ifdef USING_BLACKMAGIC
+    ofxBlackMagic* camera;
+#else
     ofVideoGrabber* camera;
+#endif
     
     contentCreator frame;
     
@@ -101,6 +112,8 @@ public:
     ofFbo* swapIn;
     ofFbo* swapOut;
     
+    ofParameter<bool>* flipInput;
+    
     int bufferWidth, bufferHeight;
     
     ContentManager() {};
@@ -109,7 +122,14 @@ public:
     
     void setSwapBuffers( ofFbo* inBuff, ofFbo* outBuff);
     
+    void setFlipInput(ofParameter<bool>* _flipInput) { flipInput = _flipInput; };
+    
+#ifdef USING_BLACKMAGIC
+    void setCamera(ofxBlackMagic* cam) { camera = cam;};
+#else
     void setCamera(ofVideoGrabber* cam) { camera = cam;};
+#endif
+    
     
     void setTiler(videoTiler* newTiler) {frame.tiler = newTiler;};
     

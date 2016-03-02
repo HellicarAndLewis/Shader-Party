@@ -6,7 +6,8 @@
 #define OUT_HEIGHT 1080
 #define VID_WIDTH 1280
 #define VID_HEIGHT 720
-#define NUM_SEEDS 400
+#define NUM_VORONOI_SEEDS 200
+#define NUM_KALEIDOSCOPE_SEEDS 100
 #define NUM_CHANNELS 10
 
 void stopAndLoadNewVid(ofVideoPlayer* vidPlayer, string vidToLoad) {
@@ -61,16 +62,27 @@ void ofApp::setup(){
     fade.load("shaders/DummyVert.glsl", "shaders/FadeFrag.glsl");
     
     //setup seed locs for voronoi
-    voronoiSeedLocs.resize(NUM_SEEDS);
-    voronoiSeedVels.resize(NUM_SEEDS);
-    voronoiInitVels.resize(NUM_SEEDS);
-    for(int i=0; i < NUM_SEEDS; i++) {
-        ofVec2f loc = ofVec2f(ofRandom(WIDTH), ofRandom(HEIGHT));
+    voronoiSeedLocs.resize(NUM_VORONOI_SEEDS);
+    voronoiSeedVels.resize(NUM_VORONOI_SEEDS);
+    voronoiInitVels.resize(NUM_VORONOI_SEEDS);
+    for(int i=0; i < NUM_VORONOI_SEEDS; i++) {
+        ofVec2f loc = ofVec2f(ofRandom(VID_WIDTH), ofRandom(VID_HEIGHT));
         ofVec3f col = ofVec3f(ofRandom(255), ofRandom(255), ofRandom(255));
         ofVec2f vel = ofVec2f(ofRandom(-1.0, 1.0), ofRandom(-1.0, 1.0));
         voronoiSeedLocs[i] = loc;
         voronoiSeedVels[i] = vel;
         voronoiInitVels[i] = vel;
+    }
+    
+    
+    kaleidoscopeSeedLocs.resize(NUM_KALEIDOSCOPE_SEEDS);
+    kaleidoscopeSeedNormals.resize(NUM_KALEIDOSCOPE_SEEDS);
+    
+    for(int i = 0; i < NUM_KALEIDOSCOPE_SEEDS; i++) {
+        ofVec2f loc = ofVec2f(ofRandom(VID_WIDTH), ofRandom(VID_HEIGHT));
+        ofVec2f normal = ofVec2f(ofRandom(-1, 1), ofRandom(-1, 1));
+        kaleidoscopeSeedLocs[i] = loc;
+        kaleidoscopeSeedNormals[i] = normal;
     }
     
     int num = 1;
@@ -84,7 +96,7 @@ void ofApp::setup(){
 //    badVHS->loadShader("shaders/vhs.frag");
 //    badVHS->setControllerNumber(num++);
 //    effects.push_back(badVHS);
-//    
+    
 //    //Night Vision
 //    Effect* nightVision = new Effect();
 //    nightVision->setUniformFlowField(&amplifier.flowTexture);
@@ -94,13 +106,53 @@ void ofApp::setup(){
 //    nightVision->loadShader("shaders/nightVision.frag");
 //    nightVision->setControllerNumber(num++);
 //    effects.push_back(nightVision);
+//    
+//    //Glitch
+//    Effect* glitch =new Effect();
+//    ofImage* noiseImage = new ofImage();
+//    noiseImage->load("textures/multiColorStatic.jpg");
+//    glitch->setUniformFlowField(&amplifier.flowTexture);
+//    glitch->setUniformImage("coloredNoise", noiseImage);
+//    glitch->setupGui("Glitch", numChannels);
+//    glitch->loadShader("shaders/glitch.frag");
+//    glitch->setControllerNumber(num++);
+//    effects.push_back(glitch);
+    
+    //Kaleidoscope
+    Effect* kaleidoscope = new Effect();
+    kaleidoscope->setUniformFlowField(&amplifier.flowTexture);
+    kaleidoscope->setupGui("Kaleidoscope", numChannels);
+    kaleidoscope->loadShader("shaders/kaleidoscope2.frag");
+    kaleidoscope->addUniformFloat("slide1X", "Slide1X", 0.0, 0.0, VID_WIDTH);
+    kaleidoscope->addUniformFloat("slide1Y", "Slide1Y", 0.0, 0.0, VID_HEIGHT);
+    kaleidoscope->addUniformFloat("slide2X", "Slide2X", 0.0, 0.0, VID_WIDTH);
+    kaleidoscope->addUniformFloat("slide2Y", "Slide2Y", 0.0, 0.0, VID_HEIGHT);
+    kaleidoscope->addUniformFloat("shiftX", "ShiftX", 0.0, 0.0, VID_WIDTH);
+    kaleidoscope->addUniformFloat("shiftY", "ShiftY", 0.0, 0.0, VID_HEIGHT);
+    kaleidoscope->addUniformFloat("sides", "Sides", 1.0, 0.0, 32.0);
+    kaleidoscope->addUniformFloat("rotation", "Rotation", 0.0, 0.0, 1.0);
+    kaleidoscope->addUniformFloat("size", "Size", 0.0, 0.0, 2.0);
+    kaleidoscope->addUniformFloat("angle", "Angle", 0.0, 0.0, 1.0);
+
+//    kaleidoscope->addUniformFloat("sections", "Sections", 5.0, 1.0, 100.0);
+//    kaleidoscope->addUniformFloat("centerX", "in X", VID_WIDTH/2, 0.0, VID_WIDTH);
+//    kaleidoscope->addUniformFloat("centerY", "in Y", VID_HEIGHT/2, 0.0, VID_HEIGHT);
+//    kaleidoscope->addUniformFloat("outCenterX", "in X", VID_WIDTH/2, 0.0, VID_WIDTH);
+//    kaleidoscope->addUniformFloat("outCenterY", "in Y", VID_HEIGHT/2, 0.0, VID_HEIGHT);
+
+//    kaleidoscope->addUniformVectorArray("locs", (float *)&kaleidoscopeSeedLocs[0], kaleidoscopeSeedLocs.size());
+//    kaleidoscope->addUniformVectorArray("normals", (float *)&kaleidoscopeSeedNormals[0], kaleidoscopeSeedNormals.size());
+//    kaleidoscope->addUniformFloat("seedVelsMultiplier", "Speed Factor", 0.0, 0.0, 20.0);
+//    kaleidoscope->addUniformVectorArray("vels", (float *)&voronoiSeedVels[0], voronoiSeedVels.size());
+    kaleidoscope->setControllerNumber(num++);
+    effects.push_back(kaleidoscope);
     
     //Pixels
     Effect* pixels = new Effect();
     pixels->setUniformFlowField(&amplifier.flowTexture);
     pixels->setupGui("Pixelation", numChannels);
-    pixels->addUniformFloat("pixel_w", "Pixel Width", 15.0, 1.0, 30.0);
-    pixels->addUniformFloat("pixel_h", "Pixel Height", 10.0, 1.0, 30.0);
+    pixels->addUniformFloat("pixel_w", "Pixel Width", 15.0, 1.0, 100.0);
+    pixels->addUniformFloat("pixel_h", "Pixel Height", 10.0, 1.0, 100.0);
     pixels->loadShader("shaders/pixelation.frag");
     pixels->setControllerNumber(num++);
     effects.push_back(pixels);
@@ -168,7 +220,7 @@ void ofApp::setup(){
     Effect* voronoi = new Effect();
     voronoi->setupGui("Voronoi", numChannels);
     voronoi->setUniformFlowField(&amplifier.flowTexture);
-    voronoi->addUniformFloat("numActiveSeeds", "Active Seeds", 200.0, 0.0, NUM_SEEDS);
+    voronoi->addUniformFloat("numActiveSeeds", "Active Seeds", 200.0, 0.0, NUM_VORONOI_SEEDS);
     voronoi->addUniformVectorArray("locs", (float *)&voronoiSeedLocs[0], voronoiSeedLocs.size());
     voronoi->addUniformFloat("seedVelsMultiplier", "Speed Factor", 0.0, 0.0, 20.0);
     voronoi->loadShader("shaders/VoronoiFrag.glsl");
@@ -182,7 +234,6 @@ void ofApp::setup(){
     endarken->setUniformFlowField(&amplifier.flowTexture);
     endarken->addUniformFloat("darkness", "Darkness", 0.5, 0.5, 1.0);
     endarken->loadShader("shaders/endarkenFrag.glsl");
-    endarken->setControllerNumber(num++);
     effects.push_back(endarken);
 
     //explode
@@ -197,6 +248,7 @@ void ofApp::setup(){
     explode->loadShader("shaders/explode");
     explode->setControllerNumber(num++);
     effects.push_back(explode);
+    endarken->setControllerNumber(num++);
     
 //    //Emboss
 //    Effect* emboss = new Effect();
@@ -215,6 +267,7 @@ void ofApp::setup(){
     main.add(camInput.set("Camera On", false));
     main.add(PartyOn.set("Party Mode", false));
     main.add(syphonOut.set("Syphon Output", false));
+    main.add(flipInput.set("Mirror Input", false));
     PartyOn.addListener(this, &ofApp::onPartyModeChange);
     
     string xmlSettingsPath = "settings/Settings.xml";
@@ -229,8 +282,12 @@ void ofApp::setup(){
     }
     
     //INITIALIZE CAMERA
+#ifdef USING_BLACKMAGIC
+    cam.setup(1920, 1080, 30);
+#else
     cam.initGrabber(VID_WIDTH, VID_HEIGHT);
-    
+#endif
+
     //allocate drawing fbo
     motionWarp.allocate(VID_WIDTH, VID_HEIGHT);
     finalMix.allocate(VID_WIDTH, VID_HEIGHT);
@@ -254,6 +311,7 @@ void ofApp::setup(){
     contentManager->setCamera(&cam);
     contentManager->setSwapBuffers(swapIn, swapOut);
     contentManager->setTiler(mosaic);
+    contentManager->setFlipInput(&flipInput);
     contentManager->frame.gui.setPosition(10, 10);
     contentManager->frame.Presets.setPosition(10, contentManager->frame.gui.getHeight() + 20);
     contentManager->frame.Particles.setPosition(10, HEIGHT - contentManager->frame.Particles.getHeight() - 10);
@@ -261,6 +319,8 @@ void ofApp::setup(){
     midiManager = new MidiManager();
     midiManager->setupMidi();
     midiManager->setContentManager(contentManager);
+    midiManager->setVideoTiler(mosaic);
+    midiManager->setMotionAmplifier(&amplifier);
     
     fftCut.setup("FFT Cut", "settings/fftCut.xml");
     fftCut.add(upperCut.set("Upper", 10000.0, 0.0, 10000.0));
@@ -279,8 +339,8 @@ void ofApp::setup(){
 void ofApp::update(){
     for(int i=0; i < voronoiSeedLocs.size(); i++) {
         voronoiSeedLocs[i] += voronoiSeedVels[i] * effects[voronoiNum]->floatUniforms["seedVelsMultiplier"]->get();
-        float projX = ofMap(voronoiSeedLocs[i].x, 0, VID_WIDTH, 1, VID_HEIGHT-1, true);
-        float projY = ofMap(voronoiSeedLocs[i].y, 0, VID_WIDTH, 1, VID_WIDTH-1, true);
+        float projX = ofMap(voronoiSeedLocs[i].x, 0, VID_WIDTH, 1, VID_WIDTH-1, true);
+        float projY = ofMap(voronoiSeedLocs[i].y, 0, VID_HEIGHT, 1, VID_HEIGHT-1, true);
         
         if(voronoiSeedLocs[i].x < 0 || voronoiSeedLocs[i].x > VID_WIDTH) {
             voronoiSeedVels[i].x *= -1;
@@ -292,6 +352,12 @@ void ofApp::update(){
             voronoiInitVels[i].y *= -1;
             voronoiSeedLocs[i].y = (voronoiSeedLocs[i].y < 0) ? 0 : VID_HEIGHT;
         }
+    }
+    
+    for(int i=0; i < kaleidoscopeSeedLocs.size(); i++) {
+        ofVec2f val = ofVec2f(0.5 - ofNoise(ofGetElapsedTimef() + 100*i), 0.5 - ofNoise(ofGetElapsedTimef() + 50*i))*10;
+        //kaleidoscopeSeedLocs[i] += val;
+        kaleidoscopeSeedNormals[i] = val.normalize()*0.5;
     }
     
 #ifdef USING_FFT
@@ -308,9 +374,6 @@ void ofApp::update(){
 #endif
     
     contentManager->update(camInput);
-    if(camInput) {
-        dieselHashtag.update();
-    }
 #ifdef USING_FFT
     connectedParams.clear();
     for(int i=0; i < effects.size(); i++) {
@@ -352,23 +415,33 @@ void ofApp::draw(){
         activeBuffer = swapIn;
     }
     
-    finalMix.begin();
-        activeBuffer->draw(0, 0, VID_WIDTH, VID_HEIGHT);
-    finalMix.end();
-    
-    finalMix.readToPixels(currImg);
+//    finalMix.begin();
+//        activeBuffer->draw(0, 0, VID_WIDTH, VID_HEIGHT);
+//    finalMix.end();
+//
+    activeBuffer->readToPixels(currImg);
+//    finalMix.readToPixels(currImg);
     currImg.update();
     mosaic->addImage(currImg);
     
-    if(camInput) {
-        mosaic->drawWithTimeOffset(0, 0, OUT_WIDTH, OUT_HEIGHT);
-        
-        dieselHashtag.draw(90, HEIGHT - dieselHashtag.getHeight() - 90, dieselHashtag.getWidth(), dieselHashtag.getHeight());
+//    if(camInput) {
+        finalMix.begin();
+            mosaic->drawWithTimeOffset(0, 0, VID_WIDTH, VID_HEIGHT);
+        finalMix.end();
+    
+        if(syphonOut) {
+            texOutputToSyphon.publishTexture(&(finalMix.getTexture()));
+        } else {
+            finalMix.draw(WIDTH, 0, OUT_WIDTH, OUT_HEIGHT);
+        }
+        finalMix.draw(ofGetScreenWidth()/2 - VID_WIDTH/2, HEIGHT/2 - VID_HEIGHT/2, VID_WIDTH, VID_HEIGHT);
+    
+        //dieselHashtag.draw(90, HEIGHT - dieselHashtag.getHeight() - 90, dieselHashtag.getWidth(), dieselHashtag.getHeight());
         ofPushStyle();
         ofSetColor(0);
         ofDrawRectangle(90 + dieselHashtag.getWidth() - 1, HEIGHT - dieselHashtag.getHeight() - 90, 2, dieselHashtag.getHeight());
         ofPopStyle();
-        if(drawGui){            
+        if(drawGui){
             mosaic->drawGui();
             
             gui.draw();
@@ -379,77 +452,39 @@ void ofApp::draw(){
             amplifier.drawGui();
             
             fftCut.draw();
-                        
+            
+#ifdef USING_FFT
             int fftWidth = WIDTH/2;
             int fftHeight = 100;
-#ifdef USING_FFT
             fft.draw(WIDTH/2 - fftWidth/2, HEIGHT - fftHeight, fftWidth, fftHeight);
+            ofPushStyle();
+            ofSetColor(255, 0, 0);
+            float upperCutHeight = ofMap(upperCut, 0, 3, HEIGHT, HEIGHT - fftHeight*3);
+            ofDrawLine(WIDTH/2 - fftWidth/2, upperCutHeight, WIDTH/2 + fftWidth/2, upperCutHeight);
+            float lowerCutHeight = ofMap(lowerCut, 0, 3, HEIGHT, HEIGHT - fftHeight*3);
+            ofSetColor(0, 0, 255);
+            ofDrawLine(WIDTH/2 - fftWidth/2, lowerCutHeight, WIDTH/2 + fftWidth/2, lowerCutHeight);
+            ofPopStyle();
 #else
             ofPushStyle();
             ofSetColor(255);
-            float rectWidth = ofMap(onset.novelty, 0, 10000, ofGetScreenWidth()/2 - VID_WIDTH/2, ofGetScreenWidth()/2 + VID_WIDTH/2);
+            float rectWidth = ofMap(onset.novelty, 0, 10000, 0, VID_WIDTH, true);
             ofDrawRectangle(ofGetScreenWidth()/2 - VID_WIDTH/2, ofGetScreenHeight() - 100, rectWidth, 100);
+            ofPopStyle();
+            ofPushStyle();
+            ofSetColor(255, 0, 0);
+            float upperCutX = ofMap(upperCut, 0, 10000, WIDTH/2 - VID_WIDTH/2, WIDTH/2 + VID_WIDTH/2);
+            ofDrawLine(upperCutX, HEIGHT, upperCutX, HEIGHT - 100);
+            float lowerCutX = ofMap(lowerCut, 0, 10000, WIDTH/2 - VID_WIDTH/2, WIDTH/2 + VID_WIDTH/2);
+            ofSetColor(0, 0, 255);
+            ofDrawLine(lowerCutX, HEIGHT, lowerCutX, HEIGHT - 100);
             ofPopStyle();
 #endif
             ofDrawBitmapStringHighlight(ofToString(ofGetFrameRate()), WIDTH - 100, HEIGHT - 20);
         }
-    } else {
-        mosaic->drawWithTimeOffset(WIDTH/2 - VID_WIDTH/2, HEIGHT/2 - VID_HEIGHT/2, VID_WIDTH, VID_HEIGHT);
-        
-        finalMix.begin();
-            mosaic->drawWithTimeOffset(0, 0, VID_WIDTH, VID_HEIGHT);
-        finalMix.end();
-        
-        if(syphonOut) {
-            texOutputToSyphon.publishTexture(&(finalMix.getTexture()));
-        } else {
-            finalMix.draw(WIDTH, 0, OUT_WIDTH, OUT_HEIGHT);
-        }
 
-        
-        
-        mosaic->drawGui();
-        
-        gui.draw();
-        presets.draw();
-                
-        contentManager->drawGuis();
-        
-        amplifier.drawGui();
-                
-        fftCut.draw();
-        
-        int fftWidth = WIDTH/2;
-        int fftHeight = 100;
-#ifdef USING_FFT
-        fft.draw(WIDTH/2 - fftWidth/2, HEIGHT - fftHeight, fftWidth, fftHeight);
-        ofPushStyle();
-        ofSetColor(255, 0, 0);
-        float upperCutHeight = ofMap(upperCut, 0, 3, HEIGHT, HEIGHT - fftHeight*3);
-        ofDrawLine(WIDTH/2 - fftWidth/2, upperCutHeight, WIDTH/2 + fftWidth/2, upperCutHeight);
-        float lowerCutHeight = ofMap(lowerCut, 0, 3, HEIGHT, HEIGHT - fftHeight*3);
-        ofSetColor(0, 0, 255);
-        ofDrawLine(WIDTH/2 - fftWidth/2, lowerCutHeight, WIDTH/2 + fftWidth/2, lowerCutHeight);
-        ofPopStyle();
-        
-#else
-        ofPushStyle();
-        ofSetColor(255);
-        float rectWidth = ofMap(onset.novelty, 0, 10000, 0, VID_WIDTH, true);
-        ofDrawRectangle(WIDTH/2 - VID_WIDTH/2, HEIGHT - 100, rectWidth, 100);
-        ofPopStyle();
-        ofPushStyle();
-        ofSetColor(255, 0, 0);
-        float upperCutX = ofMap(upperCut, 0, 10000, WIDTH/2 - VID_WIDTH/2, WIDTH/2 + VID_WIDTH/2);
-        ofDrawLine(upperCutX, HEIGHT, upperCutX, HEIGHT - 100);
-        float lowerCutX = ofMap(lowerCut, 0, 10000, WIDTH/2 - VID_WIDTH/2, WIDTH/2 + VID_WIDTH/2);
-        ofSetColor(0, 0, 255);
-        ofDrawLine(lowerCutX, HEIGHT, lowerCutX, HEIGHT - 100);
-        ofPopStyle();
-#endif
         ofDrawBitmapStringHighlight(ofToString(ofGetFrameRate()), WIDTH - 100, HEIGHT - 20);
         ofDrawBitmapString(ofGetTimestampString("Time: %H : %M"), WIDTH - 200, 20);
-    }
 }
 
 //--------------------------------------------------------------
@@ -462,15 +497,15 @@ void ofApp::keyPressed(int key){
             drawGui = !drawGui;
         }
     }
-    if(key == '1') {
-        contentManager->frame.mesh.setMode(OF_PRIMITIVE_LINE_LOOP);
-    }
-    if(key == '2') {
-        contentManager->frame.mesh.setMode(OF_PRIMITIVE_LINES);
-    }
-    if(key == '2') {
-        contentManager->frame.mesh.setMode(OF_PRIMITIVE_TRIANGLES);
-    }
+//    if(key == '1') {
+//        contentManager->frame.mesh.setMode(OF_PRIMITIVE_LINE_LOOP);
+//    }
+//    if(key == '2') {
+//        contentManager->frame.mesh.setMode(OF_PRIMITIVE_LINES);
+//    }
+//    if(key == '2') {
+//        contentManager->frame.mesh.setMode(OF_PRIMITIVE_TRIANGLES);
+//    }
 }
 
 //--------------------------------------------------------------
@@ -488,5 +523,9 @@ void ofApp::audioIn(float * input, int bufferSize, int nChannels) {
 //--------------------------------------------------------------
 void ofApp::exit() {
     ofSoundStreamClose();
+#ifdef USING_BLACKMAGIC
+    cam.close();
+#endif
+    
 }
 
