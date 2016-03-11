@@ -14,4 +14,14 @@
 	<S_Intensity_channel>0</S_Intensity_channel>
 	<S_Count_connected>0</S_Count_connected>
 	<S_Count_channel>0</S_Count_channel>
+<Scan_Lines>
+		<Amount>0.5</Amount>
+		<Amount_connected>0</Amount_connected>
+		<N_Intensity>1.06</N_Intensity>
+		<N_Intensity_connected>0</N_Intensity_connected>
+		<S_Intensity>1</S_Intensity>
+		<S_Intensity_connected>0</S_Intensity_connected>
+		<S_Count>500</S_Count>
+		<S_Count_connected>0</S_Count_connected>
+	</Scan_Lines>
 </Scane_Lines>

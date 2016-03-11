@@ -1,7 +1,6 @@
 #pragma once
 
 //#define USING_FFT // uncomment this to use FFT instead of onset detection
-#define USING_BLACKMAGIC
 
 #include "ofMain.h"
 #include "ofxOpenCv.h"
@@ -16,6 +15,7 @@
 #include "ofxAubio.h"
 #include "midiManager.h"
 #include "ofxSyphon.h"
+#include "ofxNestedFileLoader.h"
 
 class ofApp : public ofBaseApp{
     
@@ -28,7 +28,9 @@ class ofApp : public ofBaseApp{
 
 		void keyPressed(int key);
     
-        void onPartyModeChange(bool & b);
+        void onOverlayChanged(ofAbstractParameter & param);
+        void onVideoBinChanged(ofAbstractParameter & param);
+
     
         ContentManager* contentManager;
         MidiManager* midiManager;
@@ -51,11 +53,6 @@ class ofApp : public ofBaseApp{
         ofParameter<float> strength;
         ofParameter<float> learningRate;
     
-        ofxPanel presets;
-        ofParameter<int> presetNum;
-        ofParameter<int> presetDuration;
-        int timeOfLastSwap;
-    
         ofxPanel fftCut;
         ofParameter<float> upperCut;
         ofParameter<float> lowerCut;
@@ -64,15 +61,20 @@ class ofApp : public ofBaseApp{
         ofParameter<bool> camInput;
         ofParameter<bool> syphonOut;
         ofParameter<bool> flipInput;
+        ofParameter<float> oscillationSpeed;
+    
+        ofxPanel contentGui;
+        ofParameterGroup overlayGroup;
+        ofParameterGroup videoGroup;
+        map<string, string> overlays;
+        map<string, vector<string>> videos;
 
 #ifdef USING_BLACKMAGIC
-    ofxBlackMagic cam;
+        ofxBlackMagic cam;
 #else
-    ofVideoGrabber cam;
+        ofVideoGrabber cam;
 #endif
-    
-        ofVideoPlayer dieselHashtag;
-    
+        
         MotionAmplifier amplifier;
     
         vector<ofVec2f> voronoiSeedLocs;
@@ -85,6 +87,8 @@ class ofApp : public ofBaseApp{
         bool drawGui;
     
         int voronoiNum;
+    
+        float oscillatorStep = 0.0;
     
         ofxCv::FlowFarneback flow;
     
@@ -99,7 +103,8 @@ class ofApp : public ofBaseApp{
         ofTrueTypeFont ttfSmall;
     
         ofImage currImg, finalOutput;
-            
+        ofImage overlayImage;
+    
         ofFbo finalMix, motionWarp, mosaicDraw;
     
         ofxSyphonServer texOutputToSyphon;

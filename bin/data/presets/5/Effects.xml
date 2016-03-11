@@ -1,0 +1,16 @@
+<Effects>
+	<Active_Effects>
+		<Bad_VHS>0</Bad_VHS>
+		<Kaleidoscope>0</Kaleidoscope>
+		<Pixelation>0</Pixelation>
+		<RGB_Shift>0</RGB_Shift>
+		<Scan_Lines>0</Scan_Lines>
+		<Sharpen>1</Sharpen>
+		<Color_Map>0</Color_Map>
+		<Bad_TV>0</Bad_TV>
+		<Voronoi>0</Voronoi>
+		<Endarken>0</Endarken>
+		<Explode>0</Explode>
+	</Active_Effects>
+<Effects/>
+</Effects>

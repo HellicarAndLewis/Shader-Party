@@ -1,7 +1,7 @@
 <Color_Map>
-	<Amount>1</Amount>
+	<Amount>0.5</Amount>
 	<Amount_connected>0</Amount_connected>
-	<Rate>0.1</Rate>
+	<Rate>0.5</Rate>
 	<Rate_connected>0</Rate_connected>
 <Color_Map/>
 </Color_Map>

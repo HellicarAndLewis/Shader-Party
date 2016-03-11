@@ -1,11 +1,11 @@
 <Bad_TV>
-	<Amount>0.5</Amount>
+	<Amount>0.875</Amount>
 	<Amount_connected>0</Amount_connected>
 	<Speed>0.5</Speed>
 	<Speed_connected>0</Speed_connected>
 	<Roll_Speed>0.5</Roll_Speed>
 	<Roll_Speed_connected>0</Roll_Speed_connected>
-	<Distortion_1>5</Distortion_1>
+	<Distortion_1>6.95</Distortion_1>
 	<Distortion_1_connected>0</Distortion_1_connected>
 	<Distortion_2>0.5</Distortion_2>
 	<Distortion_2_connected>0</Distortion_2_connected>

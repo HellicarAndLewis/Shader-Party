@@ -36,7 +36,8 @@ public:
         ofParameter<int> presetNum;
         ofParameter<bool> save;
         ofParameter<bool> apply;
-        ofParameter<float> camDuration;
+        ofParameter<float> presetDuration;
+        ofParameter<bool> presetsAutomated;
         
         ofxPanel Particles;
         ofParameter<bool> particlesOn;
@@ -77,10 +78,9 @@ public:
     
     int numEffectsOn;
     
-    vector<string> pressContentNames;
-    vector<string> partyContentNames;
+    map<string, vector<string>>* contentNamesLibrary;
     
-    vector<string>* currentEventContent;
+    vector<string>* currentContentNames;
     
     Sparticles particles;
     ofxCvContourFinder contourFinder;
@@ -118,7 +118,7 @@ public:
     
     ContentManager() {};
     
-    void setup(string pressContentPath, string partyContentPath, int width, int height);
+    void setup(int width, int height);
     
     void setSwapBuffers( ofFbo* inBuff, ofFbo* outBuff);
     
@@ -132,6 +132,13 @@ public:
     
     
     void setTiler(videoTiler* newTiler) {frame.tiler = newTiler;};
+    
+    void setContentNamesLibrary(map<string, vector<string>>* _contentNamesLibrary) {
+        contentNamesLibrary = _contentNamesLibrary;
+        nextContentIndex = 0;
+        currentContentNames = &(contentNamesLibrary->begin()->second);
+        swapContent(currentContentNames);
+    };
     
     void setAmplifier(MotionAmplifier* amp) {
         amplifier = amp;
@@ -152,6 +159,14 @@ public:
     void updateContent();
     
     void update(bool b) {
+        if(frame.presetsAutomated.get()) {
+            if(ofGetElapsedTimef() - timeSinceLastSwap > frame.presetDuration) {
+                frame.presetNum++;
+                frame.presetNum %= frame.presetNum.getMax();
+                frame.apply = true;
+                timeSinceLastSwap = ofGetElapsedTimef();
+            }
+        }
         if(b) {
             updateCamera();
             
@@ -166,14 +181,6 @@ public:
     
     void drawGuis() {
         frame.drawGui();
-    };
-    
-    void startParty() {
-        currentEventContent = &partyContentNames;
-    };
-    
-    void startPress() {
-        currentEventContent = &pressContentNames;
     };
     
     void drawCamera();
@@ -205,14 +212,10 @@ public:
         player.play();
     };
     
-    void changeMode(bool b) {
-        if(b) {
-            nextContentIndex = 0;
-            startParty();
-        } else {
-            nextContentIndex = 0;
-            startPress();
-        }
+    void changeContent(string newContentBin) {
+        currentContentNames = &(*contentNamesLibrary)[newContentBin];
+        nextContentIndex = 0;
+        swapContent(currentContentNames);
     }
 
 };

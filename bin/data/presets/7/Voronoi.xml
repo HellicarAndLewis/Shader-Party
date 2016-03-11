@@ -1,6 +1,6 @@
 <Voronoi>
-	<Active_Seeds>200</Active_Seeds>
-	<Speed_Factor>0</Speed_Factor>
+	<Active_Seeds>12</Active_Seeds>
+	<Speed_Factor>2</Speed_Factor>
 <Voronoi/>
 	<fftConnected>0</fftConnected>
 	<Channel>0</Channel>

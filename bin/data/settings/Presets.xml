@@ -1,7 +1,8 @@
 <Presets>
-	<Preset>2</Preset>
+	<Preset>0</Preset>
 	<Save>0</Save>
 	<Preset_Duration>600</Preset_Duration>
 <Presets/>
 <Apply>0</Apply>
+<Auto_Run>0</Auto_Run>
 </Presets>

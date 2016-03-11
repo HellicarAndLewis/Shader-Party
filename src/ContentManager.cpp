@@ -32,7 +32,8 @@ void ContentManager::contentCreator::setupGui(string name) {
     Presets.add(presetNum.set("Preset", 0, 0, presetsDir.size()-1));
     Presets.add(save.set("Save", false));
     Presets.add(apply.set("Apply", false));
-    Presets.add(camDuration.set("Preset Duration", 5, 2, 600));
+    Presets.add(presetDuration.set("Preset Duration", 5, 2, 600));
+    Presets.add(presetsAutomated.set("Auto Run", false));
     presetNum.addListener(this, &contentCreator::onPresetChange);
     save.addListener(this, &contentCreator::onSaveChange);
     apply.addListener(this, &contentCreator::onApplyChange);
@@ -85,7 +86,7 @@ void ContentManager::contentCreator::drawGui() {
         }
     }
     Presets.draw();
-    presetImg.draw(gui.getPosition().x, gui.getHeight() + Presets.getHeight() + 20, 320, 180);
+    presetImg.draw(gui.getPosition().x, gui.getHeight() + Presets.getHeight() + 30, Presets.getWidth(), Presets.getWidth() * 720 / 1280);
     Particles.draw();
 }
 
@@ -147,48 +148,9 @@ void ContentManager::contentCreator::onActiveEffectChanged(ofAbstractParameter &
 
 //CONTENT MANAGER METHODS
 
-void ContentManager::setup(string pressContentPath, string partyContentPath, int width, int height) {
-    //Load all the movies and images
-    ofDirectory pressDir(pressContentPath);
-    pressDir.listDir();
-    for(int i = 0; i < pressDir.size(); i++) {
-        ofDirectory internalDir(pressDir.getPath(i));
-        if(internalDir.isDirectory()) {
-            internalDir.allowExt("mp4");
-            internalDir.allowExt("mov");
-            internalDir.allowExt("jpg");
-            internalDir.allowExt("png");
-            internalDir.allowExt("jpeg");
-            internalDir.listDir();
-            for(int j = 0; j < internalDir.size(); j++) {
-                pressContentNames.push_back(internalDir.getPath(j));
-            }
-        }
-    }
-    
-    ofDirectory partyDir(partyContentPath);
-    partyDir.listDir();
-    for(int i = 0; i < partyDir.size(); i++) {
-        ofDirectory internalDir(partyDir.getPath(i));
-        if(internalDir.isDirectory()) {
-            internalDir.allowExt("mp4");
-            internalDir.allowExt("mov");
-            internalDir.allowExt("jpg");
-            internalDir.allowExt("png");
-            internalDir.allowExt("jpeg");
-            internalDir.listDir();
-            for(int j = 0; j < internalDir.size(); j++) {
-                partyContentNames.push_back(internalDir.getPath(j));
-            }
-        }
-    }
-    
+void ContentManager::setup(int width, int height) {
     player.setLoopState(OF_LOOP_NONE);
     player.setPixelFormat(OF_PIXELS_RGB);
-    
-    currentEventContent = &pressContentNames;
-    
-    swapContent(currentEventContent);
     
     bufferWidth = width;
     bufferHeight = height;
@@ -203,6 +165,8 @@ void ContentManager::setup(string pressContentPath, string partyContentPath, int
     
     float rescale = .25;
     float scaleFactor = 1. / 10; // could dynamically calculate this from flow3
+    
+    //setup the mesh grid
     
     frame.mesh.setMode(OF_PRIMITIVE_TRIANGLES);
     int stepSize = 2;
@@ -262,12 +226,6 @@ void ContentManager::swapContent(vector<string>* content) {
 
 void ContentManager::updateCamera() {
     camera->update();
-    if(ofGetElapsedTimef() - timeSinceLastSwap > frame.camDuration) {
-        frame.presetNum++;
-        frame.presetNum %= frame.presetNum.getMax();
-        frame.apply = true;
-        timeSinceLastSwap = ofGetElapsedTimef();
-    }
     if(frame.particlesOn) {
         float camWidth;
         float camHeight;
@@ -278,7 +236,7 @@ void ContentManager::updateCamera() {
 #else
         camWidth = camera->getWidth();
         camHeight = camera->getHeight();
-        scaledImage.setFromPixels(camera->getPixels(), canWidth, camHeight);
+        scaledImage.setFromPixels(camera->getPixels(), camWidth, camHeight);
 #endif
         grayImage = scaledImage;
         
@@ -320,7 +278,7 @@ void ContentManager::updateCamera() {
 void ContentManager::updateContent() {
     player.update();
     if(ofGetElapsedTimef() - timeSinceLastSwap > currentDuration) {
-        swapContent(currentEventContent);
+        swapContent(currentContentNames);
     }
     if(currentContentIsVideo) {
         if(amplifier->Enabled) amplifier->update(player);

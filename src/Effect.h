@@ -40,8 +40,9 @@ public:
         shader.setUniform2f( "resolution", (float)screenWidth, (float)screenHeight);
     }
     map<string, ofParameter<float>* > floatUniforms;
-    vector< ofParameter<float>* > floatUniformsVector;
+     vector< ofParameter<float>* > floatUniformsVector;
     map<string, ofParameter<bool>* > fftConnected;
+    map<string, ofParameter<bool>* > oscillating;
     map<string, ofParameter<int>* > fftChannels;
     ofxPanel gui;
     
@@ -49,6 +50,7 @@ public:
     void updateFromFFT(vector<float> fft, float upperCut, float lowerCut);
     void updateFromFloat(float value, float upperCut, float lowerCut);
     void updateFromFloat(float value, int param);
+    void updateFromOscillator(float value, float upperCut, float lowerCut);
 
     
     void setMotionAmp(MotionAmplifier* amp);

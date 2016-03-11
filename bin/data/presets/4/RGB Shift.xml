@@ -1,5 +1,5 @@
 <RGB_Shift>
-	<Amount>2.14199</Amount>
+	<Amount>0.5</Amount>
 	<fftConnected>0</fftConnected>
 	<Channel>0</Channel>
 	<RGB_Amount>0.214199</RGB_Amount>
@@ -8,7 +8,7 @@
 	<Amountchannel>8</Amountchannel>
 	<RGB_Amountconnected>1</RGB_Amountconnected>
 	<RGB_Amountchannel>5</RGB_Amountchannel>
-<Amount_connected>1</Amount_connected>
+<Amount_connected>0</Amount_connected>
 	<Amount_channel>0</Amount_channel>
 	<RGB_Amount_connected>1</RGB_Amount_connected>
 	<RGB_Amount_channel>0</RGB_Amount_channel>

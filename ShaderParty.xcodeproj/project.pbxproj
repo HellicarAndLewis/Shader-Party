@@ -17,6 +17,7 @@
 		1A031DC81C870B50005A11F2 /* ofxBlackMagic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A031DB41C870B50005A11F2 /* ofxBlackMagic.cpp */; };
 		1A031DC91C870B50005A11F2 /* VideoFrame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A031DB71C870B50005A11F2 /* VideoFrame.cpp */; };
 		1A031DCA1C870B50005A11F2 /* DeckLinkAPIDispatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A031DC51C870B50005A11F2 /* DeckLinkAPIDispatch.cpp */; };
+		1A031DD21C88622F005A11F2 /* ofxNestedFileLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A031DD01C88622F005A11F2 /* ofxNestedFileLoader.cpp */; };
 		1A1579E01C74C0B500AB51A3 /* MidiManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A1579DE1C74C0B500AB51A3 /* MidiManager.cpp */; };
 		1A37F3FC1C737FA2009515DF /* ofxRtMidiIn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A37F3D01C737FA2009515DF /* ofxRtMidiIn.cpp */; };
 		1A37F3FD1C737FA2009515DF /* ofxRtMidiOut.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A37F3D21C737FA2009515DF /* ofxRtMidiOut.cpp */; };
@@ -126,7 +127,6 @@
 		0CEC1FE946DBDBAB82AF6FE3 /* global_motion.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = global_motion.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/videostab/global_motion.hpp; sourceTree = SOURCE_ROOT; };
 		0CF0AA3895D28E97D8A1E4A9 /* ground_truth.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ground_truth.h; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/flann/ground_truth.h; sourceTree = SOURCE_ROOT; };
 		1054B4574F75C1F693C147C6 /* optical_flow.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = optical_flow.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/videostab/optical_flow.hpp; sourceTree = SOURCE_ROOT; };
-		10C52B97FEA15AE37B664777 /* ofxIntegrator.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxIntegrator.h; path = ../../../addons/ofxIntegrator/src/ofxIntegrator.h; sourceTree = SOURCE_ROOT; };
 		114B872696817CC33990FC83 /* imgproc.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = imgproc.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/imgproc/imgproc.hpp; sourceTree = SOURCE_ROOT; };
 		1335F3F49E8A72CB04FA873D /* util_inl.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = util_inl.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/stitching/detail/util_inl.hpp; sourceTree = SOURCE_ROOT; };
 		15F2C6477A769C03A56D1401 /* ofxSlider.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxSlider.cpp; path = ../../../addons/ofxGui/src/ofxSlider.cpp; sourceTree = SOURCE_ROOT; };
@@ -152,6 +152,8 @@
 		1A031DC21C870B50005A11F2 /* DeckLinkAPITypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeckLinkAPITypes.h; sourceTree = "<group>"; };
 		1A031DC31C870B50005A11F2 /* DeckLinkAPIVersion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeckLinkAPIVersion.h; sourceTree = "<group>"; };
 		1A031DC51C870B50005A11F2 /* DeckLinkAPIDispatch.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = DeckLinkAPIDispatch.cpp; sourceTree = "<group>"; };
+		1A031DD01C88622F005A11F2 /* ofxNestedFileLoader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxNestedFileLoader.cpp; sourceTree = "<group>"; };
+		1A031DD11C88622F005A11F2 /* ofxNestedFileLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxNestedFileLoader.h; sourceTree = "<group>"; };
 		1A1579DE1C74C0B500AB51A3 /* MidiManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MidiManager.cpp; sourceTree = "<group>"; };
 		1A1579DF1C74C0B500AB51A3 /* MidiManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MidiManager.h; sourceTree = "<group>"; };
 		1A37F3D01C737FA2009515DF /* ofxRtMidiIn.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxRtMidiIn.cpp; sourceTree = "<group>"; };
@@ -585,6 +587,24 @@
 			path = src;
 			sourceTree = "<group>";
 		};
+		1A031DCE1C88622F005A11F2 /* ofxNestedFileLoader */ = {
+			isa = PBXGroup;
+			children = (
+				1A031DCF1C88622F005A11F2 /* src */,
+			);
+			name = ofxNestedFileLoader;
+			sourceTree = "<group>";
+		};
+		1A031DCF1C88622F005A11F2 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				1A031DD01C88622F005A11F2 /* ofxNestedFileLoader.cpp */,
+				1A031DD11C88622F005A11F2 /* ofxNestedFileLoader.h */,
+			);
+			name = src;
+			path = ../../../addons/ofxNestedFileLoader/src;
+			sourceTree = "<group>";
+		};
 		1A37F3CD1C737FA2009515DF /* ofxMidi */ = {
 			isa = PBXGroup;
 			children = (
@@ -819,14 +839,6 @@
 			name = src;
 			sourceTree = "<group>";
 		};
-		3838E4610E7B739E1A514DE5 /* src */ = {
-			isa = PBXGroup;
-			children = (
-				10C52B97FEA15AE37B664777 /* ofxIntegrator.h */,
-			);
-			name = src;
-			sourceTree = "<group>";
-		};
 		38D119387412EF71F9FAA033 /* videostab */ = {
 			isa = PBXGroup;
 			children = (
@@ -861,14 +873,6 @@
 				56ED74AD5FC73867F5E046F0 /* photo_c.h */,
 			);
 			name = photo;
-			sourceTree = "<group>";
-		};
-		3D84F52A21A9CE6CF20710F2 /* ofxIntegrator */ = {
-			isa = PBXGroup;
-			children = (
-				3838E4610E7B739E1A514DE5 /* src */,
-			);
-			name = ofxIntegrator;
 			sourceTree = "<group>";
 		};
 		3E44059DCBC2444D65660B9C /* imgproc */ = {
@@ -1133,12 +1137,12 @@
 				6025FAF6414C2CA589764D26 /* ofxCv */,
 				38D6D30992FE734203F60492 /* ofxFFT */,
 				480A780D8D0308AE4A368801 /* ofxGui */,
-				3D84F52A21A9CE6CF20710F2 /* ofxIntegrator */,
 				A0B90D3B0ADB9C1716816714 /* ofxOpenCv */,
 				DDC2887E401806EB6DF29874 /* ofxSlitScan */,
 				1A37F3CD1C737FA2009515DF /* ofxMidi */,
 				1A699F961C7DC5010016C602 /* ofxSyphon */,
 				1A031DAE1C870B50005A11F2 /* ofxBlackMagic */,
+				1A031DCE1C88622F005A11F2 /* ofxNestedFileLoader */,
 			);
 			name = addons;
 			sourceTree = "<group>";
@@ -1447,6 +1451,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A031DD21C88622F005A11F2 /* ofxNestedFileLoader.cpp in Sources */,
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
 				1A37F4001C737FA2009515DF /* ofxMidiIn.cpp in Sources */,
 				1A031DC91C870B50005A11F2 /* VideoFrame.cpp in Sources */,

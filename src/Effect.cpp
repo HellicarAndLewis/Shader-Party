@@ -59,6 +59,8 @@ void Effect::addUniformFloat(string name, string parameterName, float initialVal
     floatUniformsVector.push_back(floatUniforms[name]);
     fftConnected[name] = new ofParameter<bool>();
     fftConnected[name]->set(parameterName + " connected", false);
+    oscillating[name] = new ofParameter<bool>();
+    oscillating[name]->set(parameterName + " oscillating", false);
     lastParamChanged= parameterName;
 #ifdef USING_FFT
     fftChannels[name] = new ofParameter<int>();
@@ -66,6 +68,7 @@ void Effect::addUniformFloat(string name, string parameterName, float initialVal
 #endif
     gui.add(*floatUniforms[name]);
     gui.add(*fftConnected[name]);
+    gui.add(*oscillating[name]);
 #ifdef USING_FFT
     gui.add(*fftChannels[name]);
 #endif
@@ -167,6 +170,19 @@ void Effect::updateFromFloat(float value, float upperCut, float lowerCut) {
             float val = value;
             auto param = floatUniforms.find(paramName)->second;
             val = ofMap(value, lowerCut, upperCut, param->getMin(), param->getMax(), true);
+            param->set(val);
+        }
+    }
+}
+
+void Effect::updateFromOscillator(float value, float upperCut, float lowerCut) {
+    for(auto it = oscillating.begin(); it != oscillating.end(); it++) {
+        string paramName = it->first;
+        bool paramConnected = it->second->get();
+        if(paramConnected) {
+            float val = value;
+            auto param = floatUniforms.find(paramName)->second;
+            val = ofMap(value, upperCut, lowerCut, param->getMin(), param->getMax(), true);
             param->set(val);
         }
     }

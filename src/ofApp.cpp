@@ -53,11 +53,6 @@ void ofApp::setup(){
     
     amplifier.gui.setPosition(10, 500);
     
-    dieselHashtag.load("movies/hashtag.mov");
-    dieselHashtag.setLoopState(OF_LOOP_NORMAL);
-    dieselHashtag.setPaused(false);
-    dieselHashtag.play();
-    
     //Fade effect for mixing videos
     fade.load("shaders/DummyVert.glsl", "shaders/FadeFrag.glsl");
     
@@ -87,15 +82,15 @@ void ofApp::setup(){
     
     int num = 1;
 //    
-//    //Bad VHS
-//    Effect* badVHS = new Effect();
-//    badVHS->setUniformFlowField(&amplifier.flowTexture);
-//    badVHS->setupGui("Bad VHS", numChannels);
-//    badVHS->addUniformFloat("waves", "Waves", 1.0, 0.0, 10.0);
-//    badVHS->addUniformFloat("chromaAb", "Chroma AB", 1.0, 0.0, 10.0);
-//    badVHS->loadShader("shaders/vhs.frag");
-//    badVHS->setControllerNumber(num++);
-//    effects.push_back(badVHS);
+    //Bad VHS
+    Effect* badVHS = new Effect();
+    badVHS->setUniformFlowField(&amplifier.flowTexture);
+    badVHS->setupGui("Bad VHS", numChannels);
+    badVHS->addUniformFloat("waves", "Waves", 1.0, 0.0, 10.0);
+    badVHS->addUniformFloat("chromaAb", "Chroma AB", 1.0, 0.0, 10.0);
+    badVHS->loadShader("shaders/vhs.frag");
+    badVHS->setControllerNumber(num++);
+    effects.push_back(badVHS);
     
 //    //Night Vision
 //    Effect* nightVision = new Effect();
@@ -133,17 +128,6 @@ void ofApp::setup(){
     kaleidoscope->addUniformFloat("rotation", "Rotation", 0.0, 0.0, 1.0);
     kaleidoscope->addUniformFloat("size", "Size", 0.0, 0.0, 2.0);
     kaleidoscope->addUniformFloat("angle", "Angle", 0.0, 0.0, 1.0);
-
-//    kaleidoscope->addUniformFloat("sections", "Sections", 5.0, 1.0, 100.0);
-//    kaleidoscope->addUniformFloat("centerX", "in X", VID_WIDTH/2, 0.0, VID_WIDTH);
-//    kaleidoscope->addUniformFloat("centerY", "in Y", VID_HEIGHT/2, 0.0, VID_HEIGHT);
-//    kaleidoscope->addUniformFloat("outCenterX", "in X", VID_WIDTH/2, 0.0, VID_WIDTH);
-//    kaleidoscope->addUniformFloat("outCenterY", "in Y", VID_HEIGHT/2, 0.0, VID_HEIGHT);
-
-//    kaleidoscope->addUniformVectorArray("locs", (float *)&kaleidoscopeSeedLocs[0], kaleidoscopeSeedLocs.size());
-//    kaleidoscope->addUniformVectorArray("normals", (float *)&kaleidoscopeSeedNormals[0], kaleidoscopeSeedNormals.size());
-//    kaleidoscope->addUniformFloat("seedVelsMultiplier", "Speed Factor", 0.0, 0.0, 20.0);
-//    kaleidoscope->addUniformVectorArray("vels", (float *)&voronoiSeedVels[0], voronoiSeedVels.size());
     kaleidoscope->setControllerNumber(num++);
     effects.push_back(kaleidoscope);
     
@@ -268,12 +252,12 @@ void ofApp::setup(){
     main.add(PartyOn.set("Party Mode", false));
     main.add(syphonOut.set("Syphon Output", false));
     main.add(flipInput.set("Mirror Input", false));
-    PartyOn.addListener(this, &ofApp::onPartyModeChange);
+    main.add(oscillationSpeed.set("Oscillation Speed", 0.01,  0.0, 0.1));
     
     string xmlSettingsPath = "settings/Settings.xml";
     gui.setup("Main", xmlSettingsPath);
     gui.add(main);
-    gui.setPosition(10, HEIGHT - 150);
+    gui.setPosition(10, HEIGHT - 200);
     
     gui.loadFromFile(xmlSettingsPath);
     for(int i = 0; i < effects.size(); i++) {
@@ -301,12 +285,66 @@ void ofApp::setup(){
 
     currImg.allocate(VID_WIDTH, VID_HEIGHT, OF_IMAGE_COLOR);
     
+    ofxNestedFileLoader loader;
+    vector<string> overlayStrings = loader.load("textures/overlays");
+    contentGui.setup("Content");
+    ofParameter<bool> none;
+    overlayGroup.setName("Overlays");
+    overlayGroup.add(none.set("None", true));
+    overlays["None"] = "";
+    
+    for(int i = 0; i < overlayStrings.size(); i++) {
+        ofParameter<bool> toggle;
+        vector<string> split = ofSplitString(overlayStrings[i], "/");
+        string fileName = split[2];
+        vector<string> fileNameSplit = ofSplitString(fileName, ".");
+        string displayName = fileNameSplit[0];
+        overlayGroup.add(toggle.set(displayName, false));
+        overlays[displayName] = overlayStrings[i];
+    }
+    
+    loader.clearPaths();
+    vector<string> movieStrings = loader.load("movies");
+    
+    videoGroup.setName("Content");
+    loader.printPaths();
+    
+    vector<string> initialSplit = ofSplitString(movieStrings[0], "/");
+    string lastBinName = initialSplit[1];
+
+    vector<string> binPaths;
+    for(int i = 0; i < movieStrings.size(); i++) {
+        vector<string> split = ofSplitString(movieStrings[i], "/");
+        string binName = split[1];
+        if(binName == lastBinName) {
+            binPaths.push_back(movieStrings[i]);
+        } else {
+            videos[lastBinName] = binPaths;
+            lastBinName = binName;
+            binPaths.clear();
+            binPaths.push_back(movieStrings[i]);
+        }
+        if(i == movieStrings.size() - 1) {
+            videos[lastBinName] = binPaths;
+            lastBinName = binName;
+            binPaths.clear();
+            binPaths.push_back(movieStrings[i]);
+        }
+    }
+    
+    for(auto it = videos.begin(); it != videos.end(); it++) {
+        ofParameter<bool> toggle;
+        bool initVal = (it == videos.begin()) ? true : false;
+        videoGroup.add(toggle.set(it->first, initVal));
+    }
+    
     contentManager = new ContentManager();
-    contentManager->setup("movies/Press", "movies/Party", VID_WIDTH, VID_HEIGHT);
+    contentManager->setContentNamesLibrary(&videos);
+    contentManager->setup(VID_WIDTH, VID_HEIGHT);
     contentManager->play();
     
     contentManager->frame.setEffects(&effects);
-    contentManager->frame.setupGui("Right");
+    contentManager->frame.setupGui("Effects");
     contentManager->setAmplifier(&amplifier);
     contentManager->setCamera(&cam);
     contentManager->setSwapBuffers(swapIn, swapOut);
@@ -326,6 +364,14 @@ void ofApp::setup(){
     fftCut.add(upperCut.set("Upper", 10000.0, 0.0, 10000.0));
     fftCut.add(lowerCut.set("Lower", 0.0, 0.0, 10000.0));
     fftCut.setPosition(10, HEIGHT - 300 - endarken->gui.getHeight());
+    
+    ofAddListener(overlayGroup.parameterChangedE(), this, &ofApp::onOverlayChanged);
+    ofAddListener(videoGroup.parameterChangedE(), this, &ofApp::onVideoBinChanged);
+    
+    contentGui.add(overlayGroup);
+    contentGui.add(videoGroup);
+    
+    contentGui.setPosition(ofGetScreenWidth() - contentGui.getWidth() - 10, 30);
     
     mosaic->gui.setPosition(10, 675);
     
@@ -368,8 +414,12 @@ void ofApp::update(){
     }
     fft.update();
 #else
+    float oscillator = sin(oscillatorStep);
+    oscillatorStep += oscillationSpeed.get();
     for(int i = 0; i < effects.size(); i++) {
         effects[i]->updateFromFloat(onset.novelty, upperCut, lowerCut);
+        effects[i]->updateFromOscillator(oscillator, -1, 1);
+
     }
 #endif
     
@@ -414,77 +464,73 @@ void ofApp::draw(){
     } else {
         activeBuffer = swapIn;
     }
-    
-//    finalMix.begin();
-//        activeBuffer->draw(0, 0, VID_WIDTH, VID_HEIGHT);
-//    finalMix.end();
-//
+
     activeBuffer->readToPixels(currImg);
-//    finalMix.readToPixels(currImg);
     currImg.update();
     mosaic->addImage(currImg);
     
-//    if(camInput) {
-        finalMix.begin();
-            mosaic->drawWithTimeOffset(0, 0, VID_WIDTH, VID_HEIGHT);
-        finalMix.end();
-    
-        if(syphonOut) {
-            texOutputToSyphon.publishTexture(&(finalMix.getTexture()));
-        } else {
-            finalMix.draw(WIDTH, 0, OUT_WIDTH, OUT_HEIGHT);
-        }
-        finalMix.draw(ofGetScreenWidth()/2 - VID_WIDTH/2, HEIGHT/2 - VID_HEIGHT/2, VID_WIDTH, VID_HEIGHT);
-    
-        //dieselHashtag.draw(90, HEIGHT - dieselHashtag.getHeight() - 90, dieselHashtag.getWidth(), dieselHashtag.getHeight());
-        ofPushStyle();
-        ofSetColor(0);
-        ofDrawRectangle(90 + dieselHashtag.getWidth() - 1, HEIGHT - dieselHashtag.getHeight() - 90, 2, dieselHashtag.getHeight());
-        ofPopStyle();
-        if(drawGui){
-            mosaic->drawGui();
-            
-            gui.draw();
-            presets.draw();
-            
-            contentManager->drawGuis();
-            
-            amplifier.drawGui();
-            
-            fftCut.draw();
-            
-#ifdef USING_FFT
-            int fftWidth = WIDTH/2;
-            int fftHeight = 100;
-            fft.draw(WIDTH/2 - fftWidth/2, HEIGHT - fftHeight, fftWidth, fftHeight);
-            ofPushStyle();
-            ofSetColor(255, 0, 0);
-            float upperCutHeight = ofMap(upperCut, 0, 3, HEIGHT, HEIGHT - fftHeight*3);
-            ofDrawLine(WIDTH/2 - fftWidth/2, upperCutHeight, WIDTH/2 + fftWidth/2, upperCutHeight);
-            float lowerCutHeight = ofMap(lowerCut, 0, 3, HEIGHT, HEIGHT - fftHeight*3);
-            ofSetColor(0, 0, 255);
-            ofDrawLine(WIDTH/2 - fftWidth/2, lowerCutHeight, WIDTH/2 + fftWidth/2, lowerCutHeight);
-            ofPopStyle();
-#else
-            ofPushStyle();
-            ofSetColor(255);
-            float rectWidth = ofMap(onset.novelty, 0, 10000, 0, VID_WIDTH, true);
-            ofDrawRectangle(ofGetScreenWidth()/2 - VID_WIDTH/2, ofGetScreenHeight() - 100, rectWidth, 100);
-            ofPopStyle();
-            ofPushStyle();
-            ofSetColor(255, 0, 0);
-            float upperCutX = ofMap(upperCut, 0, 10000, WIDTH/2 - VID_WIDTH/2, WIDTH/2 + VID_WIDTH/2);
-            ofDrawLine(upperCutX, HEIGHT, upperCutX, HEIGHT - 100);
-            float lowerCutX = ofMap(lowerCut, 0, 10000, WIDTH/2 - VID_WIDTH/2, WIDTH/2 + VID_WIDTH/2);
-            ofSetColor(0, 0, 255);
-            ofDrawLine(lowerCutX, HEIGHT, lowerCutX, HEIGHT - 100);
-            ofPopStyle();
-#endif
-            ofDrawBitmapStringHighlight(ofToString(ofGetFrameRate()), WIDTH - 100, HEIGHT - 20);
-        }
+    finalMix.begin();
+        mosaic->drawWithTimeOffset(0, 0, VID_WIDTH, VID_HEIGHT);
+        overlayImage.draw(0, 0, VID_WIDTH, VID_HEIGHT);
+    finalMix.end();
 
+    if(syphonOut) {
+        texOutputToSyphon.publishTexture(&(finalMix.getTexture()));
+    } else {
+        finalMix.draw(WIDTH, 0, OUT_WIDTH, OUT_HEIGHT);
+    }
+    finalMix.draw(ofGetScreenWidth()/2 - VID_WIDTH/2, HEIGHT/2 - VID_HEIGHT/2, VID_WIDTH, VID_HEIGHT);
+
+//    ofPushStyle();
+//    ofSetColor(0);
+//    ofDrawRectangle(90 + dieselHashtag.getWidth() - 1, HEIGHT - dieselHashtag.getHeight() - 90, 2, dieselHashtag.getHeight());
+//    ofPopStyle();
+    
+    if(drawGui){
+        mosaic->drawGui();
+        
+        gui.draw();
+        
+        contentManager->drawGuis();
+        
+        amplifier.drawGui();
+        
+        fftCut.draw();
+        
+        contentGui.draw();
+        
+#ifdef USING_FFT
+        int fftWidth = WIDTH/2;
+        int fftHeight = 100;
+        fft.draw(WIDTH/2 - fftWidth/2, HEIGHT - fftHeight, fftWidth, fftHeight);
+        ofPushStyle();
+        ofSetColor(255, 0, 0);
+        float upperCutHeight = ofMap(upperCut, 0, 3, HEIGHT, HEIGHT - fftHeight*3);
+        ofDrawLine(WIDTH/2 - fftWidth/2, upperCutHeight, WIDTH/2 + fftWidth/2, upperCutHeight);
+        float lowerCutHeight = ofMap(lowerCut, 0, 3, HEIGHT, HEIGHT - fftHeight*3);
+        ofSetColor(0, 0, 255);
+        ofDrawLine(WIDTH/2 - fftWidth/2, lowerCutHeight, WIDTH/2 + fftWidth/2, lowerCutHeight);
+        ofPopStyle();
+#else
+        ofPushStyle();
+        ofSetColor(255);
+        float rectWidth = ofMap(onset.novelty, 0, 10000, 0, VID_WIDTH, true);
+        ofDrawRectangle(ofGetScreenWidth()/2 - VID_WIDTH/2, ofGetScreenHeight() - 100, rectWidth, 100);
+        ofPopStyle();
+        ofPushStyle();
+        ofSetColor(255, 0, 0);
+        float upperCutX = ofMap(upperCut, 0, 10000, WIDTH/2 - VID_WIDTH/2, WIDTH/2 + VID_WIDTH/2);
+        ofDrawLine(upperCutX, HEIGHT, upperCutX, HEIGHT - 100);
+        float lowerCutX = ofMap(lowerCut, 0, 10000, WIDTH/2 - VID_WIDTH/2, WIDTH/2 + VID_WIDTH/2);
+        ofSetColor(0, 0, 255);
+        ofDrawLine(lowerCutX, HEIGHT, lowerCutX, HEIGHT - 100);
+        ofPopStyle();
+#endif
         ofDrawBitmapStringHighlight(ofToString(ofGetFrameRate()), WIDTH - 100, HEIGHT - 20);
-        ofDrawBitmapString(ofGetTimestampString("Time: %H : %M"), WIDTH - 200, 20);
+    }
+
+    ofDrawBitmapStringHighlight(ofToString(ofGetFrameRate()), WIDTH - 100, HEIGHT - 20);
+    ofDrawBitmapString(ofGetTimestampString("Time: %H : %M"), WIDTH - 200, 20);
 }
 
 //--------------------------------------------------------------
@@ -509,8 +555,41 @@ void ofApp::keyPressed(int key){
 }
 
 //--------------------------------------------------------------
-void ofApp::onPartyModeChange(bool &b) {
-    contentManager->changeMode(b);
+void ofApp::onOverlayChanged(ofAbstractParameter & param) {
+    string clickedName = param.getName();
+    cout<<clickedName<<endl;
+    for(auto it = overlays.begin(); it != overlays.end(); it++) {
+        string name = it->first;
+        if(name == clickedName) {
+            overlayGroup.getBool(name).setWithoutEventNotifications(true);
+        } else {
+            overlayGroup.getBool(name).setWithoutEventNotifications(false);
+        }
+        if(name != "None"){
+            overlayImage.load(overlays[clickedName]);
+        } else {
+            overlayImage.clear();
+        }
+    }
+}
+
+//--------------------------------------------------------------
+//void ofApp::onPartyModeChanged(bool &b) {
+////    contentManager->changeMode(b);
+//}
+
+//--------------------------------------------------------------
+void ofApp::onVideoBinChanged(ofAbstractParameter & param) {
+    string clickedName = param.getName();
+    for(auto it = videos.begin(); it != videos.end(); it++) {
+        string name = it->first;
+        if(name == clickedName) {
+            videoGroup.getBool(name).setWithoutEventNotifications(true);
+        } else {
+            videoGroup.getBool(name).setWithoutEventNotifications(false);
+        }
+        contentManager->changeContent(clickedName);
+    }
 }
 
 //--------------------------------------------------------------
