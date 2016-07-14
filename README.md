@@ -3,10 +3,13 @@ Live openGL Shader VJ System
 
 # Required Addons:
 
+ofxAubio
 ofxCv
-ofxSlitScan
+ofxFFT
 ofxGui
 ofxOpenCv
-ofxFFT
-ofxAubio
+ofxSlitScan
+ofxMidi
 ofxSyphon
+ofxBlackMagic
+ofxNestedFileLoader
