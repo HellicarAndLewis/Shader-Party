@@ -2,8 +2,8 @@
 
 #define WIDTH ofGetScreenWidth()
 #define HEIGHT ofGetScreenHeight()
-#define OUT_WIDTH 1920
-#define OUT_HEIGHT 1080
+#define OUT_WIDTH 1280
+#define OUT_HEIGHT 720
 #define VID_WIDTH 1280
 #define VID_HEIGHT 720
 #define NUM_VORONOI_SEEDS 200
@@ -20,7 +20,7 @@ void stopAndLoadNewVid(ofVideoPlayer* vidPlayer, string vidToLoad) {
 void ofApp::setup(){
     ofBackground(30, 30, 30);
     
-    //ofSetLogLevel(OF_LOG_SILENT);
+    ofSetLogLevel(OF_LOG_ERROR);
     
     drawGui = true;
     
@@ -81,7 +81,7 @@ void ofApp::setup(){
     }
     
     int num = 1;
-//    
+    
     //Bad VHS
     Effect* badVHS = new Effect();
     badVHS->setUniformFlowField(&amplifier.flowTexture);
@@ -92,26 +92,26 @@ void ofApp::setup(){
     badVHS->setControllerNumber(num++);
     effects.push_back(badVHS);
     
-//    //Night Vision
-//    Effect* nightVision = new Effect();
-//    nightVision->setUniformFlowField(&amplifier.flowTexture);
-//    nightVision->setupGui("Night Vision", numChannels);
-//    nightVision->addUniformFloat("luminanceThreshold", "Luminance", 0.2, 0.01, 1.0);
-//    nightVision->addUniformFloat("colorAmplification", "Color Amp", 4.0, 0.0, 20.0);
-//    nightVision->loadShader("shaders/nightVision.frag");
-//    nightVision->setControllerNumber(num++);
-//    effects.push_back(nightVision);
-//    
-//    //Glitch
-//    Effect* glitch =new Effect();
-//    ofImage* noiseImage = new ofImage();
-//    noiseImage->load("textures/multiColorStatic.jpg");
-//    glitch->setUniformFlowField(&amplifier.flowTexture);
-//    glitch->setUniformImage("coloredNoise", noiseImage);
-//    glitch->setupGui("Glitch", numChannels);
-//    glitch->loadShader("shaders/glitch.frag");
-//    glitch->setControllerNumber(num++);
-//    effects.push_back(glitch);
+    //    //Night Vision
+    //    Effect* nightVision = new Effect();
+    //    nightVision->setUniformFlowField(&amplifier.flowTexture);
+    //    nightVision->setupGui("Night Vision", numChannels);
+    //    nightVision->addUniformFloat("luminanceThreshold", "Luminance", 0.2, 0.01, 1.0);
+    //    nightVision->addUniformFloat("colorAmplification", "Color Amp", 4.0, 0.0, 20.0);
+    //    nightVision->loadShader("shaders/nightVision.frag");
+    //    nightVision->setControllerNumber(num++);
+    //    effects.push_back(nightVision);
+    //
+    //    //Glitch
+    //    Effect* glitch =new Effect();
+    //    ofImage* noiseImage = new ofImage();
+    //    noiseImage->load("textures/multiColorStatic.jpg");
+    //    glitch->setUniformFlowField(&amplifier.flowTexture);
+    //    glitch->setUniformImage("coloredNoise", noiseImage);
+    //    glitch->setupGui("Glitch", numChannels);
+    //    glitch->loadShader("shaders/glitch.frag");
+    //    glitch->setControllerNumber(num++);
+    //    effects.push_back(glitch);
     
     //Kaleidoscope
     Effect* kaleidoscope = new Effect();
@@ -126,7 +126,7 @@ void ofApp::setup(){
     kaleidoscope->addUniformFloat("shiftY", "ShiftY", 0.0, 0.0, VID_HEIGHT);
     kaleidoscope->addUniformFloat("sides", "Sides", 1.0, 0.0, 32.0);
     kaleidoscope->addUniformFloat("rotation", "Rotation", 0.0, 0.0, 1.0);
-    kaleidoscope->addUniformFloat("size", "Size", 0.0, 0.0, 2.0);
+    kaleidoscope->addUniformFloat("size", "Size", 0.0, 0.0, 4.0);
     kaleidoscope->addUniformFloat("angle", "Angle", 0.0, 0.0, 1.0);
     kaleidoscope->setControllerNumber(num++);
     effects.push_back(kaleidoscope);
@@ -219,7 +219,7 @@ void ofApp::setup(){
     endarken->addUniformFloat("darkness", "Darkness", 0.5, 0.5, 1.0);
     endarken->loadShader("shaders/endarkenFrag.glsl");
     effects.push_back(endarken);
-
+    
     //explode
     Effect* explode = new Effect();
     explode->setupGui("Explode", numChannels);
@@ -234,18 +234,18 @@ void ofApp::setup(){
     effects.push_back(explode);
     endarken->setControllerNumber(num++);
     
-//    //Emboss
-//    Effect* emboss = new Effect();
-//    emboss->setupGui("Emboss", numChannels);
-//    emboss->setUniformFlowField(&amplifier.flowTexture);
-//    emboss->addUniformFloat("amount", "Amount", 0.5, 0.0, 1.0);
-//    emboss->addUniformFloat("intensity", "Intensity", 50.0, 1.0, 100.0);
-//    emboss->addUniformFloat("colorization", "Colorization", 0.5, 0.0, 1.0);
-//    emboss->addUniformFloat("flowEffect", "Flow Effect", 0.0, 0.0, 100.0);
-//    emboss->loadShader("shaders/emboss.frag");
-//    emboss->setControllerNumber(num++);
-//    effects.push_back(emboss);
-
+    //    //Emboss
+    //    Effect* emboss = new Effect();
+    //    emboss->setupGui("Emboss", numChannels);
+    //    emboss->setUniformFlowField(&amplifier.flowTexture);
+    //    emboss->addUniformFloat("amount", "Amount", 0.5, 0.0, 1.0);
+    //    emboss->addUniformFloat("intensity", "Intensity", 50.0, 1.0, 100.0);
+    //    emboss->addUniformFloat("colorization", "Colorization", 0.5, 0.0, 1.0);
+    //    emboss->addUniformFloat("flowEffect", "Flow Effect", 0.0, 0.0, 100.0);
+    //    emboss->loadShader("shaders/emboss.frag");
+    //    emboss->setControllerNumber(num++);
+    //    effects.push_back(emboss);
+    
     //setup main gui
     //main.setup();
     main.add(camInput.set("Camera On", false));
@@ -253,13 +253,14 @@ void ofApp::setup(){
     main.add(syphonOut.set("Syphon Output", false));
     main.add(flipInput.set("Mirror Input", false));
     main.add(oscillationSpeed.set("Oscillation Speed", 0.01,  0.0, 0.1));
+    main.add(playing.set("Playing", false));
     
     string xmlSettingsPath = "settings/Settings.xml";
     gui.setup("Main", xmlSettingsPath);
     gui.add(main);
     gui.setPosition(10, HEIGHT - 200);
     
-    gui.loadFromFile(xmlSettingsPath);
+//    gui.loadFromFile(xmlSettingsPath);
     for(int i = 0; i < effects.size(); i++) {
         effects[i]->loadSettings();
         effects[i]->setGuiPosition(gui.getWidth() + 20, 10);
@@ -267,11 +268,11 @@ void ofApp::setup(){
     
     //INITIALIZE CAMERA
 #ifdef USING_BLACKMAGIC
-    cam.setup(1920, 1080, 30);
+    cam.setup(1920, 1080, 24);
 #else
     cam.initGrabber(VID_WIDTH, VID_HEIGHT);
 #endif
-
+    
     //allocate drawing fbo
     motionWarp.allocate(VID_WIDTH, VID_HEIGHT);
     finalMix.allocate(VID_WIDTH, VID_HEIGHT);
@@ -282,12 +283,12 @@ void ofApp::setup(){
     
     swapIn->allocate(VID_WIDTH, VID_HEIGHT);
     swapOut->allocate(VID_WIDTH, VID_HEIGHT);
-
+    
     currImg.allocate(VID_WIDTH, VID_HEIGHT, OF_IMAGE_COLOR);
     
     ofxNestedFileLoader loader;
     vector<string> overlayStrings = loader.load("textures/overlays");
-    contentGui.setup("Content");
+    contentGui.setup("Content", "settings/Contents.xml");
     ofParameter<bool> none;
     overlayGroup.setName("Overlays");
     overlayGroup.add(none.set("None", true));
@@ -306,12 +307,12 @@ void ofApp::setup(){
     loader.clearPaths();
     vector<string> movieStrings = loader.load("movies");
     
-    videoGroup.setName("Content");
+    videoGroup.setName("Videos");
     loader.printPaths();
     
     vector<string> initialSplit = ofSplitString(movieStrings[0], "/");
     string lastBinName = initialSplit[1];
-
+    
     vector<string> binPaths;
     for(int i = 0; i < movieStrings.size(); i++) {
         vector<string> split = ofSplitString(movieStrings[i], "/");
@@ -337,6 +338,22 @@ void ofApp::setup(){
         bool initVal = (it == videos.begin()) ? true : false;
         videoGroup.add(toggle.set(it->first, initVal));
     }
+    
+    loader.clearPaths();
+    overlayMovieNames = loader.load("overlayMovies");
+    if(overlayMovieNames.size()) {
+        overlayMovieIndex = ofRandom(0, overlayMovieNames.size()-1);
+        overlayVideoPlayer.load(overlayMovieNames[overlayMovieIndex]);
+        overlayVideoPlayer.play();
+        overlayVideoPlayer.setPaused(false);
+        currentOverlayVideoDuration = overlayVideoPlayer.getDuration();
+    }
+    
+    videoOverlayGroup.setName("Video Overlay");
+    videoOverlayGroup.add(videoOverlayOn.set("Enabled", false));
+    videoOverlayGroup.add(videoOverlayX.set("X", 0, 0, VID_WIDTH));
+    videoOverlayGroup.add(videoOverlayY.set("Y", 0, 0, VID_HEIGHT));
+    videoOverlayGroup.add(videoOverlayScale.set("Scale", 1.0, 0.001, 1.0));
     
     contentManager = new ContentManager();
     contentManager->setContentNamesLibrary(&videos);
@@ -365,11 +382,20 @@ void ofApp::setup(){
     fftCut.add(lowerCut.set("Lower", 0.0, 0.0, 10000.0));
     fftCut.setPosition(10, HEIGHT - 300 - endarken->gui.getHeight());
     
-    ofAddListener(overlayGroup.parameterChangedE(), this, &ofApp::onOverlayChanged);
-    ofAddListener(videoGroup.parameterChangedE(), this, &ofApp::onVideoBinChanged);
-    
     contentGui.add(overlayGroup);
     contentGui.add(videoGroup);
+    contentGui.add(videoOverlayGroup);
+    contentGui.loadFromFile("settings/Contents.xml");
+    
+    for(int i = 0; i < overlayGroup.size(); i++) {
+        if(overlayGroup.getBool(i)) {
+            overlayImage.load(overlays[overlayGroup.getBool(i).getName()]);
+            break;
+        }
+    }
+    
+    ofAddListener(overlayGroup.parameterChangedE(), this, &ofApp::onOverlayChanged);
+    ofAddListener(videoGroup.parameterChangedE(), this, &ofApp::onVideoBinChanged);
     
     contentGui.setPosition(ofGetScreenWidth() - contentGui.getWidth() - 10, 30);
     
@@ -378,7 +404,7 @@ void ofApp::setup(){
     activeBuffer = swapIn;
     
     texOutputToSyphon.setName("Screen Output");
-
+    
 }
 
 //--------------------------------------------------------------
@@ -406,6 +432,22 @@ void ofApp::update(){
         kaleidoscopeSeedNormals[i] = val.normalize()*0.5;
     }
     
+    if(videoOverlayOn) {
+        overlayVideoPlayer.update();
+        if(ofGetElapsedTimef() - timeOfLastOverlayVideoSwap > currentOverlayVideoDuration) {
+            overlayMovieIndex++;
+            overlayMovieIndex %= overlayMovieNames.size();
+            overlayVideoPlayer.close();
+            overlayVideoPlayer.load(overlayMovieNames[overlayMovieIndex]);
+        }
+    }
+    
+    if(playing) {
+        contentManager->player.setPaused(false);
+    } else {
+        contentManager->player.setPaused(true);
+    }
+    
 #ifdef USING_FFT
     vector<float> vals = fft.getFftPeakData();
     for(int i = 0; i < effects.size(); i++) {
@@ -419,7 +461,7 @@ void ofApp::update(){
     for(int i = 0; i < effects.size(); i++) {
         effects[i]->updateFromFloat(onset.novelty, upperCut, lowerCut);
         effects[i]->updateFromOscillator(oscillator, -1, 1);
-
+        
     }
 #endif
     
@@ -446,15 +488,23 @@ void ofApp::update(){
 void ofApp::draw(){
     
     contentManager->drawBuffers(camInput);
-
+    
     swapIn->begin();
     ofClear(0);
     contentManager->frame.buffer.draw(0, 0, VID_WIDTH, VID_HEIGHT);
+    overlayImage.draw(0, 0, VID_WIDTH, VID_HEIGHT);
+    if(videoOverlayOn) {
+        overlayVideoPlayer.draw(videoOverlayX, videoOverlayY, overlayVideoPlayer.getWidth()*videoOverlayScale, overlayVideoPlayer.getHeight()*videoOverlayScale);
+    }
     swapIn->end();
     
     swapOut->begin();
     ofClear(0);
     contentManager->frame.buffer.draw(0, 0, VID_WIDTH, VID_HEIGHT);
+    overlayImage.draw(0, 0, VID_WIDTH, VID_HEIGHT);
+    if(videoOverlayOn) {
+        overlayVideoPlayer.draw(videoOverlayX, videoOverlayY, overlayVideoPlayer.getWidth()*videoOverlayScale, overlayVideoPlayer.getHeight()*videoOverlayScale);
+    }
     swapOut->end();
     
     contentManager->applyEffects();
@@ -464,27 +514,26 @@ void ofApp::draw(){
     } else {
         activeBuffer = swapIn;
     }
-
-    activeBuffer->readToPixels(currImg);
-    currImg.update();
-    mosaic->addImage(currImg);
+    
+    //    activeBuffer->readToPixels(currImg);
+    //    currImg.update();
+    //    mosaic->addImage(currImg);
     
     finalMix.begin();
-        mosaic->drawWithTimeOffset(0, 0, VID_WIDTH, VID_HEIGHT);
-        overlayImage.draw(0, 0, VID_WIDTH, VID_HEIGHT);
+    activeBuffer->draw(0, 0, VID_WIDTH, VID_HEIGHT);
     finalMix.end();
-
+    
     if(syphonOut) {
         texOutputToSyphon.publishTexture(&(finalMix.getTexture()));
     } else {
         finalMix.draw(WIDTH, 0, OUT_WIDTH, OUT_HEIGHT);
     }
     finalMix.draw(ofGetScreenWidth()/2 - VID_WIDTH/2, HEIGHT/2 - VID_HEIGHT/2, VID_WIDTH, VID_HEIGHT);
-
-//    ofPushStyle();
-//    ofSetColor(0);
-//    ofDrawRectangle(90 + dieselHashtag.getWidth() - 1, HEIGHT - dieselHashtag.getHeight() - 90, 2, dieselHashtag.getHeight());
-//    ofPopStyle();
+    
+    //    ofPushStyle();
+    //    ofSetColor(0);
+    //    ofDrawRectangle(90 + dieselHashtag.getWidth() - 1, HEIGHT - dieselHashtag.getHeight() - 90, 2, dieselHashtag.getHeight());
+    //    ofPopStyle();
     
     if(drawGui){
         mosaic->drawGui();
@@ -528,7 +577,7 @@ void ofApp::draw(){
 #endif
         ofDrawBitmapStringHighlight(ofToString(ofGetFrameRate()), WIDTH - 100, HEIGHT - 20);
     }
-
+    
     ofDrawBitmapStringHighlight(ofToString(ofGetFrameRate()), WIDTH - 100, HEIGHT - 20);
     ofDrawBitmapString(ofGetTimestampString("Time: %H : %M"), WIDTH - 200, 20);
 }
@@ -543,15 +592,15 @@ void ofApp::keyPressed(int key){
             drawGui = !drawGui;
         }
     }
-//    if(key == '1') {
-//        contentManager->frame.mesh.setMode(OF_PRIMITIVE_LINE_LOOP);
-//    }
-//    if(key == '2') {
-//        contentManager->frame.mesh.setMode(OF_PRIMITIVE_LINES);
-//    }
-//    if(key == '2') {
-//        contentManager->frame.mesh.setMode(OF_PRIMITIVE_TRIANGLES);
-//    }
+    //    if(key == '1') {
+    //        contentManager->frame.mesh.setMode(OF_PRIMITIVE_LINE_LOOP);
+    //    }
+    //    if(key == '2') {
+    //        contentManager->frame.mesh.setMode(OF_PRIMITIVE_LINES);
+    //    }
+    //    if(key == '2') {
+    //        contentManager->frame.mesh.setMode(OF_PRIMITIVE_TRIANGLES);
+    //    }
 }
 
 //--------------------------------------------------------------
@@ -565,11 +614,11 @@ void ofApp::onOverlayChanged(ofAbstractParameter & param) {
         } else {
             overlayGroup.getBool(name).setWithoutEventNotifications(false);
         }
-        if(name != "None"){
-            overlayImage.load(overlays[clickedName]);
-        } else {
-            overlayImage.clear();
-        }
+    }
+    if(clickedName != "None"){
+        overlayImage.load(overlays[clickedName]);
+    } else {
+        overlayImage.clear();
     }
 }
 

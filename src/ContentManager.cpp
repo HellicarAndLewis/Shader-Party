@@ -11,7 +11,7 @@
 // CONTENT CREATOR STUFF
 
 void ContentManager::contentCreator::setupGui(string name) {
-    gui.setup(name);
+    gui.setup(name, "settings/contentSettings.xml");
     EffectsList.setName("Active Effects");
     for(int i = 0; i < effects->size(); i++) {
         EffectsList.add(*(*effects)[i]->getActiveParameter());
@@ -20,6 +20,8 @@ void ContentManager::contentCreator::setupGui(string name) {
     
     activeEffectsInOrder.clear();
     gui.add(EffectsList);
+    
+    gui.loadFromFile("settings/contentSettings.xml");
     
     ofAddListener(EffectsList.parameterChangedE(), this, &contentCreator::onActiveEffectChanged);
     
@@ -191,7 +193,7 @@ void ContentManager::setup(int width, int height) {
             frame.mesh.addIndex(sw);
         }
     }
-
+    
     particles.setup();
 }
 
@@ -213,8 +215,8 @@ void ContentManager::swapContent(vector<string>* content) {
         loadNewVideo(nextContent);
         currentDuration = player.getDuration();
         player.setPaused(false);
+       // player.setVolume(1.0);
         player.play();
-        player.setVolume(0);
     }
     if(splitString[1] == "png" || splitString[1] == "jpeg" || splitString[1] == "jpg") {
         currentContentIsVideo = false;
@@ -277,12 +279,16 @@ void ContentManager::updateCamera() {
 
 void ContentManager::updateContent() {
     player.update();
-    if(ofGetElapsedTimef() - timeSinceLastSwap > currentDuration) {
-        swapContent(currentContentNames);
-    }
+
     if(currentContentIsVideo) {
+        if(player.getPosition() > 0.95) {
+            swapContent(currentContentNames);
+        }
         if(amplifier->Enabled) amplifier->update(player);
     } else {
+        if(ofGetElapsedTimef() - timeSinceLastSwap > currentDuration) {
+            swapContent(currentContentNames);
+        }
         if(amplifier->Enabled) amplifier->update(image);
     }
     numEffectsOn = 0;
@@ -302,7 +308,7 @@ void ContentManager::drawCamera() {
     camHeight = camera->getColorTexture().getHeight();
     ofImage img;
     if(amplifier->Enabled) {
-
+        
         img.setFromPixels(camera->getColorPixels());
         img.resize(VID_WIDTH, VID_HEIGHT);
         amplifier->update(img);

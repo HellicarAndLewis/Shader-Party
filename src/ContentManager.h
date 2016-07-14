@@ -1,4 +1,4 @@
-    //
+//
 //  ContentManager.h
 //  ShaderParty
 //
@@ -9,7 +9,7 @@
 #ifndef __ShaderParty__ContentManager__
 #define __ShaderParty__ContentManager__
 
-#define USING_BLACKMAGIC
+//#define USING_BLACKMAGIC
 
 #define VID_WIDTH 1280
 #define VID_HEIGHT 720
@@ -209,6 +209,7 @@ public:
     
     void play() {
         player.setPaused(false);
+        //player.setVolume(1.0);
         player.play();
     };
     
@@ -217,7 +218,7 @@ public:
         nextContentIndex = 0;
         swapContent(currentContentNames);
     }
-
+    
 };
 
 #endif /* defined(__ShaderParty__ContentManager__) */
