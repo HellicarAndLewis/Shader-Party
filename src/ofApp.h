@@ -10,102 +10,118 @@
 #include "Effect.h"
 #include "MotionAmplifier.h"
 #include "videoTiler.h"
-#include "ofxFFTLive.h"
+//#include "ofxFFTLive.h"
 #include "ContentManager.h"
 #include "ofxAubio.h"
 #include "midiManager.h"
-#include "ofxSyphon.h"
+//#include "ofxSyphon.h"
 #include "ofxNestedFileLoader.h"
+#include "OSCBeatReciever.h"
+#include "IPCamInput.h"
 
 class ofApp : public ofBaseApp{
     
-	public:
-		void setup();
-		void update();
-		void draw();
-        void exit();
-        void audioIn(float * input, int bufferSize, int nChannels);
-
-		void keyPressed(int key);
+public:
+    void setup();
+    void update();
+    void draw();
+    void exit();
+    void audioIn(float * input, int bufferSize, int nChannels);
     
-        void onOverlayChanged(ofAbstractParameter & param);
-        void onVideoBinChanged(ofAbstractParameter & param);
-
+    void keyPressed(int key);
     
-        ContentManager* contentManager;
-        MidiManager* midiManager;
-        videoTiler* mosaic;
-        vector<string> pressContent;
-        vector<ofImage> pressImages;
-        vector<string> partyContent;
-        vector<ofImage> partyImages;
-        int currentMovie;
+    void onOverlayChanged(ofAbstractParameter & param);
+    void onVideoBinChanged(ofAbstractParameter & param);
     
-        ofShader fade;
     
-        vector<Effect*> effects;
+    ContentManager* contentManager;
+    MidiManager* midiManager;
+    //videoTiler* mosaic;
+    vector<string> pressContent;
+    vector<ofImage> pressImages;
+    vector<string> partyContent;
+    vector<ofImage> partyImages;
+    int currentMovie;
     
-        vector< pair<int, string> > connectedParams;
-
-        ofxPanel gui;
-        ofParameterGroup main;
-        ofParameter<int> activeEffect;
-        ofParameter<float> strength;
-        ofParameter<float> learningRate;
+    ofShader fade;
     
-        ofxPanel fftCut;
-        ofParameter<float> upperCut;
-        ofParameter<float> lowerCut;
+    vector<Effect*> effects;
     
-        ofParameter<bool> PartyOn; //Garth
-        ofParameter<bool> camInput;
-        ofParameter<bool> syphonOut;
-        ofParameter<bool> flipInput;
-        ofParameter<float> oscillationSpeed;
+    vector< pair<int, string> > connectedParams;
     
-        ofxPanel contentGui;
-        ofParameterGroup overlayGroup;
-        ofParameterGroup videoGroup;
-        map<string, string> overlays;
-        map<string, vector<string>> videos;
-
+    ofxPanel gui;
+    ofParameterGroup main;
+    ofParameter<int> activeEffect;
+    ofParameter<float> strength;
+    ofParameter<float> learningRate;
+    
+    ofxPanel fftCut;
+    ofParameter<float> upperCut;
+    ofParameter<float> lowerCut;
+    
+    ofParameter<bool> PartyOn; //Garth
+    ofParameter<bool> playing;
+    ofParameter<bool> camInput;
+    ofParameter<bool> syphonOut;
+    ofParameter<bool> flipInput;
+    ofParameter<float> oscillationSpeed;
+    ofParameter<bool> OSCOn;
+    
+    ofxPanel contentGui;
+    ofParameterGroup overlayGroup;
+    ofParameterGroup videoGroup;
+    ofParameterGroup videoOverlayGroup;
+    ofParameter<bool> videoOverlayOn;
+    ofParameter<int> videoOverlayX;
+    ofParameter<int> videoOverlayY;
+    ofParameter<float> videoOverlayScale;
+    map<string, string> overlays;
+    map<string, vector<string>> videos;
+    vector<string> overlayMovieNames;
+    int overlayMovieIndex;
+    float currentOverlayVideoDuration;
+    float timeOfLastOverlayVideoSwap;
+    
+    ofVideoPlayer overlayVideoPlayer;
+    
 #ifdef USING_BLACKMAGIC
-        ofxBlackMagic cam;
+    ofxBlackMagic cam;
+#elif defined USING_WEBCAM
+    ofVideoGrabber cam;
 #else
-        ofVideoGrabber cam;
+    IPCamInput cam;
 #endif
-        
-        MotionAmplifier amplifier;
     
-        vector<ofVec2f> voronoiSeedLocs;
-        vector<ofVec2f> voronoiSeedVels;
-        vector<ofVec2f> voronoiInitVels;
     
-        vector<ofVec2f> kaleidoscopeSeedLocs;
-        vector<ofVec2f> kaleidoscopeSeedNormals;
+    MotionAmplifier amplifier;
     
-        bool drawGui;
+    vector<ofVec2f> voronoiSeedLocs;
+    vector<ofVec2f> voronoiSeedVels;
+    vector<ofVec2f> voronoiInitVels;
+    bool drawGui;
     
-        int voronoiNum;
+    int voronoiNum;
     
-        float oscillatorStep = 0.0;
+    float oscillatorStep = 0.0;
+    float onsetConfidence = 0.0;
     
-        ofxCv::FlowFarneback flow;
+    ofxCv::FlowFarneback flow;
     
-        ofxFFTLive fft;
-        ofxAubioOnset onset;
+    OSCBeatReciever reciever;
     
-        ofFbo* activeBuffer;
-        ofFbo* swapIn;
-        ofFbo* swapOut;
+    ofxAubioOnset onset;
     
-        ofTrueTypeFont ttf;
-        ofTrueTypeFont ttfSmall;
+    ofFbo* activeBuffer;
+    ofFbo* swapIn;
+    ofFbo* swapOut;
     
-        ofImage currImg, finalOutput;
-        ofImage overlayImage;
+    ofTrueTypeFont ttf;
+    ofTrueTypeFont ttfSmall;
     
-        ofFbo finalMix, motionWarp, mosaicDraw;
+    ofImage currImg, finalOutput;
+    ofImage overlayImage;
     
-        ofxSyphonServer texOutputToSyphon;
+    ofFbo finalMix, motionWarp, mosaicDraw;
+    
+    //ofxSyphonServer texOutputToSyphon;
 };

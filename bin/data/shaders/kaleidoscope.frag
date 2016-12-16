@@ -1,123 +1,79 @@
-#version 120
-
-#define MAX_SEEDS 100
+const float tau = 6.28318530718;
 
 varying vec2 texCoord;
 uniform float time;
 uniform sampler2DRect diffuseTexture;
-uniform float centerX;
-uniform float centerY;
-uniform float outCenterX;
-uniform float outCenterY;
-uniform float sections;
-uniform float val;
+uniform float slide1X;
+uniform float slide1Y;
+uniform float slide2X;
+uniform float slide2Y;
+uniform float shiftX;
+uniform float shiftY;
+uniform float sides;
+uniform float rotation;
+uniform float size;
+uniform float angle;
 
-const float PI = 3.141592658;
-const float TAU = 2.0 * PI;
-
-float map(float inValue, float inMin, float inMax, float outMin, float outMax) {
-    float percent = (inValue - inMin) / (inMax - inMin);
-    return percent * (outMax - outMin) + outMin;
+vec2 pattern() {
+	vec2 slide1 = vec2(slide1X, slide1Y);
+	vec2 slide2 = vec2(slide2X, slide2Y);
+	vec2 shift = vec2(shiftX, shiftY);
+    
+	float s = sin(tau * rotation);
+	float c = cos(tau * rotation);
+	vec2 tex = texCoord;
+	float scale = 1.0 / max(size,0.001);
+    vec2 point = vec2(tex.x, tex.y);
+    point -= vec2(1280./2., 720./2.);
+    float newX = point.x * c - point.y * s;
+    float newY = point.x * s + point.y * c;
+    
+    point = vec2(newX, newY) * scale + vec2(1280./2., 720./2.);
+	//vec2 point = vec2( c * tex.x - s * tex.y, s * tex.x + c * tex.y ) * scale;
+	point = (point - shift) / vec2(1280., 720.);
+	//	do this to repeat
+	point = mod(point,1.0);
+	if (point.x < 0.5)	{
+		point.y = mod(point.y + slide1.y / 720., 1.0);
+	}
+	else	{
+		point.y = mod(point.y + slide2.y / 720., 1.0);
+	}
+	if (point.y < 0.5)	{
+		point.x = mod(point.x + slide1.x / 1280., 1.0);
+	}
+	else	{
+		point.x = mod(point.x + slide2.x / 1280., 1.0);
+	}
+	//	do this for relections
+	point = 1.0-abs(1.0-2.0*point);
+	
+	//	Now let's do a squish based on angle
+	//	convert to polar coordinates
+	vec2 center = vec2(0.5,0.5);
+	float r = distance(center, point);
+	float a = atan ((point.y-center.y),(point.x-center.x));
+	
+	// now do the kaleidoscope
+	a = mod(a, tau/sides);
+	a = abs(a - tau/sides/2.);
+	
+	s = sin(a + tau * angle);
+	c = cos(a + tau * angle);
+	
+	float zoom = 1280. / 720.;
+	
+	point.x = (r * c)/zoom + 0.5;
+	point.y = (r * s)/zoom + 0.5;
+	
+	return point;
 }
+
 
 void main() {
-	vec2 pos = texCoord;
-	vec2 center = vec2(centerX, centerY);
 
-	vec2 outCenter = vec2(outCenterX, outCenterY);
-	
-	vec2 shiftedPos = center - pos;
-	float rad = length(shiftedPos);
-	float angle = atan(shiftedPos.y, shiftedPos.x);
+	vec2 pat = pattern();
 
-	float ma = mod(angle + val, TAU/sections);
-	ma = abs(ma - PI/sections);
-
-	float x = cos(ma) * rad;
-	float y = sin(ma) * rad;
-
-	x += outCenter.x;
-	y += outCenter.y;
-    
-    gl_FragColor = texture2DRect(diffuseTexture, vec2(x, y)); //vec4(angleScaled, 0, 0, 1);
+	// gl_FragColor = vec4(pat.x, pat.y, 0, 1);
+	gl_FragColor = texture2DRect(diffuseTexture, vec2(pat.x * 1280., pat.y*720.));
 }
-
-// const int numPoints = 12;
-// const bool showFolds = true;
-
-// uniform vec2 locs[MAX_SEEDS];
-// uniform vec2 normals[MAX_SEEDS];
-
-
-// float rand( vec2 n ) {
-// 	return fract(sin(dot(n.xy, vec2(12.9898, 78.233)))* 43758.5453);
-// }
-
-// struct Ray
-// {
-// 	vec2 point;
-// 	vec2 direction;
-// };
-
-// float noise(vec2 n) {
-// 	const vec2 d = vec2(0.0, 1.0);
-// 	vec2 b = floor(n), f = smoothstep(vec2(0.0), vec2(1.0), fract(n));
-// 	return mix(mix(rand(b), rand(b + d.yx), f.x), mix(rand(b + d.xy), rand(b + d.yy), f.x), f.y);
-// 	// return 1.;
-// }
-
-// vec2 noise2(vec2 n)
-// {
-// 	// return vec2(noise(vec2(n.x+0.2, n.y-0.6)), noise(vec2(n.y+3., n.x-4.)));
-// 	// return vec2(1., 1.);
-// }
-
-// Ray GetRay(float i)
-// {
-// 	// vec2 position = vec2(1, 1);
-// 	// vec2 position = noise2(vec2(i*6.12+1*0.1, i*4.43+1*0.1));
-// 	// vec2 direction = normalize(noise2(vec2(i*7.+1*0.05, i*6.))*2.0-1.0);
-// 	// return Ray(
-// 	// 	position,
-// 	// 	direction
-// 	// 	);
-// 	// return Ray(
-// 	// 	position,
-// 	// 	normalize(noise2(vec2(i*7.+1*0.05, i*6.))*2.0-1.0));	
-// }
-
-// void main()
-// {
-// 	vec2 pos = texCoord;
-
-// 	for(int i=0;i<numPoints;i++)
-// 	{
-// 		Ray ray = Ray(locs[i], normals[i]);
-			
-// 		if(length(ray.point-pos)<10.0)
-// 		{
-// 			gl_FragColor = vec4(1,1,1,1);
-// 			return;
-// 		}
-// 		else if (length(pos-(ray.point+ray.direction*0.1))<10.0)
-// 		{
-// 			gl_FragColor = vec4(1,0,0,1);
-// 			return;
-// 		}
-// 		else
-// 		{
-// 			float offset=dot(pos-ray.point, ray.direction);
-// 			if(abs(offset)<1.0 && showFolds)
-// 			{
-// 				gl_FragColor = vec4(0,0,1,1);
-// 				return;
-// 			}
-// 			if(offset<0.)
-// 			{
-// 				pos -= ray.direction*offset*2.0;
-// 			}									
-// 		}
-// 	}									
-
-// 	gl_FragColor = texture2DRect( diffuseTexture, pos );	
-// }

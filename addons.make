@@ -1,8 +1,10 @@
 ofxAubio
+ofxBlackmagic
 ofxCv
-ofxFFT
 ofxGui
-ofxIntegrator
+ofxIpVideoGrabber
+ofxMidi
 ofxNestedFileLoader
 ofxOpenCv
+ofxOsc
 ofxSlitScan

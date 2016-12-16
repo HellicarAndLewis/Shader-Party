@@ -11,7 +11,7 @@
 // CONTENT CREATOR STUFF
 
 void ContentManager::contentCreator::setupGui(string name) {
-    gui.setup(name);
+    gui.setup(name, "settings/contentSettings.xml");
     EffectsList.setName("Active Effects");
     for(int i = 0; i < effects->size(); i++) {
         EffectsList.add(*(*effects)[i]->getActiveParameter());
@@ -20,6 +20,8 @@ void ContentManager::contentCreator::setupGui(string name) {
     
     activeEffectsInOrder.clear();
     gui.add(EffectsList);
+    
+    gui.loadFromFile("settings/contentSettings.xml");
     
     ofAddListener(EffectsList.parameterChangedE(), this, &contentCreator::onActiveEffectChanged);
     
@@ -101,7 +103,7 @@ void ContentManager::contentCreator::onSaveChange(bool &b) {
             (*effects)[i]->gui.saveToFile("presets/" + ofToString(presetNum) + "/" + (*effects)[i]->gui.getName()+".xml");
         }
         amp->gui.saveToFile("presets/" + ofToString(presetNum) + "/" + "MotionAmp" + ".xml");
-        tiler->gui.saveToFile("presets/" + ofToString(presetNum) + "/" + "Tiler" + ".xml");
+        //tiler->gui.saveToFile("presets/" + ofToString(presetNum) + "/" + "Tiler" + ".xml");
         Particles.saveToFile("presets/" + ofToString(presetNum) + "/" + "Particles.xml");
         save = false;
         if(numEffectsOn%2 == 1) {
@@ -125,7 +127,7 @@ void ContentManager::contentCreator::onApplyChange(bool &b) {
             (*effects)[i]->gui.loadFromFile("presets/" + ofToString(presetNum) + "/" + (*effects)[i]->gui.getName()+".xml");
         }
         amp->gui.loadFromFile("presets/" + ofToString(presetNum) + "/" + "MotionAmp" + ".xml");
-        tiler->gui.loadFromFile("presets/" + ofToString(presetNum) + "/" + "Tiler" + ".xml");
+        //tiler->gui.loadFromFile("presets/" + ofToString(presetNum) + "/" + "Tiler" + ".xml");
         Particles.loadFromFile("presets/" + ofToString(presetNum) + "/" + "Particles.xml");
         apply = false;
     }
@@ -191,7 +193,7 @@ void ContentManager::setup(int width, int height) {
             frame.mesh.addIndex(sw);
         }
     }
-
+    
     particles.setup();
 }
 
@@ -213,8 +215,8 @@ void ContentManager::swapContent(vector<string>* content) {
         loadNewVideo(nextContent);
         currentDuration = player.getDuration();
         player.setPaused(false);
+       // player.setVolume(1.0);
         player.play();
-        player.setVolume(0);
     }
     if(splitString[1] == "png" || splitString[1] == "jpeg" || splitString[1] == "jpg") {
         currentContentIsVideo = false;
@@ -233,10 +235,15 @@ void ContentManager::updateCamera() {
         camWidth = camera->getColorTexture().getWidth();
         camHeight = camera->getColorTexture().getHeight();
         scaledImage.setFromPixels(camera->getColorPixels(), camWidth, camHeight);
-#else
+#elif defined USING_WEBCAM
         camWidth = camera->getWidth();
         camHeight = camera->getHeight();
-        scaledImage.setFromPixels(camera->getPixels(), camWidth, camHeight);
+        scaledImage.setFromPixels(camera->getPixels().getData(), camWidth, camHeight);
+        //scaledImage.setFroPixels(camera->getPixels(), camWidth, camHeight);
+#else
+        camWidth = camera->getPixelsRef().getWidth();
+        camHeight = camera->getPixelsRef().getWidth();
+        scaledImage.setFromPixels(camera->getPixelsRef().getData(), camWidth, camHeight);
 #endif
         grayImage = scaledImage;
         
@@ -277,12 +284,16 @@ void ContentManager::updateCamera() {
 
 void ContentManager::updateContent() {
     player.update();
-    if(ofGetElapsedTimef() - timeSinceLastSwap > currentDuration) {
-        swapContent(currentContentNames);
-    }
+
     if(currentContentIsVideo) {
+        if(player.getPosition() > 0.95) {
+            swapContent(currentContentNames);
+        }
         if(amplifier->Enabled) amplifier->update(player);
     } else {
+        if(ofGetElapsedTimef() - timeSinceLastSwap > currentDuration) {
+            swapContent(currentContentNames);
+        }
         if(amplifier->Enabled) amplifier->update(image);
     }
     numEffectsOn = 0;
@@ -302,13 +313,14 @@ void ContentManager::drawCamera() {
     camHeight = camera->getColorTexture().getHeight();
     ofImage img;
     if(amplifier->Enabled) {
-
         img.setFromPixels(camera->getColorPixels());
         img.resize(VID_WIDTH, VID_HEIGHT);
         amplifier->update(img);
     }
-#else
+#elif defined USING_WEBCAM
     amplifier->update(*camera);
+#else
+//    amplifier->update(*camera);
 #endif
     frame.buffer.begin();
     glBlendFuncSeparate(GL_ONE, GL_SRC_COLOR, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
@@ -327,9 +339,17 @@ void ContentManager::drawCamera() {
         camera->drawColor();
         ofPopMatrix();
     }
-#else
+#elif defined USING_WEBCAM
     if(amplifier->Enabled) amplifier->draw(*camera);
     else camera->draw(0, 0, bufferWidth, bufferHeight);
+#else
+    //if(amplifier->Enabled) amplifier->draw(*camera->grabber);
+    else {
+        ofPushMatrix();
+        ofScale(1.333, 1.333);
+        camera->draw();
+        ofPopMatrix();
+    }
 #endif
     if(frame.particlesOn) particles.draw();
     frame.buffer.end();

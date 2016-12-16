@@ -32,7 +32,7 @@ void videoTiler::addImage(unsigned char* image){
 void videoTiler::drawWithTimeOffset(int xOffset, int yOffset, int width, int height) {
     img.allocate(slitScan.getWidth(), slitScan.getHeight(), OF_IMAGE_COLOR_ALPHA);
     for(int i = 0; i < size*size; i++) {
-        slitScan.pixelsForFrame(ofMap(i, 0, size*size, slitScan.getCapacity()-1, 0), &img);
+        slitScan.pixelsForFrame(ofMap(i, 0, size*size, slitScan.getCapacity()-1, 0), img.getPixels().getData());
         int x = i % size;
         int y = (i - x)/size;
         img.draw(xOffset + x*width/size-1, yOffset + y*height/size-1, width/size+2, height/size+2);

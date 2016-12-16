@@ -30,4 +30,36 @@
 	<Rotation_oscillating>0</Rotation_oscillating>
 	<Size_oscillating>0</Size_oscillating>
 	<Angle_oscillating>1</Angle_oscillating>
+<group>
+		<Slide1X>0</Slide1X>
+		<Slide1X_connected>0</Slide1X_connected>
+		<Slide1X_oscillating>0</Slide1X_oscillating>
+		<Slide1Y>0</Slide1Y>
+		<Slide1Y_connected>0</Slide1Y_connected>
+		<Slide1Y_oscillating>0</Slide1Y_oscillating>
+		<Slide2X>0</Slide2X>
+		<Slide2X_connected>0</Slide2X_connected>
+		<Slide2X_oscillating>0</Slide2X_oscillating>
+		<Slide2Y>0</Slide2Y>
+		<Slide2Y_connected>0</Slide2Y_connected>
+		<Slide2Y_oscillating>0</Slide2Y_oscillating>
+		<ShiftX>0</ShiftX>
+		<ShiftX_connected>0</ShiftX_connected>
+		<ShiftX_oscillating>0</ShiftX_oscillating>
+		<ShiftY>0</ShiftY>
+		<ShiftY_connected>0</ShiftY_connected>
+		<ShiftY_oscillating>0</ShiftY_oscillating>
+		<Sides>2.08</Sides>
+		<Sides_connected>0</Sides_connected>
+		<Sides_oscillating>0</Sides_oscillating>
+		<Rotation>0.1547</Rotation>
+		<Rotation_connected>0</Rotation_connected>
+		<Rotation_oscillating>1</Rotation_oscillating>
+		<Size>4</Size>
+		<Size_connected>0</Size_connected>
+		<Size_oscillating>0</Size_oscillating>
+		<Angle>0.1547</Angle>
+		<Angle_connected>0</Angle_connected>
+		<Angle_oscillating>1</Angle_oscillating>
+	</group>
 </Kaleidoscope>

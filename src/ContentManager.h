@@ -1,4 +1,4 @@
-    //
+//
 //  ContentManager.h
 //  ShaderParty
 //
@@ -9,7 +9,8 @@
 #ifndef __ShaderParty__ContentManager__
 #define __ShaderParty__ContentManager__
 
-#define USING_BLACKMAGIC
+//#define USING_BLACKMAGIC
+//#define USING_WEBCAM
 
 #define VID_WIDTH 1280
 #define VID_HEIGHT 720
@@ -22,6 +23,7 @@
 #include "Effect.h"
 #include "videoTiler.h"
 #include "Sparticles.h"
+#include "IPCamInput.h"
 
 class ContentManager {
 public:
@@ -97,8 +99,10 @@ public:
     
 #ifdef USING_BLACKMAGIC
     ofxBlackMagic* camera;
-#else
+#elif defined USING_WEBCAM
     ofVideoGrabber* camera;
+#else
+    IPCamInput* camera;
 #endif
     
     contentCreator frame;
@@ -126,8 +130,10 @@ public:
     
 #ifdef USING_BLACKMAGIC
     void setCamera(ofxBlackMagic* cam) { camera = cam;};
-#else
+#elif defined USING_WEBCAM
     void setCamera(ofVideoGrabber* cam) { camera = cam;};
+#else
+    void setCamera(IPCamInput* cam) { camera = cam;};
 #endif
     
     
@@ -209,6 +215,7 @@ public:
     
     void play() {
         player.setPaused(false);
+        //player.setVolume(1.0);
         player.play();
     };
     
@@ -217,7 +224,7 @@ public:
         nextContentIndex = 0;
         swapContent(currentContentNames);
     }
-
+    
 };
 
 #endif /* defined(__ShaderParty__ContentManager__) */

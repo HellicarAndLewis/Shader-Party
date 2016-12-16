@@ -1,0 +1,112 @@
+<group>
+	<Active_Effects>
+		<Bad_VHS>0</Bad_VHS>
+		<Kaleidoscope>0</Kaleidoscope>
+		<Pixelation>0</Pixelation>
+		<RGB_Shift>1</RGB_Shift>
+		<Scan_Lines>0</Scan_Lines>
+		<Sharpen>0</Sharpen>
+		<Color_Map>0</Color_Map>
+		<Bad_TV>0</Bad_TV>
+		<Voronoi>0</Voronoi>
+		<Endarken>0</Endarken>
+		<Explode>0</Explode>
+	</Active_Effects>
+<group/>
+	<Waves>1</Waves>
+	<Waves_connected>0</Waves_connected>
+	<Waves_oscillating>0</Waves_oscillating>
+	<Chroma_AB>1</Chroma_AB>
+	<Chroma_AB_connected>0</Chroma_AB_connected>
+	<Chroma_AB_oscillating>0</Chroma_AB_oscillating>
+<Slide1X>0</Slide1X>
+	<Slide1X_connected>0</Slide1X_connected>
+	<Slide1X_oscillating>0</Slide1X_oscillating>
+	<Slide1Y>0</Slide1Y>
+	<Slide1Y_connected>0</Slide1Y_connected>
+	<Slide1Y_oscillating>0</Slide1Y_oscillating>
+	<Slide2X>0</Slide2X>
+	<Slide2X_connected>0</Slide2X_connected>
+	<Slide2X_oscillating>0</Slide2X_oscillating>
+	<Slide2Y>0</Slide2Y>
+	<Slide2Y_connected>0</Slide2Y_connected>
+	<Slide2Y_oscillating>0</Slide2Y_oscillating>
+	<ShiftX>0</ShiftX>
+	<ShiftX_connected>0</ShiftX_connected>
+	<ShiftX_oscillating>0</ShiftX_oscillating>
+	<ShiftY>0</ShiftY>
+	<ShiftY_connected>0</ShiftY_connected>
+	<ShiftY_oscillating>0</ShiftY_oscillating>
+	<Sides>1</Sides>
+	<Sides_connected>0</Sides_connected>
+	<Sides_oscillating>0</Sides_oscillating>
+	<Rotation>0</Rotation>
+	<Rotation_connected>0</Rotation_connected>
+	<Rotation_oscillating>0</Rotation_oscillating>
+	<Size>0</Size>
+	<Size_connected>0</Size_connected>
+	<Size_oscillating>0</Size_oscillating>
+	<Angle>0</Angle>
+	<Angle_connected>0</Angle_connected>
+	<Angle_oscillating>0</Angle_oscillating>
+<Pixel_Width>15</Pixel_Width>
+	<Pixel_Width_connected>0</Pixel_Width_connected>
+	<Pixel_Width_oscillating>0</Pixel_Width_oscillating>
+	<Pixel_Height>10</Pixel_Height>
+	<Pixel_Height_connected>0</Pixel_Height_connected>
+	<Pixel_Height_oscillating>0</Pixel_Height_oscillating>
+<Amount>0.5</Amount>
+	<Amount_connected>0</Amount_connected>
+	<Amount_oscillating>0</Amount_oscillating>
+<N_Intensity>1</N_Intensity>
+	<N_Intensity_connected>0</N_Intensity_connected>
+	<N_Intensity_oscillating>0</N_Intensity_oscillating>
+	<S_Intensity>1</S_Intensity>
+	<S_Intensity_connected>0</S_Intensity_connected>
+	<S_Intensity_oscillating>0</S_Intensity_oscillating>
+	<S_Count>500</S_Count>
+	<S_Count_connected>0</S_Count_connected>
+	<S_Count_oscillating>0</S_Count_oscillating>
+<The_Mix>0.5</The_Mix>
+	<The_Mix_connected>0</The_Mix_connected>
+	<The_Mix_oscillating>0</The_Mix_oscillating>
+	<Weirdness>0.5</Weirdness>
+	<Weirdness_connected>0</Weirdness_connected>
+	<Weirdness_oscillating>0</Weirdness_oscillating>
+<Rate>0.5</Rate>
+	<Rate_connected>0</Rate_connected>
+	<Rate_oscillating>0</Rate_oscillating>
+<Speed>0.2</Speed>
+	<Speed_connected>0</Speed_connected>
+	<Speed_oscillating>0</Speed_oscillating>
+	<Roll_Speed>0.5</Roll_Speed>
+	<Roll_Speed_connected>0</Roll_Speed_connected>
+	<Roll_Speed_oscillating>0</Roll_Speed_oscillating>
+	<Distortion_1>5</Distortion_1>
+	<Distortion_1_connected>0</Distortion_1_connected>
+	<Distortion_1_oscillating>0</Distortion_1_oscillating>
+	<Distortion_2>0.5</Distortion_2>
+	<Distortion_2_connected>0</Distortion_2_connected>
+	<Distortion_2_oscillating>0</Distortion_2_oscillating>
+<Active_Seeds>200</Active_Seeds>
+	<Active_Seeds_connected>0</Active_Seeds_connected>
+	<Active_Seeds_oscillating>0</Active_Seeds_oscillating>
+	<Speed_Factor>0</Speed_Factor>
+	<Speed_Factor_connected>0</Speed_Factor_connected>
+	<Speed_Factor_oscillating>0</Speed_Factor_oscillating>
+<Darkness>0.5</Darkness>
+	<Darkness_connected>0</Darkness_connected>
+	<Darkness_oscillating>0</Darkness_oscillating>
+<Scale>500</Scale>
+	<Scale_connected>0</Scale_connected>
+	<Scale_oscillating>0</Scale_oscillating>
+	<X_Strength>0</X_Strength>
+	<X_Strength_connected>0</X_Strength_connected>
+	<X_Strength_oscillating>0</X_Strength_oscillating>
+	<Y_Strength>0</Y_Strength>
+	<Y_Strength_connected>0</Y_Strength_connected>
+	<Y_Strength_oscillating>0</Y_Strength_oscillating>
+	<Z_Strength>0</Z_Strength>
+	<Z_Strength_connected>0</Z_Strength_connected>
+	<Z_Strength_oscillating>0</Z_Strength_oscillating>
+</group>
